@@ -355,12 +355,12 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
             final BsonValue responseContent) {
 
         final long totalItems = calculateTotalDocuments(request, responseContent);
-        final int pageSize = request.getPagesize();
-        final int totalPages = calculateTotalPages(totalItems, pageSize);
+        final int pagesize = request.getPagesize();
+        final int totalPages = calculateTotalPages(totalItems, pagesize);
 
         builder
                 .with("page", request.getPage())
-                .with("pageSize", pageSize)
+                .with("pagesize", pagesize)
                 .with("totalItems", totalItems)
                 .with("totalPages", totalPages);
 
