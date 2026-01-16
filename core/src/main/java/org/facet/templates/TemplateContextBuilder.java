@@ -33,7 +33,10 @@ public class TemplateContextBuilder {
      * @return the updated TemplateContextBuilder
      */
     public TemplateContextBuilder withAuthenticatedUser(final Request<?> request) {
-        if (request.getAuthenticatedAccount() != null) {
+        final boolean isAuthenticated = request.getAuthenticatedAccount() != null;
+        context.put("isAuthenticated", isAuthenticated);
+
+        if (isAuthenticated) {
             context.put("username", request.getAuthenticatedAccount().getPrincipal().getName());
             if (request.getAuthenticatedAccount().getRoles() != null) {
                 context.put("roles", request.getAuthenticatedAccount().getRoles());

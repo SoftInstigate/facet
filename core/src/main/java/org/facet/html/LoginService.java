@@ -93,8 +93,8 @@ public class LoginService implements JsonService {
 
         // Add login context variables to global template context
         if (templateProcessor != null) {
-            templateProcessor.addToGlobalTemplateContext("loginUri", loginUri);
-            templateProcessor.addToGlobalTemplateContext("rolesEndpoint", rolesEndpoint);
+            templateProcessor.addToGlobalTemplateContext("loginUrl", loginUri);
+            templateProcessor.addToGlobalTemplateContext("rolesUrl", rolesEndpoint);
             LOGGER.info("LoginService initialized at {} (roles endpoint: {})",
                     loginUri, rolesEndpoint);
         } else {

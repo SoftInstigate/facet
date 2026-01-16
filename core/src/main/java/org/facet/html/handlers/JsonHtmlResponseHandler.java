@@ -77,7 +77,7 @@ public class JsonHtmlResponseHandler implements HtmlResponseHandler {
         return TemplateContextBuilder.create(templateProcessor.getGlobalTemplateContext())
                 .withAuthenticatedUser(request)
                 .with("path", request.getPath())
-                .with("json", rawJson)
+                .with("data", rawJson)
                 .withServiceData(serviceData)
                 .build();
     }

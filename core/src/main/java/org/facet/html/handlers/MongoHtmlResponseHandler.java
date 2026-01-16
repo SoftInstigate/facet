@@ -139,15 +139,15 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      * <br>
      * Use this for breadcrumb segments and displaying the resource path.</li>
      *
-     * <li><b>documents</b> (List&lt;Map&gt;): List of MongoDB documents with ID type metadata
+     * <li><b>items</b> (List&lt;Map&gt;): List of enriched items (databases, collections, or documents)
      * <br>
-     * Each document includes __id_type__ field for correct URL generation.</li>
+     * Content varies by resourceType: database names, collection names, or documents with ID metadata.</li>
      *
-     * <li><b>requestType</b> (String): MongoDB request type (DB, COLLECTION, DOCUMENT, etc.)</li>
+     * <li><b>resourceType</b> (String): MongoDB resource type (ROOT, DATABASE, COLLECTION, DOCUMENT)</li>
      *
-     * <li><b>json</b> (String): Raw JSON representation of the MongoDB response</li>
+     * <li><b>data</b> (String): Raw JSON representation of the MongoDB response</li>
      *
-     * <li><b>filter, keys, sort</b> (String): Query parameters for MongoDB operations</li>
+     * <li><b>filter, projection, sortBy</b> (String): Query parameters for MongoDB operations</li>
      * </ul>
      *
      * <p>
@@ -171,12 +171,12 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
                 .withAuthenticatedUser(mongoRequest)
                 .with("path", path)
                 .with("mongoPath", mongoPath)
-                .with("documents", documents)
-                .with("requestType", mongoRequest.getType())
-                .with("json", transformBsonToJsonList(tenantScopedContent))
+                .with("items", documents)
+                .with("resourceType", mongoRequest.getType())
+                .with("data", transformBsonToJsonList(tenantScopedContent))
                 .with("filter", mongoRequest.getQueryParameterOrDefault("filter", ""))
-                .with("keys", mongoRequest.getQueryParameterOrDefault("keys", ""))
-                .with("sort", mongoRequest.getQueryParameterOrDefault("sort", ""));
+                .with("projection", mongoRequest.getQueryParameterOrDefault("keys", ""))
+                .with("sortBy", mongoRequest.getQueryParameterOrDefault("sort", ""));
 
         // Add tenant-aware context for parametric mounts
         addTenantContext(builder, mongoRequest);
@@ -186,18 +186,18 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
 
     /**
      * Adds tenant-aware context derived from hostname-based parametric mounts.
-     * Populates tenantId, isTenantIsolated, and hostnameParams.
+     * Populates tenantId, isMultiTenant, and hostParams.
      */
     private void addTenantContext(final TemplateContextBuilder builder, final MongoRequest mongoRequest) {
         final Optional<String> tenantId = MongoMountResolver.extractTenantId(mongoRequest);
         final ResolvedContext mountContext = mongoRequest.getResolvedContext();
-        final boolean isTenantIsolated = mountContext != null
+        final boolean isMultiTenant = mountContext != null
                 && mountContext.hasParametricMounts()
                 && tenantId.isPresent();
 
         builder.with("tenantId", tenantId.map(id -> "\"" + id + "\"").orElse("null"));
-        builder.with("isTenantIsolated", isTenantIsolated);
-        builder.with("hostnameParams", buildHostnameParamsAsJson(mongoRequest));
+        builder.with("isMultiTenant", isMultiTenant);
+        builder.with("hostParams", buildHostnameParamsAsJson(mongoRequest));
     }
 
     /**
@@ -308,28 +308,30 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
                 mountContext.collection(),
                 mountContext.canCreateCollections());
 
+        // Resolve database and collection (prefer mount context if available)
+        final String resolvedDb = mountContext.database() != null
+            ? mountContext.database()
+            : mongoRequest.getDBName();
+        final String resolvedColl = mountContext.collection() != null
+            ? mountContext.collection()
+            : mongoRequest.getCollectionName();
+
         builder
-                .with("mountedDatabase", mountContext.database())
-                .with("mountedCollection", mountContext.collection())
+                .with("db", resolvedDb)
+                .with("coll", resolvedColl)
                 .with("canCreateDatabases", mountContext.canCreateDatabases())
                 .with("canCreateCollections", mountContext.canCreateCollections())
                 .with("canCreateDocuments", mongoRequest.getType() != ExchangeKeys.TYPE.DOCUMENT
                         && mongoRequest.getCollectionName() != null)
                 .with("canDeleteDatabase", mountContext.canDeleteDatabase())
                 .with("canDeleteCollection", mountContext.canDeleteCollection())
-                .with("mongoResourcePath", mountContext.mongoResourcePath());
+                .with("resourceUrl", mountContext.mongoResourcePath());
 
         // Derive a collection-level reset path (avoids landing on document path with page params)
-        final String resetPath = getResetPath(mongoRequest, mountContext);
-        builder.with("resetPath", resetPath != null
-            ? resetPath
+        final String collectionUrl = getResetPath(mongoRequest, mountContext);
+        builder.with("collectionUrl", collectionUrl != null
+            ? collectionUrl
             : mongoRequest.getPath());
-
-        // Override database if not set but available from mount (for parametric mounts)
-        // Do NOT override collection - MongoDB response determines actual collection context
-        if (mongoRequest.getDBName() == null && mountContext.database() != null) {
-            builder.with("database", mountContext.database());
-        }
     }
 
     private String getResetPath(final MongoRequest mongoRequest, final ResolvedContext mountContext) {
@@ -352,20 +354,18 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
             final MongoRequest request,
             final BsonValue responseContent) {
 
-        final long totalDocuments = calculateTotalDocuments(request, responseContent);
-        final int pagesize = request.getPagesize();
-        final int totalPages = calculateTotalPages(totalDocuments, pagesize);
+        final long totalItems = calculateTotalDocuments(request, responseContent);
+        final int pageSize = request.getPagesize();
+        final int totalPages = calculateTotalPages(totalItems, pageSize);
 
         builder
-                .with("database", request.getDBName())
-                .with("collection", request.getCollectionName())
                 .with("page", request.getPage())
-                .with("pagesize", pagesize)
-                .with("totalDocuments", totalDocuments)
+                .with("pageSize", pageSize)
+                .with("totalItems", totalItems)
                 .with("totalPages", totalPages);
 
         LOGGER.debug("Pagination: page {} of {} ({} total items)",
-                request.getPage(), totalPages, totalDocuments);
+                request.getPage(), totalPages, totalItems);
     }
 
     private long calculateTotalDocuments(final MongoRequest request, final BsonValue responseContent) {
@@ -582,7 +582,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     private static Map<String, Object> getEnrichedDoc(final String value) {
         final var enrichedDoc = new HashMap<String, Object>();
         enrichedDoc.put("value", value);
-        enrichedDoc.put("string", true);
+        enrichedDoc.put("isString", true);
         return enrichedDoc;
     }
 
@@ -590,8 +590,8 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
         final var enrichedDoc = new HashMap<String, Object>();
 
         // Store the full BSON document
-        enrichedDoc.put("bson", documentBsonValue);
-        enrichedDoc.put("string", false);
+        enrichedDoc.put("data", documentBsonValue);
+        enrichedDoc.put("isString", false);
 
         if (documentBsonValue.containsKey("_id")) {
             final var idValue = documentBsonValue.get("_id");
@@ -601,7 +601,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
             final var idInfo = new HashMap<String, Object>();
             idInfo.put("value", IdTypeDetector.extractIdValue(idValue));
             idInfo.put("type", idType);
-            idInfo.put("requiresParam", idType != null);
+            idInfo.put("needsParam", idType != null);
 
             enrichedDoc.put("_id", idInfo);
         }
