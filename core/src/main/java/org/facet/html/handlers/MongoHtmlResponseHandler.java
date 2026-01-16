@@ -175,8 +175,8 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
                 .with("resourceType", mongoRequest.getType())
                 .with("data", transformBsonToJsonList(tenantScopedContent))
                 .with("filter", mongoRequest.getQueryParameterOrDefault("filter", ""))
-                .with("projection", mongoRequest.getQueryParameterOrDefault("keys", ""))
-                .with("sortBy", mongoRequest.getQueryParameterOrDefault("sort", ""));
+                .with("keys", mongoRequest.getQueryParameterOrDefault("keys", ""))
+                .with("sort", mongoRequest.getQueryParameterOrDefault("sort", ""));
 
         // Add tenant-aware context for parametric mounts
         addTenantContext(builder, mongoRequest);
