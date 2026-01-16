@@ -146,7 +146,7 @@ Variables for paginated results.
 | Variable | Type | Description | Example |
 |----------|------|-------------|---------|
 | `page` | int | Current page number (1-indexed) | `1` |
-| `pageSize` | int | Number of items per page | `25` |
+| `pagesize` | int | Number of items per page | `25` |
 | `totalPages` | int | Total number of pages | `10` |
 | `totalItems` | long | Total item count | `237` |
 
@@ -159,11 +159,11 @@ Variables for paginated results.
   <p>Page {{ page }} of {{ totalPages }} ({{ totalItems }} total items)</p>
 
   {% if page > 1 %}
-    <a href="?page={{ page - 1 }}&pageSize={{ pageSize }}">Previous</a>
+    <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}">Previous</a>
   {% endif %}
 
   {% if page < totalPages %}
-    <a href="?page={{ page + 1 }}&pageSize={{ pageSize }}">Next</a>
+    <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}">Next</a>
   {% endif %}
 </div>
 ```
@@ -310,12 +310,12 @@ The `_id.type` field helps generate correct URLs:
 {% set segments = mongoPath | split('/') %}
 
 <nav>
-  <a href="{{ prefix }}/?page=1&pageSize={{ pageSize }}">Home</a>
+  <a href="{{ prefix }}/?page=1&pagesize={{ pagesize }}">Home</a>
   {% set currentPath = prefix %}
   {% for segment in segments %}
     {% if segment != '' %}
       {% set currentPath = currentPath ~ '/' ~ segment %}
-      / <a href="{{ currentPath }}?page=1&pageSize={{ pageSize }}">{{ segment }}</a>
+      / <a href="{{ currentPath }}?page=1&pagesize={{ pagesize }}">{{ segment }}</a>
     {% endif %}
   {% endfor %}
 </nav>
@@ -343,7 +343,7 @@ The `_id.type` field helps generate correct URLs:
 
 ```html
 <div class="pagination">
-  {% set baseQuery = "pageSize=" ~ pageSize %}
+  {% set baseQuery = "pagesize=" ~ pagesize %}
   {% if filter %}
     {% set baseQuery = baseQuery ~ "&filter=" ~ (filter | urlencode) %}
   {% endif %}

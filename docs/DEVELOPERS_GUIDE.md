@@ -645,14 +645,14 @@ Facet injects a rich set of variables into your templates, giving you access to 
 <div class="pagination">
     <p>Page {{ page }} of {{ totalPages }}</p>
     <p>Total: {{ totalItems }} items</p>
-    <p>Page size: {{ pageSize }}</p>
+    <p>Page size: {{ pagesize }}</p>
 
     {% if page > 1 %}
-        <a href="?page={{ page - 1 }}&pageSize={{ pageSize }}">Previous</a>
+        <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}">Previous</a>
     {% endif %}
 
     {% if page < totalPages %}
-        <a href="?page={{ page + 1 }}&pageSize={{ pageSize }}">Next</a>
+        <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}">Next</a>
     {% endif %}
 </div>
 ```
@@ -709,7 +709,7 @@ Facet injects a rich set of variables into your templates, giving you access to 
 | `items` | List | Enriched items (databases, collections, or documents) |
 | `data` | String | JSON representation of response |
 | `page` | Integer | Current page number |
-| `pageSize` | Integer | Items per page |
+| `pagesize` | Integer | Items per page |
 | `totalPages` | Integer | Total number of pages |
 | `totalItems` | Long | Total item count |
 | `filter` | String | MongoDB filter query |
