@@ -147,7 +147,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      *
      * <li><b>data</b> (String): Raw JSON representation of the MongoDB response</li>
      *
-     * <li><b>filter, projection, sortBy</b> (String): Query parameters for MongoDB operations</li>
+     * <li><b>filter, keys, sort</b> (String): Query parameters for MongoDB operations</li>
      * </ul>
      *
      * <p>

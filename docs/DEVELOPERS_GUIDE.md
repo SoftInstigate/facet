@@ -664,12 +664,12 @@ Facet injects a rich set of variables into your templates, giving you access to 
     <p>Filtered by: <code>{{ filter }}</code></p>
 {% endif %}
 
-{% if sortBy %}
-    <p>Sorted by: <code>{{ sortBy }}</code></p>
+{% if sort %}
+    <p>Sorted by: <code>{{ sort }}</code></p>
 {% endif %}
 
-{% if projection %}
-    <p>Projection: <code>{{ projection }}</code></p>
+{% if keys %}
+    <p>Field projection (keys): <code>{{ keys }}</code></p>
 {% endif %}
 ```
 
@@ -713,8 +713,8 @@ Facet injects a rich set of variables into your templates, giving you access to 
 | `totalPages` | Integer | Total number of pages |
 | `totalItems` | Long | Total item count |
 | `filter` | String | MongoDB filter query |
-| `projection` | String | Field projection |
-| `sortBy` | String | Sort specification |
+| `keys` | String | MongoDB field projection/keys |
+| `sort` | String | MongoDB sort specification |
 | `canCreate*` | Boolean | Permission flags for creating resources |
 | `canDelete*` | Boolean | Permission flags for deleting resources |
 | `version` | String | RESTHeart version number |

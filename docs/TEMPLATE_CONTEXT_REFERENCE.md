@@ -115,8 +115,8 @@ See [Enriched Items Structure](#enriched-items-structure) for details.
 | Variable | Type | Description | Default |
 |----------|------|-------------|---------|
 | `filter` | String | MongoDB query filter (JSON) | `""` (empty string) |
-| `projection` | String | Field projection (JSON) | `""` (empty string) |
-| `sortBy` | String | Sort specification (JSON) | `""` (empty string) |
+| `keys` | String | MongoDB field projection/keys (JSON) | `""` (empty string) |
+| `sort` | String | MongoDB sort specification (JSON) | `""` (empty string) |
 
 ### Usage Example
 ```html
@@ -347,11 +347,11 @@ The `_id.type` field helps generate correct URLs:
   {% if filter %}
     {% set baseQuery = baseQuery ~ "&filter=" ~ (filter | urlencode) %}
   {% endif %}
-  {% if projection %}
-    {% set baseQuery = baseQuery ~ "&projection=" ~ (projection | urlencode) %}
+  {% if keys %}
+    {% set baseQuery = baseQuery ~ "&keys=" ~ (keys | urlencode) %}
   {% endif %}
-  {% if sortBy %}
-    {% set baseQuery = baseQuery ~ "&sortBy=" ~ (sortBy | urlencode) %}
+  {% if sort %}
+    {% set baseQuery = baseQuery ~ "&sort=" ~ (sort | urlencode) %}
   {% endif %}
 
   {% if page > 1 %}
