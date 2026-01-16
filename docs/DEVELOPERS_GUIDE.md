@@ -581,94 +581,101 @@ curl -H "Accept: application/json" http://localhost:8080/mydb/products
 
 ## Template Context Variables
 
-Templates have access to rich context variables:
+Facet injects a rich set of variables into your templates, giving you access to request data, pagination info, permissions, and more.
 
-### Authentication
+**📖 For a complete reference of all available template variables, see:** [Template Context Reference](TEMPLATE_CONTEXT_REFERENCE.md)
+
+### Quick Examples
+
+#### Authentication
 
 ```html
-{% if username %}
+{% if isAuthenticated %}
     <p>Logged in as: {{ username }}</p>
     <p>Roles: {{ roles | join(', ') }}</p>
+    <a href="{{ loginUrl }}?logout">Logout</a>
 {% else %}
-    <a href="/login">Login</a>
+    <a href="{{ loginUrl }}">Login</a>
 {% endif %}
 ```
 
-### Resource Context
+#### Resource Context
 
 ```html
 <h1>
-    {% if collection %}
-        Collection: {{ database }}/{{ collection }}
-    {% elseif database %}
-        Database: {{ database }}
+    {% if coll %}
+        Collection: {{ db }}/{{ coll }}
+    {% elseif db %}
+        Database: {{ db }}
     {% else %}
         All Databases
     {% endif %}
 </h1>
 
 <p>Request path: {{ path }}</p>
-<p>Request type: {{ requestType }}</p>
+<p>Resource type: {{ resourceType }}</p>
 ```
 
-### MongoDB Data
+#### MongoDB Data
 
 ```html
-{% if documents %}
-    <p>Showing {{ documents.size }} documents</p>
+{% if items %}
+    <p>Showing {{ items.size }} items</p>
 
-    {% for doc in documents %}
-        <div class="document">
-            <code>{{ doc._id }}</code>
-            <pre>{{ doc | json_encode }}</pre>
-        </div>
+    {% for item in items %}
+        {% if item.isString %}
+            {# Database or collection name #}
+            <div>{{ item.value }}</div>
+        {% else %}
+            {# Document #}
+            <div class="document">
+                <code>{{ item._id.value }}</code>
+                <pre>{{ item.data | json_encode }}</pre>
+            </div>
+        {% endif %}
     {% endfor %}
 {% else %}
-    <p>No documents found</p>
+    <p>No items found</p>
 {% endif %}
 ```
 
-### Pagination
+#### Pagination
 
 ```html
 <div class="pagination">
     <p>Page {{ page }} of {{ totalPages }}</p>
-    <p>Total: {{ totalDocuments }} documents</p>
-    <p>Page size: {{ pagesize }}</p>
+    <p>Total: {{ totalItems }} items</p>
+    <p>Page size: {{ pageSize }}</p>
 
     {% if page > 1 %}
-        <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}">Previous</a>
+        <a href="?page={{ page - 1 }}&pageSize={{ pageSize }}">Previous</a>
     {% endif %}
 
     {% if page < totalPages %}
-        <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}">Next</a>
+        <a href="?page={{ page + 1 }}&pageSize={{ pageSize }}">Next</a>
     {% endif %}
 </div>
 ```
 
-### Query Parameters
+#### Query Parameters
 
 ```html
 {% if filter %}
     <p>Filtered by: <code>{{ filter }}</code></p>
 {% endif %}
 
-{% if sort %}
-    <p>Sorted by: <code>{{ sort }}</code></p>
+{% if sortBy %}
+    <p>Sorted by: <code>{{ sortBy }}</code></p>
 {% endif %}
 
-{% if keys %}
-    <p>Projection: <code>{{ keys }}</code></p>
+{% if projection %}
+    <p>Projection: <code>{{ projection }}</code></p>
 {% endif %}
 ```
 
-### Mount Context (Parametric Mounts)
+#### Permission Checks
 
 ```html
-{% if mountedDatabase %}
-    <p>Mounted database: {{ mountedDatabase }}</p>
-{% endif %}
-
 {% if canCreateCollections %}
     <button>New Collection</button>
 {% endif %}
@@ -678,42 +685,47 @@ Templates have access to rich context variables:
 {% endif %}
 ```
 
-### System Info
+#### System Info
 
 ```html
 <footer>
-    <p>API {{ version }}</p>
+    <p>RESTHeart {{ version }} - Built {{ buildTime }}</p>
 </footer>
 ```
 
-### Complete Reference
+### Key Variables Summary
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `username` | String | Authenticated user (null if not logged in) |
-| `roles` | List | User's roles |
-| `path` | String | Full request path with mount prefix (e.g., "/api/mydb/users") |
-| `mongoPath` | String | MongoDB resource path (prefix stripped, e.g., "/mydb/users") |
-| `mongoPrefix` | String | MongoDB mount prefix (e.g., "/api" or "/") - global context |
-| `database` | String | Database name |
-| `collection` | String | Collection name |
-| `requestType` | Enum | ROOT, DB, COLLECTION, DOCUMENT |
-| `documents` | List | Document objects with full BSON data and ID type metadata |
-| `json` | String | JSON representation of documents |
+| `isAuthenticated` | Boolean | Whether user is authenticated |
+| `username` | String | Authenticated user's name |
+| `roles` | Set<String> | User's roles |
+| `path` | String | Full request path with mount prefix |
+| `mongoPath` | String | MongoDB resource path (prefix stripped) |
+| `mongoPrefix` | String | MongoDB mount prefix (global) |
+| `db` | String | Database name (resolved from mount or request) |
+| `coll` | String | Collection name (resolved from mount or request) |
+| `resourceType` | Enum | ROOT, DATABASE, COLLECTION, DOCUMENT |
+| `items` | List | Enriched items (databases, collections, or documents) |
+| `data` | String | JSON representation of response |
 | `page` | Integer | Current page number |
-| `pagesize` | Integer | Documents per page |
+| `pageSize` | Integer | Items per page |
 | `totalPages` | Integer | Total number of pages |
-| `totalDocuments` | Integer | Total document count |
+| `totalItems` | Long | Total item count |
 | `filter` | String | MongoDB filter query |
-| `keys` | String | Projection (fields to return) |
-| `sort` | String | Sort specification |
-| `mountedDatabase` | String | Resolved database from mount config |
-| `mountedCollection` | String | Resolved collection from mount config |
-| `canCreateDatabases` | Boolean | Permission flag |
-| `canCreateCollections` | Boolean | Permission flag |
-| `canDeleteDatabase` | Boolean | Permission flag |
-| `canDeleteCollection` | Boolean | Permission flag |
-| `version` | String | Backend version (e.g., RESTHeart) |
+| `projection` | String | Field projection |
+| `sortBy` | String | Sort specification |
+| `canCreate*` | Boolean | Permission flags for creating resources |
+| `canDelete*` | Boolean | Permission flags for deleting resources |
+| `version` | String | RESTHeart version number |
+| `buildTime` | String | Build timestamp |
+
+**📖 See [Template Context Reference](TEMPLATE_CONTEXT_REFERENCE.md) for:**
+- Complete list of all variables
+- Detailed descriptions and examples
+- Enriched item structure details
+- Common patterns and best practices
+- Migration guide from older variable names
 
 ### Custom Pebble Filters
 
