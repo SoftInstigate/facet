@@ -13,7 +13,7 @@ This guide shows you how to build custom HTML interfaces that "decorate" your RE
 
 1. [Understanding the SSR Framework](#understanding-the-ssr-framework)
 2. [Template Structure & Conventions](#template-structure--conventions)
-3. [Tutorial: Replacing the Global Browser](#tutorial-replacing-the-global-browser)
+3. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
 4. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
 5. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
 6. [Tutorial: Selective SSR](#tutorial-selective-ssr)
@@ -77,32 +77,31 @@ Search order:
 
 ## Template Structure & Conventions
 
-### Current Structure
+### Recommended Structure
 
-The following shows the structure of the **example browser application** included with Facet. Your application can use any structure and technologies you prefer.
+Organize templates by resource path to match your API structure:
 
 ```
 templates/
-├── layout.html              # Global layout (example: uses Bulma, Alpine.js, HTMX)
-├── index.html               # Default MongoDB browser UI (full page)
+├── layout.html              # Your main layout
+├── index.html               # Root resource template (e.g., databases list)
 ├── error.html               # Global error page
-├── _fragments/              # HTMX-routable fragments for partial updates
-│   └── document-list-container.html
-├── browser/
-│   ├── _components/        # Reusable UI components (pure HTML)
-│   │   ├── document-list-container.html
-│   │   ├── breadcrumb.html
-│   │   ├── pagination-controls.html
-│   │   └── resource-list.html
-│   └── login/, config/, status/
-└── ping/
-    └── index.html          # Ping service template
+├── _fragments/              # HTMX-routable fragments (optional)
+│   └── my-fragment.html
+└── mydb/                    # Database-specific templates
+    ├── index.html           # Collections list for 'mydb'
+    └── products/
+        └── index.html       # Documents list for 'products' collection
 ```
+
+**You can organize templates however you prefer** - this is just a recommended pattern that mirrors your API paths.
 
 ### Naming Conventions
 
-- **`_fragments/`**: HTMX-routable fragments (underscore prefix for infrastructure directories)
-- **`_components/`**: Reusable UI components (underscore prefix for infrastructure directories)
+- **`_fragments/`**: HTMX-routable fragments (underscore prefix indicates not directly accessible via URL)
+- **`index.html`**: Default template for a resource path
+- **`layout.html`**: Base layout template using Pebble inheritance
+- **Path-based**: Directory structure mirrors your API URLs
 
 ### Common Issues
 
@@ -127,60 +126,54 @@ templates/
 ```
 
 This serves the same favicon file at both `/assets/favicon.ico` (from your template) and `/favicon.ico` (browser automatic request), preventing authentication challenges.
-- **File names**: No underscore prefix (e.g., `document-list-container.html`, not `_document-list-container.html`)
-- **`index.html`**: Full page resource template (maps to URL path)
-- **`layout.html`**: Base layout template
 
 ### HTMX Fragment Routing
 
-The browser supports parametric fragment routing for partial page updates:
+Facet supports HTMX fragment routing for partial page updates:
 
 - **HTMX requests** with `HX-Target` header are routed to fragment templates in `_fragments/`
 - Fragment resolution: `HX-Target: #product-list` → `templates/_fragments/product-list.html`
-- Fragments can be resource-specific: `templates/mydb/mycoll/_fragments/custom-view.html`
-- Two-layer architecture:
-  - **Fragment** (`_fragments/product-list.html`): HTMX entry point with re-initialization scripts
-  - **Component** (`_components/product-list.html`): Pure HTML structure (reusable)
+- Fragments can be resource-specific: `templates/mydb/products/_fragments/product-list.html`
 
-**Example**: Full page includes the fragment template to maintain DRY principle:
+**Example**: Full page can include fragment to maintain DRY principle:
 ```html
 {# index.html - Full page #}
 {% extends "layout" %}
 {% block main %}
-    {% include "_fragments/document-list-container" %}
+    {% include "_fragments/product-list" %}
 {% endblock %}
 
-### HTMX Integration (2025)
+### HTMX Integration
 
-This project added first-class HTMX support in 2025 to enable seamless partial updates and progressive enhancement. Below are the key implementation details and recommended template patterns.
+Facet added first-class HTMX support to enable seamless partial updates and progressive enhancement.
 
-- Server-side handling:
-    - `HtmlResponseInterceptor` detects HTMX requests via the `HX-Request` and `HX-Target` headers and routes them to fragment rendering instead of full-page rendering.
-    - `PathBasedTemplateResolver.resolveFragment()` maps `HX-Target` values to fragment templates under `_fragments` (e.g. `/_fragments/product-list` → `templates/.../_fragments/product-list.html`) with resource-specific and root fallbacks.
-    - Fragment resolution is strict: missing fragment templates result in a 500 (strict mode) to surface template errors early; full-page requests fall back to JSON when no template exists.
-    - Template existence is checked via the `TemplateProcessor.templateExists()` call before rendering (see `PathBasedTemplateResolver.tryTemplate()`).
+**Server-side handling:**
+- `HtmlResponseInterceptor` detects HTMX requests via `HX-Request` and `HX-Target` headers
+- Routes to fragment rendering instead of full-page rendering
+- `PathBasedTemplateResolver.resolveFragment()` maps `HX-Target` values to fragment templates
+- Fragment resolution is strict: missing fragments return 500 error to surface issues early
+- Full-page requests without templates fall back to JSON
 
-- Template conventions:
-    - Use `_fragments/` for HTMX entry-points (they may include re-initialization scripts).
-    - Keep reusable markup in `_components/` (pure HTML) and include them from fragments or full pages.
-    - Fragment example: `templates/mydb/products/_fragments/product-list.html` (HTMX entry point) and `templates/mydb/products/_components/product-card.html` (reusable component).
+**Template conventions:**
+- Use `_fragments/` for HTMX entry points
+- Include JavaScript re-initialization if needed after swap
+- Fragments can be resource-specific or use root fallback
 
-- Client-side behavior:
-    - Fragments should re-run any required JS initialization after being swapped into the DOM (e.g., re-register framework-specific components or re-run event bindings, depending on your choice of JavaScript framework).
-    - The example browser app's initialization logic lives in `src/main/resources/static/js/app.js` (registers components such as `documentListComponent`) — call the same init helpers from fragment templates or include a small inline script in the fragment that invokes the init function.
+**Example mapping:**
+```
+GET /mydb/products
+HX-Request: true
+HX-Target: #product-list
 
-- Examples (server + client):
-    - Request headers: `HX-Request: true` and `HX-Target: #product-list` (or use `hx-get`/`hx-target` on the client).
-    - Template path mapping: `GET /mydb/products` with `HX-Target: #product-list` → `templates/mydb/products/_fragments/product-list.html` → falls back to `templates/_fragments/product-list.html`.
-
-Add these notes when creating HTMX-enabled templates to ensure predictable server-side routing and consistent client-side re-initialization.
+→ Tries: templates/mydb/products/_fragments/product-list.html
+→ Falls back to: templates/_fragments/product-list.html
 ```
 
 ---
 
-## Tutorial: Replacing the Global Browser
+## Tutorial: Creating Your First Application
 
-Want to replace the browser with your own UI framework? Here's how:
+Let's build a simple MongoDB browser application using Facet:
 
 ### Step 1: Create Your Layout
 
@@ -225,20 +218,20 @@ Want to replace the browser with your own UI framework? Here's how:
 {% block main %}
 <div class="row">
     <div class="col-12">
-        <h1>{{ database or 'Databases' }}</h1>
+        <h1>{{ db or 'Databases' }}</h1>
 
-        {% if documents %}
+        {% if items %}
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Document</th>
+                    <th>Item</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for doc in documents %}
+                {% for item in items %}
                 <tr>
-                    <td><pre>{{ doc | json_encode }}</pre></td>
+                    <td><pre>{{ item | json_encode }}</pre></td>
                     <td>
                         <button class="btn btn-sm btn-primary">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
@@ -283,7 +276,7 @@ Want to replace the browser with your own UI framework? Here's how:
 {% endblock %}
 ```
 
-**Done!** You've replaced the browser with your own UI framework.
+**Done!** You've created your first Facet application. Browse to any MongoDB resource and you'll see it rendered in HTML.
 
 ---
 
@@ -295,12 +288,10 @@ Let's build a custom admin UI for the `/admin/users` collection.
 
 ```
 templates/
-├── layout.html              # Global layout (browser)
+├── layout.html              # Global layout
 ├── admin/
 │   ├── _layouts/
-│   │   └── layout.html      # Admin's own layout (React)
-│   ├── _components/
-│   │   └── user-table.html
+│   │   └── layout.html      # Admin's own layout
 │   └── users/
 │       └── index.html       # Custom UI for /admin/users
 ```
@@ -350,21 +341,21 @@ templates/
             </tr>
         </thead>
         <tbody>
-            {% for user in documents %}
+            {% for item in items %}
             <tr>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
+                <td>{{ item.data.username }}</td>
+                <td>{{ item.data.email }}</td>
                 <td>
-                    {% for role in user.roles %}
+                    {% for role in item.data.roles %}
                     <span class="badge">{{ role }}</span>
                     {% endfor %}
                 </td>
                 <td>
-                    <span class="status-{{ user.status }}">{{ user.status }}</span>
+                    <span class="status-{{ item.data.status }}">{{ item.data.status }}</span>
                 </td>
                 <td>
-                    <button onclick="editUser('{{ user._id }}')">Edit</button>
-                    <button onclick="deleteUser('{{ user._id }}')">Delete</button>
+                    <button onclick="editUser('{{ item._id.value }}')">Edit</button>
+                    <button onclick="deleteUser('{{ item._id.value }}')">Delete</button>
                 </td>
             </tr>
             {% endfor %}
@@ -451,7 +442,7 @@ For lightweight services that share a simple style.
 
 ```
 templates/
-├── layout.html              # Full browser layout (example: Bulma, Alpine.js, HTMX)
+├── layout.html              # Main application layout
 ├── minimal-layout.html      # Simple layout (no frameworks)
 └── ping/
     └── index.html          # Extends minimal-layout
@@ -729,7 +720,7 @@ Facet injects a rich set of variables into your templates, giving you access to 
 
 ### Custom Pebble Filters
 
-Facet provides custom Pebble filters for common path manipulation tasks (used by the example browser application):
+Facet provides custom Pebble filters for common path manipulation tasks:
 
 #### `stripTrailingSlash`
 
@@ -818,7 +809,7 @@ When building links to documents, only add `id_type` parameter for actual collec
 
 ## Working with HTMX
 
-Facet's example browser uses HTMX for partial page updates, providing a smooth single-page application experience without complex JavaScript frameworks.
+Facet has first-class HTMX support for partial page updates, providing smooth single-page application experience without complex JavaScript frameworks.
 
 ### HTMX in Templates (Declarative)
 
@@ -1132,374 +1123,36 @@ HtmxResponseHelper.triggerEventAfterSettle(response, "animationDone");
 
 ---
 
-## Facet Framework Event System
-
-**For Facet Application Developers**: the example browser application implements a generic event system that allows you to extend functionality without modifying core code. The browser is just one application built on the Facet Framework - you can reuse these same patterns in your own Facet applications (including when deploying on RESTHeart).
-
-### What is the Event System?
-
-The event system allows you to listen for operations (document deletions, updates, etc.) and respond with custom logic. This enables:
-
-- **Analytics tracking** - Send events to Google Analytics, Mixpanel, etc.
-- **Audit logging** - Record all operations to a compliance database
-- **Custom notifications** - Alert admins when critical data changes
-- **Multi-part UI updates** - Update multiple components when data changes
-- **Third-party integrations** - Sync changes to Elasticsearch, Redis, webhooks
-- **Custom workflows** - Trigger business logic based on database operations
-
-### Available Events
-
-The browser dispatches standard events for MongoDB operations:
-
-```javascript
-import { BROWSER_EVENTS } from '/assets/js/utils/events.js';
-
-// Document events
-BROWSER_EVENTS.DOCUMENT_CREATED   // 'documentCreated'
-BROWSER_EVENTS.DOCUMENT_UPDATED   // 'documentUpdated'
-BROWSER_EVENTS.DOCUMENT_DELETED   // 'documentDeleted'
-
-// Collection events
-BROWSER_EVENTS.COLLECTION_CREATED  // 'collectionCreated'
-BROWSER_EVENTS.COLLECTION_UPDATED  // 'collectionUpdated'
-BROWSER_EVENTS.COLLECTION_DELETED  // 'collectionDeleted'
-
-// Database events
-BROWSER_EVENTS.DATABASE_CREATED    // 'databaseCreated'
-BROWSER_EVENTS.DATABASE_DELETED    // 'databaseDeleted'
-```
-
-### Event Detail Structure
-
-All events include structured detail information:
-
-```javascript
-{
-    resource: 'document',      // Resource type
-    action: 'deleted',         // Action performed
-    database: 'mydb',          // Database name
-    collection: 'users',       // Collection name
-    docId: '507f1f77bcf...',  // Document ID (for document events)
-    path: '/mydb/users',       // Request path
-    user: 'admin',             // Current user (if available)
-    timestamp: 1641234567890   // Unix timestamp
-}
-```
-
-### Basic Usage
-
-Listen to events using standard browser EventListener API:
-
-```javascript
-// Listen for document deletions
-document.addEventListener('documentDeleted', (event) => {
-    const { database, collection, docId, user, timestamp } = event.detail;
-
-    console.log(`User ${user} deleted document ${docId} from ${database}/${collection}`);
-
-    // Your custom logic here
-    alert(`Document deleted: ${docId}`);
-});
-```
-
-### Real-World Examples
-
-#### Example 1: Analytics Tracking
-
-Track all document deletions in Google Analytics:
-
-```javascript
-document.addEventListener('documentDeleted', (event) => {
-    const { database, collection, docId } = event.detail;
-
-    if (window.gtag) {
-        gtag('event', 'document_deleted', {
-            'event_category': 'database_operations',
-            'event_label': `${database}/${collection}`,
-            'value': 1
-        });
-    }
-});
-```
-
-#### Example 2: Audit Logging
-
-Send all database operations to an audit log:
-
-```javascript
-const AUDIT_EVENTS = [
-    'documentCreated',
-    'documentUpdated',
-    'documentDeleted',
-    'collectionCreated',
-    'collectionDeleted'
-];
-
-AUDIT_EVENTS.forEach(eventName => {
-    document.addEventListener(eventName, async (event) => {
-        await fetch('/api/audit/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: event.detail.action,
-                resource: event.detail.resource,
-                user: event.detail.user,
-                timestamp: event.detail.timestamp,
-                details: event.detail
-            })
-        });
-    });
-});
-```
-
-#### Example 3: Custom Notifications
-
-Alert admins when critical collections are modified:
-
-```javascript
-document.addEventListener('documentDeleted', (event) => {
-    const { collection, docId } = event.detail;
-
-    const criticalCollections = ['orders', 'payments', 'users'];
-
-    if (criticalCollections.includes(collection)) {
-        showNotification({
-            type: 'warning',
-            title: 'Important Document Deleted',
-            message: `Document ${docId} was deleted from ${collection}`
-        });
-
-        // Notify admin via email/Slack
-        fetch('/api/notify/admin', {
-            method: 'POST',
-            body: JSON.stringify({ collection, docId })
-        });
-    }
-});
-```
-
-#### Example 4: Multi-Part UI Updates
-
-Update multiple UI components when data changes:
-
-```javascript
-document.addEventListener('documentDeleted', (event) => {
-    const { collection } = event.detail;
-
-    // Update sidebar count
-    const countElement = document.querySelector(`[data-collection="${collection}"] .count`);
-    if (countElement) {
-        const currentCount = parseInt(countElement.textContent);
-        countElement.textContent = currentCount - 1;
-
-        // Visual feedback
-        countElement.classList.add('updated');
-        setTimeout(() => countElement.classList.remove('updated'), 2000);
-    }
-
-    // Update dashboard statistics
-    updateDashboardStats(collection, -1);
-
-    // Update chart if present
-    if (window.updateCollectionChart) {
-        updateCollectionChart(collection);
-    }
-});
-```
-
-#### Example 5: Third-Party Integration
-
-Sync deletions to external systems:
-
-```javascript
-document.addEventListener('documentDeleted', async (event) => {
-    const { database, collection, docId } = event.detail;
-
-    // Sync to Elasticsearch
-    if (window.elasticsearch) {
-        await elasticsearch.delete({
-            index: `${database}_${collection}`,
-            id: docId
-        });
-    }
-
-    // Update Redis cache
-    if (window.redis) {
-        await redis.del(`doc:${database}:${collection}:${docId}`);
-    }
-
-    // Trigger webhook
-    await fetch('/webhooks/trigger', {
-        method: 'POST',
-        body: JSON.stringify({
-            event: 'document.deleted',
-            payload: event.detail
-        })
-    });
-});
-```
-
-#### Example 6: Custom Workflows
-
-Trigger business logic based on collection-specific rules:
-
-```javascript
-document.addEventListener('documentDeleted', async (event) => {
-    const { collection, docId } = event.detail;
-
-    // When an order is deleted, notify customer service
-    if (collection === 'orders') {
-        await fetch('/api/customer-service/notify', {
-            method: 'POST',
-            body: JSON.stringify({
-                type: 'order_deleted',
-                orderId: docId,
-                timestamp: event.detail.timestamp
-            })
-        });
-
-        // Update inventory
-        await updateInventory(docId);
-    }
-
-    // When a user is deleted, cleanup related data
-    if (collection === 'users') {
-        await cleanupUserData(docId);
-    }
-});
-```
-
-### Creating Custom Events in Your Facet App
-
-Use the event utilities to dispatch your own events:
-
-```javascript
-import { dispatchResourceEvent, createEventDetail } from '/assets/js/utils/events.js';
-
-// Dispatch a custom resource event
-dispatchResourceEvent('product', 'purchased', {
-    database: 'mydb',
-    collection: 'products',
-    docId: productId,
-    quantity: 5
-});
-
-// Or dispatch any custom event
-import { dispatchEvent } from '/assets/js/utils/events.js';
-
-dispatchEvent('exportComplete', {
-    filename: 'export.csv',
-    rows: 1000
-});
-```
-
-### Using Events in Templates
-
-Include event listeners directly in your Pebble templates:
-
-```html
-<!-- templates/mydb/products/index.html -->
-{% extends "layout" %}
-
-{% block main %}
-    <!-- Your main content -->
-{% endblock %}
-
-{% block script %}
-<script type="module">
-    // Listen for product-specific events
-    document.addEventListener('documentDeleted', (event) => {
-        if (event.detail.collection === 'products') {
-            // Show confirmation message
-            alert(`Product ${event.detail.docId} was deleted`);
-
-            // Optionally reload product list
-            location.reload();
-        }
-    });
-</script>
-{% endblock %}
-```
-
-### Complete Examples
-
-For production-ready examples covering all common use cases, see:
-
-**[docs/examples/event-listeners.html](../docs/examples/event-listeners.html)**
-
-This file contains 9 complete examples:
-1. Analytics tracking (Google Analytics)
-2. Audit logging
-3. Custom notifications
-4. Multi-part UI updates
-5. Third-party integrations
-6. Rate limiting warnings
-7. Backup deleted documents
-8. Development debug mode
-9. Custom workflow triggers
-
-### Best Practices
-
-1. **Namespace your event names** - Use prefixes for custom events: `myapp:actionComplete`
-2. **Include relevant data** - Provide all context needed for handlers
-3. **Handle errors gracefully** - Wrap async operations in try/catch
-4. **Avoid blocking operations** - Events should not delay user actions
-5. **Document custom events** - Comment what events your app dispatches and their data structure
-6. **Use `cancelable: true`** - If you want handlers to be able to prevent default behavior
-
-### Debugging Events
-
-Enable debug logging in development:
-
-```javascript
-if (window.location.hostname === 'localhost') {
-    const ALL_EVENTS = [
-        'documentCreated', 'documentUpdated', 'documentDeleted',
-        'collectionCreated', 'collectionDeleted', 'databaseDeleted'
-    ];
-
-    ALL_EVENTS.forEach(eventName => {
-        document.addEventListener(eventName, (event) => {
-            console.group(`[Event] ${eventName}`);
-            console.log('Detail:', event.detail);
-            console.log('Timestamp:', new Date(event.detail.timestamp).toISOString());
-            console.groupEnd();
-        });
-    });
-}
-```
-
----
-
 ## Advanced Patterns
 
 ### Pattern 1: Template Composition
 
-Break large templates into smaller components:
-
-```
-templates/
-└── mydb/
-    └── products/
-        ├── index.html          # Main template
-        └── _components/
-            ├── product-card.html
-            └── product-filters.html
-```
+Break large templates into smaller reusable parts using Pebble's `{% include %}`:
 
 ```html
 <!-- templates/mydb/products/index.html -->
 {% extends "layout" %}
 
 {% block main %}
-    {% include "mydb/products/_components/product-filters" %}
+    <h1>Products</h1>
+
+    {% include "mydb/products/filters" %}
 
     <div class="products">
-        {% for product in documents %}
-            {% include "mydb/products/_components/product-card" with {'product': product} %}
+        {% for item in items %}
+            {% include "mydb/products/product-card" with {'product': item.data} %}
         {% endfor %}
     </div>
 {% endblock %}
+```
+
+```html
+<!-- templates/mydb/products/product-card.html -->
+<div class="product-card">
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.description }}</p>
+    <span class="price">${{ product.price }}</span>
+</div>
 ```
 
 ### Pattern 2: Layout Inheritance Hierarchy
@@ -1529,13 +1182,13 @@ templates/
 
 {% block head %}
     {{ parent() }}  <!-- Include parent's head -->
-    <!-- Example: include your CSS framework and JavaScript libraries -->
-    <link rel="stylesheet" href="/assets/css/vendor/bulma.min.css">
-    <script src="/assets/js/vendor/alpinejs.min.js"></script>
+    <!-- Add your CSS framework and JavaScript libraries -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <script src="/assets/js/app.js"></script>
 {% endblock %}
 
 {% block header %}
-    <!-- Browser's navbar -->
+    <!-- Your navbar here -->
 {% endblock %}
 ```
 
@@ -1549,7 +1202,7 @@ Example using Alpine.js (you can use any JavaScript framework):
 
 {% block main %}
 <div x-data="{
-    products: {{ documents | json_encode }},
+    products: {{ items | map(i => i.data) | json_encode }},
     filter: '',
     get filteredProducts() {
         return this.products.filter(p =>
@@ -1581,12 +1234,15 @@ Different templates based on conditions:
 {% extends "layout" %}
 
 {% block main %}
-{% if totalDocuments == 0 %}
-    {% include "mydb/products/_components/empty-state" %}
-{% elseif totalDocuments > 1000 %}
-    {% include "mydb/products/_components/large-dataset-view" %}
+{% if totalItems == 0 %}
+    <div class="empty-state">
+        <p>No products found</p>
+    </div>
+{% elseif totalItems > 1000 %}
+    <p>Large dataset: {{ totalItems }} products. Use filters to narrow results.</p>
+    {% include "mydb/products/list-view" %}
 {% else %}
-    {% include "mydb/products/_components/standard-view" %}
+    {% include "mydb/products/list-view" %}
 {% endif %}
 {% endblock %}
 ```
@@ -1657,7 +1313,7 @@ mongo-mounts:
 ## Best Practices
 
 1. **Start Simple**: Begin with minimal templates, add complexity as needed
-2. **Reuse Components**: Extract common UI elements into `_components/`
+2. **Reuse Templates**: Use Pebble's `{% include %}` to extract common UI elements
 3. **Scope Layouts**: Each major application should have its own layout
 4. **Test Both Formats**: Ensure JSON API still works (use `Accept: application/json`)
 5. **Progressive Enhancement**: Add HTML gradually, keep JSON as fallback
@@ -1724,10 +1380,10 @@ GET /mydb/products
 
 ## Next Steps
 
-- Explore the browser's existing templates in `templates/browser/_components/`
-- Check out `templates/index.html` for MongoDB browser implementation
-- Read RESTHeart documentation on MongoDB mounts and authentication
-- Experiment with different UI frameworks (React, Vue, Svelte)
+- Check [Template Context Reference](TEMPLATE_CONTEXT_REFERENCE.md) for all available variables
+- Read [RESTHeart documentation](https://restheart.org/docs/) on MongoDB mounts and authentication
+- Explore the [restheart-browser](https://github.com/softinstigate/restheart-browser) project as a complete example application
+- Experiment with different UI frameworks (React, Vue, Alpine.js, vanilla JS)
 
 ---
 
@@ -1736,15 +1392,11 @@ GET /mydb/products
 - **RESTHeart Documentation**: <https://restheart.org/docs/>
 - **Pebble Template Engine**: <https://pebbletemplates.io/>
 - **HTMX Documentation**: <https://htmx.org/>
+- **Example Application**: [restheart-browser](https://github.com/softinstigate/restheart-browser) - Full-featured MongoDB browser built with Facet
 
-### Technologies Used in the Example Browser
+### Framework Agnostic
 
-The included example browser application demonstrates Facet's capabilities using:
-- **Alpine.js** for client-side interactivity: <https://alpinejs.dev/>
-- **Bulma CSS** for styling: <https://bulma.io/>
-- **HTMX** for partial page updates: <https://htmx.org/>
-
-You can use any CSS framework (Bootstrap, Tailwind, Material UI, etc.) and any JavaScript framework (React, Vue, Svelte, vanilla JS, etc.) with Facet.
+Facet works with any CSS framework (Bootstrap, Tailwind, Bulma, Material UI, etc.) and any JavaScript framework (React, Vue, Alpine.js, Svelte, vanilla JS, etc.). The examples in this guide use Bootstrap and Alpine.js for demonstration, but these are not requirements - choose the tools that fit your project.
 
 ---
 
