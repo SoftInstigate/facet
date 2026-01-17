@@ -22,11 +22,18 @@ Facet is a data-driven web framework that transforms **JSON** documents into **s
 
 ## Features
 
-- Path-based template resolution
-- [HTMX](https://htmx.org) support for partial updates
-- [Pebble templates](https://pebbletemplates.io) (Twig/Jinja syntax)
-- Generic handlers for MongoDB and JSON responses
-- Built on [RESTHeart Backend Framework](https//restheart.org) for production-ready APIs
+- **Path-based template resolution** - Templates mirror your API structure
+- **HTMX support** - First-class support for partial updates and progressive enhancement
+- **Pebble templates** - Clean syntax inspired by Twig/Jinja2
+- **Generic handlers** - Works with MongoDB and JSON responses out of the box
+- **Production-ready** - Built as a RESTHeart plugin on GraalVM
+- **Framework agnostic** - Use any CSS/JS framework (React, Vue, Alpine.js, vanilla JS)
+
+## Built On Proven Technologies
+
+- **[RESTHeart](https://restheart.org)** - High-performance MongoDB REST API server
+- **[Pebble](https://pebbletemplates.io)** - Fast, lightweight template engine
+- **[GraalVM](https://www.graalvm.org)** - High-performance JDK with native image support
 
 ## Quick Start
 
@@ -37,7 +44,8 @@ Facet is a data-driven web framework that transforms **JSON** documents into **s
 
 ## Documentation
 
-See the [Developer's Guide](docs/DEVELOPERS_GUIDE.md)
+- **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Complete reference for Facet features and capabilities
+- **[Template Context Reference](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - All available template variables
 
 ## Examples
 
