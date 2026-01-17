@@ -1,82 +1,43 @@
 # Facet - Developer's Guide
 
 **Version:** 1.0.0-SNAPSHOT
-**Last Updated:** 2026-01-15
+**Last Updated:** 2026-01-17
 
-Facet is a lightweight, convention-based server-side rendering (SSR) framework that transforms JSON documents into HTML through path-based templates. Drop a template where the path matches your resource, and you're done—no backend code needed for basic UI.
+This guide provides a complete reference for Facet's features and capabilities. For a high-level overview, see the [README](../README.md).
 
-## What is Facet?
+## Overview
 
-Facet is a RESTHeart plugin that provides **hybrid API/UI from the same endpoint**—JSON for API clients, HTML for browsers. It's designed to make web developers' lives easier by eliminating the need to write backend code for common CRUD interfaces.
+Facet is a data-driven web framework that transforms JSON documents into server-rendered HTML through path-based templates. It's a RESTHeart plugin that provides **hybrid API/UI from the same endpoint**—JSON for API clients, HTML for browsers.
 
-### Core Concept
+**Core principle**: Convention over Configuration. Your template structure mirrors your API paths. A request to `/mydb/products` automatically uses `templates/mydb/products/index.html` when the browser requests HTML.
 
-**Convention over Configuration**: Your template structure mirrors your API paths. A request to `/mydb/products` automatically uses `templates/mydb/products/index.html` if the browser requests HTML.
+**Technology stack**:
+- **[RESTHeart](https://restheart.org/)** - MongoDB REST API server (provides the plugin architecture, HTTP layer, auth, and more)
+- **[Pebble](https://pebbletemplates.io/)** - Template engine with Twig/Jinja2-like syntax (if you know Jinja2, you know Pebble)
+- **[GraalVM](https://www.graalvm.org/)** - High-performance JDK with optional native image compilation for fast startup
 
-### Built On Proven Technologies
+**Framework agnostic**: Use any CSS framework (Bootstrap, Tailwind, etc.) and any JavaScript framework (React, Vue, Alpine.js, vanilla JS) for client-side behavior. Facet only handles server-side rendering.
 
-Facet leverages mature, production-ready technologies:
-
-#### RESTHeart
-[RESTHeart](https://restheart.org/) is a high-performance REST API server for MongoDB, built on GraalVM for exceptional performance. It provides:
-- **MongoDB REST API**: Full CRUD operations via HTTP
-- **Authentication & Authorization**: Built-in security with role-based access control
-- **Plugin Architecture**: Extensible through Java plugins (Facet is one)
-- **WebSocket Support**: Real-time data subscriptions
-- **File Storage**: GridFS integration
-- **Change Streams**: MongoDB change notifications
-
-Facet runs as a RESTHeart plugin, intercepting responses to add HTML rendering capability.
-
-#### Pebble Templates
-[Pebble](https://pebbletemplates.io/) is a lightweight, fast template engine for Java with syntax inspired by Twig and Jinja2. It provides:
-- **Clean Syntax**: `{{ variable }}`, `{% for %}`, `{% if %}`
-- **Template Inheritance**: `{% extends "layout" %}` with `{% block %}`
-- **Built-in Filters**: `{{ name | upper }}`, `{{ date | date("yyyy-MM-dd") }}`
-- **Auto-escaping**: XSS protection by default
-- **Type Safety**: Works seamlessly with Java objects
-- **Performance**: Compiled templates with caching
-
-All templates in Facet are written in Pebble. If you know Jinja2 or Twig, you already know most of Pebble.
-
-#### GraalVM (via RESTHeart)
-[GraalVM](https://www.graalvm.org/) is a high-performance JDK that provides:
-- **Fast Startup**: Native image compilation for instant start times
-- **Low Memory Footprint**: Efficient resource usage
-- **Peak Performance**: Optimized JIT compilation
-- **Polyglot Support**: Run multiple languages in the same runtime
-
-RESTHeart can be compiled to native images with GraalVM, making Facet applications blazingly fast.
-
-### Framework Agnostic Frontend
-
-While Facet uses Pebble for server-side templates, **you can use any frontend framework** for client-side behavior:
-- **CSS**: Bootstrap, Tailwind, Bulma, Material UI, custom CSS
-- **JavaScript**: React, Vue, Alpine.js, Svelte, vanilla JS, or none at all
-- **Progressive Enhancement**: Start with server-rendered HTML, add interactivity as needed
-
-The examples in this guide use various frameworks for demonstration, but none are required.
+For advanced RESTHeart features (WebSocket, Change Streams, GridFS, custom auth, etc.), see the [RESTHeart documentation](https://restheart.org/docs/).
 
 ---
 
 ## Table of Contents
 
-1. [What is Facet?](#what-is-facet)
-   - [Core Concept](#core-concept)
-   - [Built On Proven Technologies](#built-on-proven-technologies)
-   - [Framework Agnostic Frontend](#framework-agnostic-frontend)
-2. [Understanding the SSR Framework](#understanding-the-ssr-framework)
-3. [Template Structure & Conventions](#template-structure--conventions)
-4. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
-5. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
-6. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
-7. [Tutorial: Selective SSR](#tutorial-selective-ssr)
-8. [Template Context Variables](#template-context-variables)
-9. [Working with HTMX](#working-with-htmx)
+1. [Understanding the SSR Framework](#understanding-the-ssr-framework)
+2. [Template Structure & Conventions](#template-structure--conventions)
+3. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
+4. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
+5. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
+6. [Tutorial: Selective SSR](#tutorial-selective-ssr)
+7. [Template Context Variables](#template-context-variables)
+8. [Working with HTMX](#working-with-htmx)
    - [HtmxResponseHelper (Server-Side Control)](#htmxresponsehelper-server-side-control)
    - [Handling Server-Triggered Events (Client-Side)](#handling-server-triggered-events-client-side)
    - [Best Practices](#best-practices)
-10. [Advanced Patterns](#advanced-patterns)
+9. [Advanced Patterns](#advanced-patterns)
+10. [Configuration Reference](#configuration-reference)
+11. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -1700,9 +1661,9 @@ GET /mydb/products
 ## Next Steps
 
 - Check [Template Context Reference](TEMPLATE_CONTEXT_REFERENCE.md) for all available variables
-- Read [RESTHeart documentation](https://restheart.org/docs/) on MongoDB mounts and authentication
-- Explore the [restheart-browser](https://github.com/softinstigate/restheart-browser) project as a complete example application
+- Read [RESTHeart documentation](https://restheart.org/docs/) for advanced features (auth, WebSocket, Change Streams, GridFS)
 - Experiment with different UI frameworks (React, Vue, Alpine.js, vanilla JS)
+- Build your first application following the tutorials in this guide
 
 ---
 
@@ -1711,7 +1672,6 @@ GET /mydb/products
 - **RESTHeart Documentation**: <https://restheart.org/docs/>
 - **Pebble Template Engine**: <https://pebbletemplates.io/>
 - **HTMX Documentation**: <https://htmx.org/>
-- **Example Application**: [restheart-browser](https://github.com/softinstigate/restheart-browser) - Full-featured MongoDB browser built with Facet
 
 ### Framework Agnostic
 
