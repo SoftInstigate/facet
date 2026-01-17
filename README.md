@@ -35,6 +35,24 @@ Facet is a data-driven web framework that transforms **JSON** documents into **s
 - **[Pebble](https://pebbletemplates.io)** - Fast, lightweight template engine
 - **[GraalVM](https://www.graalvm.org)** - High-performance JDK with native image support
 
+## 📢 Stay informed about stable releases
+
+[![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
+
+Facet is currently in active development and APIs may change.
+
+If you want to be notified as soon as the project reaches a **stable release**:
+
+- Click **Watch → Custom → Releases** at the top of this repository  
+- Or follow the Releases page directly:  
+  👉 https://github.com/SoftInstigate/facet/releases
+
+We will use GitHub Releases to announce:
+
+- the first stable version (1.0.0),
+- breaking changes,
+- important new features and migration notes.
+
 ## Quick Start
 
 1. Set up RESTHeart with your MongoDB database
