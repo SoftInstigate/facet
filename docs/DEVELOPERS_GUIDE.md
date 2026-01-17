@@ -3,23 +3,80 @@
 **Version:** 1.0.0-SNAPSHOT
 **Last Updated:** 2026-01-15
 
-This guide shows you how to build custom HTML interfaces that "decorate" your REST APIs using Facet — a lightweight, convention-based server-side rendering (SSR) framework. Facet integrates well with RESTHeart but the main theme is: add HTML views on top of your existing API.
+Facet is a lightweight, convention-based server-side rendering (SSR) framework that transforms JSON documents into HTML through path-based templates. Drop a template where the path matches your resource, and you're done—no backend code needed for basic UI.
 
-**Framework Agnostic:** Facet works with any CSS framework (Bootstrap, Tailwind, Bulma, etc.) and any JavaScript framework (React, Vue, Alpine.js, vanilla JS, etc.). The examples in this guide use Bulma, Alpine.js, and HTMX for demonstration purposes, but these are not requirements.
+## What is Facet?
+
+Facet is a RESTHeart plugin that provides **hybrid API/UI from the same endpoint**—JSON for API clients, HTML for browsers. It's designed to make web developers' lives easier by eliminating the need to write backend code for common CRUD interfaces.
+
+### Core Concept
+
+**Convention over Configuration**: Your template structure mirrors your API paths. A request to `/mydb/products` automatically uses `templates/mydb/products/index.html` if the browser requests HTML.
+
+### Built On Proven Technologies
+
+Facet leverages mature, production-ready technologies:
+
+#### RESTHeart
+[RESTHeart](https://restheart.org/) is a high-performance REST API server for MongoDB, built on GraalVM for exceptional performance. It provides:
+- **MongoDB REST API**: Full CRUD operations via HTTP
+- **Authentication & Authorization**: Built-in security with role-based access control
+- **Plugin Architecture**: Extensible through Java plugins (Facet is one)
+- **WebSocket Support**: Real-time data subscriptions
+- **File Storage**: GridFS integration
+- **Change Streams**: MongoDB change notifications
+
+Facet runs as a RESTHeart plugin, intercepting responses to add HTML rendering capability.
+
+#### Pebble Templates
+[Pebble](https://pebbletemplates.io/) is a lightweight, fast template engine for Java with syntax inspired by Twig and Jinja2. It provides:
+- **Clean Syntax**: `{{ variable }}`, `{% for %}`, `{% if %}`
+- **Template Inheritance**: `{% extends "layout" %}` with `{% block %}`
+- **Built-in Filters**: `{{ name | upper }}`, `{{ date | date("yyyy-MM-dd") }}`
+- **Auto-escaping**: XSS protection by default
+- **Type Safety**: Works seamlessly with Java objects
+- **Performance**: Compiled templates with caching
+
+All templates in Facet are written in Pebble. If you know Jinja2 or Twig, you already know most of Pebble.
+
+#### GraalVM (via RESTHeart)
+[GraalVM](https://www.graalvm.org/) is a high-performance JDK that provides:
+- **Fast Startup**: Native image compilation for instant start times
+- **Low Memory Footprint**: Efficient resource usage
+- **Peak Performance**: Optimized JIT compilation
+- **Polyglot Support**: Run multiple languages in the same runtime
+
+RESTHeart can be compiled to native images with GraalVM, making Facet applications blazingly fast.
+
+### Framework Agnostic Frontend
+
+While Facet uses Pebble for server-side templates, **you can use any frontend framework** for client-side behavior:
+- **CSS**: Bootstrap, Tailwind, Bulma, Material UI, custom CSS
+- **JavaScript**: React, Vue, Alpine.js, Svelte, vanilla JS, or none at all
+- **Progressive Enhancement**: Start with server-rendered HTML, add interactivity as needed
+
+The examples in this guide use various frameworks for demonstration, but none are required.
 
 ---
 
 ## Table of Contents
 
-1. [Understanding the SSR Framework](#understanding-the-ssr-framework)
-2. [Template Structure & Conventions](#template-structure--conventions)
-3. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
-4. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
-5. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
-6. [Tutorial: Selective SSR](#tutorial-selective-ssr)
-7. [Template Context Variables](#template-context-variables)
-8. [Working with HTMX](#working-with-htmx)
-9. [Advanced Patterns](#advanced-patterns)
+1. [What is Facet?](#what-is-facet)
+   - [Core Concept](#core-concept)
+   - [Built On Proven Technologies](#built-on-proven-technologies)
+   - [Framework Agnostic Frontend](#framework-agnostic-frontend)
+2. [Understanding the SSR Framework](#understanding-the-ssr-framework)
+3. [Template Structure & Conventions](#template-structure--conventions)
+4. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
+5. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
+6. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
+7. [Tutorial: Selective SSR](#tutorial-selective-ssr)
+8. [Template Context Variables](#template-context-variables)
+9. [Working with HTMX](#working-with-htmx)
+   - [HtmxResponseHelper (Server-Side Control)](#htmxresponsehelper-server-side-control)
+   - [Handling Server-Triggered Events (Client-Side)](#handling-server-triggered-events-client-side)
+   - [Best Practices](#best-practices)
+10. [Advanced Patterns](#advanced-patterns)
 
 ---
 
@@ -173,7 +230,7 @@ HX-Target: #product-list
 
 ## Tutorial: Creating Your First Application
 
-Let's build a simple MongoDB browser application using Facet:
+Let's build a simple MongoDB data viewer application using Facet:
 
 ### Step 1: Create Your Layout
 
@@ -183,7 +240,7 @@ Let's build a simple MongoDB browser application using Facet:
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}My Custom Browser{% endblock %}</title>
+    <title>{% block title %}My Application{% endblock %}</title>
     <!-- Your CSS framework (Bootstrap, Tailwind, etc.) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     {% block head %}{% endblock %}
@@ -191,7 +248,7 @@ Let's build a simple MongoDB browser application using Facet:
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">My MongoDB Browser</a>
+            <a class="navbar-brand" href="/">My Data Viewer</a>
             {% if username %}
             <span class="text-light">{{ username }}</span>
             {% endif %}
@@ -207,13 +264,13 @@ Let's build a simple MongoDB browser application using Facet:
 </html>
 ```
 
-### Step 2: Create MongoDB Browser Template
+### Step 2: Create Database List Template
 
 ```html
 <!-- templates/index.html -->
 {% extends "layout" %}
 
-{% block title %}Database Browser{% endblock %}
+{% block title %}Databases{% endblock %}
 
 {% block main %}
 <div class="row">
@@ -384,10 +441,10 @@ templates/
 ### Result
 
 - `GET /admin/users` → Admin's React-based layout
-- `GET /mydb/products` → Browser's global layout
+- `GET /mydb/products` → Application's global layout
 - `GET /ping` → Ping's minimal layout
 
-**Each application is independent!**
+**Each area is independent!**
 
 ---
 
@@ -399,7 +456,7 @@ Perfect for services with their own branding.
 
 ```
 templates/
-├── layout.html              # Browser's global layout
+├── layout.html              # Application's global layout
 └── ping/
     ├── _layouts/
     │   └── layout.html      # Ping's minimal layout
@@ -1071,6 +1128,267 @@ HtmxResponseHelper.triggerEventAfterSwap(response, "contentUpdated");
 HtmxResponseHelper.triggerEventAfterSettle(response, "animationDone");
 ```
 
+### Handling Server-Triggered Events (Client-Side)
+
+When you use `HtmxResponseHelper.triggerEvent()` from your Java service, HTMX dispatches these as standard DOM events that you can listen to in JavaScript.
+
+#### Basic Event Handling
+
+Listen to server-triggered events using the browser's `addEventListener` API:
+
+```javascript
+// Listen to event triggered by HtmxResponseHelper.triggerEvent()
+document.addEventListener('exportComplete', (event) => {
+    console.log('Export finished!');
+
+    // event.detail contains the JSON details from server (if provided)
+    if (event.detail) {
+        console.log('Filename:', event.detail.filename);
+        console.log('Rows:', event.detail.rows);
+    }
+});
+```
+
+#### Event Detail Structure
+
+When you trigger an event with details from the server:
+
+**Server (Java):**
+```java
+var details = new JsonObject();
+details.addProperty("filename", "export.csv");
+details.addProperty("rows", 1000);
+HtmxResponseHelper.triggerEvent(response, "exportComplete", details);
+```
+
+**Client (JavaScript):**
+```javascript
+document.addEventListener('exportComplete', (event) => {
+    // event.detail is the JsonObject you sent from server
+    const { filename, rows } = event.detail;
+    console.log(`Exported ${rows} rows to ${filename}`);
+});
+```
+
+#### Complete Example: Document Deletion
+
+**Server sends event after delete:**
+```java
+public void handle(ServiceRequest<?> request, ServiceResponse<?> response) {
+    String docId = request.getPathParameter("docId");
+    String collection = request.getPathParameter("collection");
+
+    // Perform deletion
+    deleteDocument(collection, docId);
+
+    // Notify client with details
+    var details = new JsonObject();
+    details.addProperty("id", docId);
+    details.addProperty("collection", collection);
+    HtmxResponseHelper.triggerEventAfterSwap(response, "documentDeleted", details);
+
+    response.setContent("<div class='alert'>Document deleted</div>");
+}
+```
+
+**Client handles event:**
+```javascript
+document.addEventListener('documentDeleted', (event) => {
+    const { id, collection } = event.detail;
+
+    // Show notification
+    showNotification(`Deleted document ${id} from ${collection}`);
+
+    // Update UI counts
+    const countEl = document.querySelector(`[data-collection="${collection}"] .count`);
+    if (countEl) {
+        countEl.textContent = parseInt(countEl.textContent) - 1;
+    }
+
+    // Analytics tracking (optional)
+    if (window.gtag) {
+        gtag('event', 'document_deleted', {
+            collection: collection
+        });
+    }
+});
+```
+
+#### Event Timing Control
+
+Choose the right timing for your event based on when you need the client to act:
+
+```javascript
+// triggerEvent() - Fires IMMEDIATELY (before DOM swap)
+// Use when: Need to prepare UI before content changes
+document.addEventListener('beforeUpdate', (event) => {
+    console.log('About to update DOM');
+    // Disable buttons, show loading states, etc.
+});
+
+// triggerEventAfterSwap() - Fires AFTER DOM swap (most common)
+// Use when: New content is in DOM, ready to interact with
+document.addEventListener('contentUpdated', (event) => {
+    console.log('DOM updated, new elements exist');
+    // Update counters, init components, show notifications
+});
+
+// triggerEventAfterSettle() - Fires AFTER animations complete
+// Use when: Need to wait for CSS transitions/animations
+document.addEventListener('animationDone', (event) => {
+    console.log('All transitions finished');
+    // Scroll to element, focus input, etc.
+});
+```
+
+#### Multiple Event Handlers
+
+You can attach multiple handlers to the same event:
+
+```javascript
+// Handler 1: Update UI
+document.addEventListener('documentDeleted', (event) => {
+    updateDocumentList(event.detail.collection);
+});
+
+// Handler 2: Analytics
+document.addEventListener('documentDeleted', (event) => {
+    trackDeletion(event.detail.id);
+});
+
+// Handler 3: Show notification
+document.addEventListener('documentDeleted', (event) => {
+    showToast(`Deleted ${event.detail.id}`);
+});
+```
+
+All three handlers will be called when the server triggers the event.
+
+#### Organizing Event Handlers
+
+For larger applications, organize event listeners in your JavaScript:
+
+```javascript
+// Put in your main app.js or similar
+function initEventHandlers() {
+    // Document operations
+    document.addEventListener('documentCreated', handleDocumentCreated);
+    document.addEventListener('documentUpdated', handleDocumentUpdated);
+    document.addEventListener('documentDeleted', handleDocumentDeleted);
+
+    // Export operations
+    document.addEventListener('exportComplete', handleExportComplete);
+    document.addEventListener('exportFailed', handleExportFailed);
+}
+
+function handleDocumentDeleted(event) {
+    const { id, collection } = event.detail;
+    showNotification(`Deleted ${id} from ${collection}`);
+    refreshList(collection);
+}
+
+function handleExportComplete(event) {
+    const { filename, rows } = event.detail;
+    showNotification(`Exported ${rows} rows to ${filename}`);
+    downloadFile(filename);
+}
+
+// Initialize when DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEventHandlers);
+} else {
+    initEventHandlers();
+}
+```
+
+#### Optional: Reusable Event Utility
+
+For cleaner code, you can create a small utility:
+
+```javascript
+// utils/events.js (optional)
+export function onServerEvent(eventName, handler) {
+    document.addEventListener(eventName, (event) => {
+        handler(event.detail || {}, event);
+    });
+}
+
+// Usage
+import { onServerEvent } from './utils/events.js';
+
+onServerEvent('documentDeleted', (detail) => {
+    // detail is automatically extracted
+    console.log('Deleted:', detail.id);
+});
+
+onServerEvent('exportComplete', ({ filename, rows }) => {
+    console.log(`Exported ${rows} rows to ${filename}`);
+});
+```
+
+This is completely optional - plain `addEventListener` works perfectly fine. Only add this if you find yourself writing many event handlers.
+
+#### HTMX Built-in Events
+
+In addition to your custom server-triggered events, HTMX provides built-in lifecycle events you can listen to:
+
+```javascript
+// Before HTMX makes the request
+document.addEventListener('htmx:beforeRequest', (event) => {
+    console.log('About to make request:', event.detail.xhr);
+    // Show loading spinner
+});
+
+// After HTMX receives response
+document.addEventListener('htmx:afterRequest', (event) => {
+    console.log('Request complete');
+    // Hide loading spinner
+});
+
+// After content is swapped into DOM
+document.addEventListener('htmx:afterSwap', (event) => {
+    console.log('Content swapped');
+    // Reinitialize components if needed
+});
+
+// When HTMX encounters an error
+document.addEventListener('htmx:responseError', (event) => {
+    console.error('Request failed:', event.detail.xhr.status);
+    // Show error notification
+});
+```
+
+See [HTMX Events Reference](https://htmx.org/reference/#events) for complete list.
+
+#### General Client-Side Events (Without Server)
+
+You can also dispatch custom events entirely on the client side for UI coordination:
+
+```javascript
+// Dispatch custom event
+function notifyDeletion(docId) {
+    const event = new CustomEvent('documentDeleted', {
+        detail: { id: docId },
+        bubbles: true
+    });
+    document.dispatchEvent(event);
+}
+
+// Listen for it
+document.addEventListener('documentDeleted', (event) => {
+    console.log('Deleted:', event.detail.id);
+});
+
+// Trigger it
+notifyDeletion('123');
+```
+
+This is useful for:
+- Coordinating multiple UI components
+- Decoupling modules
+- Testing event handlers
+- Progressive enhancement
+
 ### Best Practices
 
 1. **Use declarative HTMX in templates** when possible (no Java needed)
@@ -1078,7 +1396,8 @@ HtmxResponseHelper.triggerEventAfterSettle(response, "animationDone");
 3. **Choose event timing carefully**: `afterSwap` for most cases, `afterSettle` for animations
 4. **Keep event names semantic**: `documentDeleted`, `exportComplete`, not `event1`
 5. **Include relevant data** in event details for client handlers
-6. **Document custom events** in template comments
+6. **Document custom events** in template comments or README
+7. **Test event handlers** by dispatching events manually in browser console
 
 ### Common Patterns
 
@@ -1270,7 +1589,7 @@ mongo-mounts:
     </p>
 {% endif %}
 
-<!-- Standard MongoDB browser UI -->
+<!-- Standard data view -->
 {% endblock %}
 ```
 
