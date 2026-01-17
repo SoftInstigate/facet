@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -16,6 +16,37 @@
     <name>Facet Core</name>
     <description>Core SSR framework</description>
 
+    <organization>
+        <name>SoftInstigate</name>
+        <url>https://softinstigate.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>mkj6</id>
+            <name>Maurizio Turatti</name>
+            <email>maurizio@softinstigate.com</email>
+            <url>https://www.linkedin.com/in/maurizioturatti/</url>
+            <organization>SoftInstigate</organization>
+            <organizationUrl>http://www.softinstigate.com</organizationUrl>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/SoftInstigate/facet/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
     <repositories>
         <repository>
             <name>Central Portal Snapshots</name>
@@ -26,6 +57,16 @@
             </releases>
             <snapshots>
                 <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
