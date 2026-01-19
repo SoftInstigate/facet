@@ -20,7 +20,7 @@
   requests-log-mode: 1
 
 /mclient:
-  connection-string: ${MONGO_URI:-mongodb://admin:secret@mongodb:27017/admin}
+  connection-string: "mongodb://mongodb"
 
 /mongo/mongo-mounts:
   - what: "*"
@@ -95,6 +95,7 @@
   enabled: true
   use-file-loader: true
   cache-active: false
+  templates-path: /opt/restheart/templates
 
 # Facet HTML interceptor - caching disabled for development
 /html-response-interceptor:
@@ -112,12 +113,12 @@
 # Redirect unauthenticated HTML requests to login
 /html-auth-redirect-interceptor:
   enabled: true
-  # login-uri is set by /login-service
+  login-uri: /login
 
 # Simple file-based users for this example
 /fileRealmAuthenticator:
   enabled: true
-  conf-file: ./users.yml
+  conf-file: /opt/restheart/etc/users.yml
 
 # Serve static assets (favicon, images, etc.)
 /static-resources:

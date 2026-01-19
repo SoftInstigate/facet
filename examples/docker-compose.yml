@@ -1,19 +1,16 @@
-# Shared Docker Compose for Facet Examples
-# Run from any example directory with: docker-compose -f ../docker-compose.yml up
+# Docker Compose for Facet Product Catalog Example
+# Run from the examples directory with: docker-compose up
 
 services:
   mongodb:
     image: mongo:8.0
     container_name: facet-examples-mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secret
-    ports:
-      - "27017:27017"
+    #ports:
+    #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
-      # Mount example-specific init script if it exists
-      - ./init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
+      # Mount product catalog init script to populate sample data
+      - ./product-catalog/init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
     networks:
       - facet-network
     healthcheck:
@@ -32,16 +29,21 @@ services:
       mongodb:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "8080:8080" # RESTHeart API HTTP port
     environment:
-      MONGO_URI: mongodb://admin:secret@mongodb:27017/admin
+      RHO: >
+        /mclient/connection-string->"mongodb://mongodb";
+        /pebble-template-processor/enabled->true;
+        /http-listener/host->"0.0.0.0";
     volumes:
-      # Mount example-specific templates (hot-reload enabled)
-      - ./templates:/opt/restheart/templates:ro
-      # Mount example-specific static assets (favicon, images, etc.)
-      - ./static:/opt/restheart/static:ro
-      # Mount example-specific configuration (overrides baked-in base config)
-      - ./restheart.yml:/opt/restheart/etc/restheart.yml:ro
+      # Mount product catalog configuration (overrides baked-in base config)
+      - ./product-catalog/restheart.yml:/opt/restheart/etc/restheart.yml:ro
+      # Mount users file for authentication
+      - ./product-catalog/users.yml:/opt/restheart/etc/users.yml:ro
+      # Mount product catalog templates (hot-reload enabled)
+      - ./product-catalog/templates:/opt/restheart/templates:ro
+      # Mount product catalog static assets (CSS, images, etc.)
+      - ./product-catalog/static:/opt/restheart/static:ro
     networks:
       - facet-network
     healthcheck:

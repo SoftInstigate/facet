@@ -17,7 +17,7 @@
   requests-log-mode: 1
 
 /mclient:
-  connection-string: ${MONGO_URI:-mongodb://admin:secret@mongodb:27017/admin}
+  connection-string: mongodb://mongodb
 
 /mongo/mongo-mounts:
   - what: "*"
