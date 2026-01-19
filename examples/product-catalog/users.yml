@@ -28,5 +28,4 @@ permissions:
     priority: 1
     mongo:
       readFilter: null
-      writeFilter: >
-        {"_$not": true}
+      writeFilter: '{"_id": {"$exists": false}}'
