@@ -37,6 +37,7 @@ Facet is a data-driven web framework that transforms **JSON** documents into **s
 
 ## 📢 Stay informed about stable releases
 
+[![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
 [![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
 
 Facet is currently in active development and APIs may change.
