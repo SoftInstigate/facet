@@ -64,7 +64,7 @@ git clone https://github.com/SoftInstigate/facet.git
 cd facet
 
 # Build the plugin
-mvn -pl core package -DskipTests
+mvn package -DskipTests
 
 # Start everything with Docker Compose
 cd examples

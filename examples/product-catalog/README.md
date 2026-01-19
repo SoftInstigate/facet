@@ -18,14 +18,14 @@ A complete example demonstrating Facet's core features through a product catalog
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Facet core plugin built: `mvn -pl core package` from repository root
+- Facet core plugin built: `mvn package` from repository root
 
 ### Running the Example
 
 1. **Build the Facet plugin** (from repository root):
    ```bash
    cd /path/to/facet
-   mvn -pl core package -DskipTests
+   mvn package -DskipTests
    ```
 
 2. **Start the example** (from the example directory):

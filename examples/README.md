@@ -14,7 +14,7 @@ This directory contains runnable examples demonstrating Facet's features. Each e
 1. **Build Facet core plugin** (from repository root):
    ```bash
    cd /path/to/facet
-   mvn -pl core package -DskipTests
+   mvn package -DskipTests
    ```
 
 2. **Navigate to an example**:
@@ -317,7 +317,7 @@ Ensure you've built the Facet core plugin:
 
 ```bash
 cd /path/to/facet
-mvn -pl core package -DskipTests
+mvn package -DskipTests
 ls -la core/target/facet-core.jar
 ```
 
