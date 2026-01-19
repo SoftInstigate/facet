@@ -25,7 +25,7 @@
 
                     <p>
                         <mark>{{ doc.data.category }}</mark>
-                        {% if doc.data.stock > 0 %}
+                        {% if doc.data.stock is not null %}
                             <ins>In Stock: {{ doc.data.stock }}</ins>
                         {% else %}
                             <del>Out of Stock</del>
