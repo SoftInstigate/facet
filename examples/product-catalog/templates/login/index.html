@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Facet Product Catalog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+    <main class="container">
+        <article style="max-width: 500px; margin: 4rem auto;">
+            <header>
+                <h1>Login</h1>
+                <p>Please sign in to access the product catalog</p>
+            </header>
+
+            <form id="loginForm">
+                <label for="username">
+                    Username
+                    <input type="text" id="username" name="username" placeholder="Enter username" required autofocus value="admin">
+                </label>
+
+                <label for="password">
+                    Password
+                    <input type="password" id="password" name="password" placeholder="Enter password" required value="secret">
+                </label>
+
+                <button type="submit">Sign In</button>
+            </form>
+
+            <script>
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+
+                    try {
+                        // Encode credentials
+                        const credentials = btoa(`${username.trim()}:${password.trim()}`);
+
+                        // Use POST /token/cookie endpoint (RESTHeart 9+ standard)
+                        const response = await fetch('/token/cookie', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Basic ${credentials}`,
+                                'No-Auth-Challenge': 'true',
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({}) // Empty body for POST
+                        });
+
+                        if (response.ok) {
+                            // Authentication successful - redirect to original page
+                            globalThis.location.href = redirect;
+                        } else {
+                            alert('Login failed. Please check your credentials.');
+                        }
+                    } catch (error) {
+                        alert('Login error: ' + error.message);
+                    }
+                });
+            </script>
+
+            <footer>
+                <small>
+                    <strong>Demo credentials:</strong> admin / secret
+                </small>
+            </footer>
+        </article>
+    </main>
+</body>
+</html>

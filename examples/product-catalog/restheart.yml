@@ -75,7 +75,6 @@
 /authCookieSetter:
   enabled: true
   name: rh_auth
-  domain: localhost
   path: /
   secure: false
   http-only: true

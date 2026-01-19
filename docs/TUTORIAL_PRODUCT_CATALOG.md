@@ -94,13 +94,14 @@ Open [examples/product-catalog/templates/shop/products/list.html](../examples/pr
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ database | capitalize }} - Products</title>
-    <link rel="stylesheet" href="/static/pico.min.css">
-    <link rel="stylesheet" href="/static/custom.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <script src="https://unpkg.com/htmx.org@2.0.8"></script>
 </head>
 ```
 
-Notice `{{ database }}` - this is a **template variable** from Facet's context.
+Notice:
+- Pico CSS is loaded from CDN for easy setup
+- `{{ database }}` is a **template variable** from Facet's context
 
 **Lines 25-29: Product iteration using context variables**
 ```html
@@ -470,22 +471,21 @@ Check [examples/product-catalog/static/](../examples/product-catalog/static/):
 
 ```
 static/
-├── pico.min.css          # Pico CSS framework
-├── custom.css            # Custom styles
 └── images/
     └── placeholder-*.svg # Product images
 ```
 
+Note: Pico CSS is loaded from CDN (https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css) for easier setup without local dependencies.
+
 ### Referenced in Templates
 
-Look at [templates/shop/products/list.html](../examples/product-catalog/templates/shop/products/list.html) **lines 7-8**:
+Look at [templates/layout.html](../examples/product-catalog/templates/layout.html) **line 9**:
 
 ```html
-<link rel="stylesheet" href="/static/pico.min.css">
-<link rel="stylesheet" href="/static/custom.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 ```
 
-And **lines 27-29** for images:
+And **lines 30-35** in the product template for images:
 
 ```html
 <img src="{{ doc.imageUrl }}" alt="{{ doc.name }}">
@@ -495,7 +495,7 @@ And **lines 27-29** for images:
 
 **Test static file serving:**
 
-1. Visit: http://localhost:8080/static/pico.min.css (see CSS)
+1. Visit: http://localhost:8080/static/images/ (see images if any are added)
 2. Visit: http://localhost:8080/static/images/placeholder-laptop.svg (see image)
 
 **Add a custom style:**
