@@ -4,7 +4,7 @@
 # Build context should be the repository root:
 #   docker build -f examples/Dockerfile -t facet:latest .
 
-FROM softinstigate/restheart:latest
+FROM softinstigate/restheart:9
 
 # Copy Facet core plugin into RESTHeart plugins directory
 COPY core/target/facet-core.jar /opt/restheart/plugins/facet-core.jar
