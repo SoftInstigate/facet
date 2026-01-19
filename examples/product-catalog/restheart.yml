@@ -37,8 +37,10 @@
         or path('/robots.txt') or path-prefix('/static')
       priority: 999
       mongo:
-        readFilter: null
-        writeFilter: { "_$not": true }
+          allowManagementRequests: false # default false
+          allowBulkPatch: false          # default false
+          allowBulkDelete: false         # default false
+          allowWriteMode: false          # default false
 
 # Disable unused services for simplicity
 /graphql:
@@ -75,12 +77,14 @@
 /authCookieSetter:
   enabled: true
   name: rh_auth
+  domain: getfacet.org  # RFC 6265 compliant: no leading dot
   path: /
-  secure: false
+  secure: false  # Must be false for HTTP (localhost development)
   http-only: true
   same-site: true
-  same-site-mode: lax
-  ttl: 15
+  same-site-mode: strict
+  ttl: 15  # Cookie expiration time in minutes (matches jwtTokenManager/ttl)
+  allow-legacy: true  # Allow legacy ?set-auth-cookie query parameter for backward compatibility
 
 /authCookieHandler:
   enabled: true
