@@ -111,6 +111,7 @@
   enabled: true
   uri: /login
   redirect-param: redirect
+  default-redirect: /shop/products  # Default redirect after login when no redirect param provided
   roles-endpoint: /roles
 
 # Redirect unauthenticated HTML requests to login

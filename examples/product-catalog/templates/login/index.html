@@ -29,12 +29,14 @@
             </form>
 
             <script>
+                // Redirect destination provided by LoginService
+                // Override root path to default application entry point
+                const redirectTo = '{{ redirect }}' === '/' ? '/shop/products' : '{{ redirect }}';
+
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const username = document.getElementById('username').value;
                     const password = document.getElementById('password').value;
-                    const urlParams = new URLSearchParams(globalThis.location.search);
-                    const redirectTo = urlParams.get('redirect') || '/shop/products';
 
                     try {
                         const credentials = btoa(`${username.trim()}:${password.trim()}`);
