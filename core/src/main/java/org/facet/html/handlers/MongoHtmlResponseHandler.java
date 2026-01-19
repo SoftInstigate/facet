@@ -589,8 +589,8 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     private static Map<String, Object> enrichSingleDocument(final BsonDocument documentBsonValue) {
         final var enrichedDoc = new HashMap<String, Object>();
 
-        // Store the full BSON document
-        enrichedDoc.put("data", documentBsonValue);
+        // Store the full BSON document as plain Java Map (unwrapped values)
+        enrichedDoc.put("data", bsonDocumentToMap(documentBsonValue));
         enrichedDoc.put("isString", false);
 
         if (documentBsonValue.containsKey("_id")) {
@@ -607,5 +607,58 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
         }
 
         return enrichedDoc;
+    }
+
+    /**
+     * Converts a BSON document to a plain Java Map, unwrapping all BSON values.
+     * This allows templates to access values directly without BSON type wrappers.
+     *
+     * @param doc the BSON document to convert
+     * @return a Map with unwrapped Java values
+     */
+    private static Map<String, Object> bsonDocumentToMap(final BsonDocument doc) {
+        final var map = new HashMap<String, Object>();
+        for (final var entry : doc.entrySet()) {
+            map.put(entry.getKey(), unwrapBsonValue(entry.getValue()));
+        }
+        return map;
+    }
+
+    /**
+     * Unwraps a BSON value to its plain Java equivalent.
+     *
+     * @param value the BSON value to unwrap
+     * @return the unwrapped Java value
+     */
+    private static Object unwrapBsonValue(final BsonValue value) {
+        if (value == null || value.isNull()) {
+            return null;
+        }
+
+        return switch (value.getBsonType()) {
+            case STRING -> value.asString().getValue();
+            case INT32 -> value.asInt32().getValue();
+            case INT64 -> value.asInt64().getValue();
+            case DOUBLE -> value.asDouble().getValue();
+            case BOOLEAN -> value.asBoolean().getValue();
+            case OBJECT_ID -> value.asObjectId().getValue().toHexString();
+            case DATE_TIME -> value.asDateTime().getValue();
+            case TIMESTAMP -> value.asTimestamp().getValue();
+            case DECIMAL128 -> value.asDecimal128().getValue().bigDecimalValue();
+            case ARRAY -> {
+                final var list = new ArrayList<>();
+                for (final var item : value.asArray()) {
+                    list.add(unwrapBsonValue(item));
+                }
+                yield list;
+            }
+            case DOCUMENT -> bsonDocumentToMap(value.asDocument());
+            case BINARY -> value.asBinary().getData();
+            case REGULAR_EXPRESSION -> value.asRegularExpression().getPattern();
+            case JAVASCRIPT -> value.asJavaScript().getCode();
+            case JAVASCRIPT_WITH_SCOPE -> value.asJavaScriptWithScope().getCode();
+            case SYMBOL -> value.asSymbol().getSymbol();
+            default -> value.toString(); // Fallback for unsupported types
+        };
     }
 }
