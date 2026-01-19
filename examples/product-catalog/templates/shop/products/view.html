@@ -23,7 +23,7 @@
                     <div class="box">
                         <h1 class="title is-2">{{ product.data.name }}</h1>
 
-                        {% if product.data.description %}
+                        {% if product.data.description is not null %}
                             <p class="subtitle is-4">{{ product.data.description }}</p>
                         {% endif %}
 
@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
 
-                                {% if product.data.tags %}
+                                {% if product.data.tags is not null and product.data.tags is not empty %}
                                     {% for tag in product.data.tags %}
                                         <div class="control">
                                             <div class="tags">
@@ -63,7 +63,7 @@
                                 {% endif %}
                             </div>
 
-                            {% if product.data.createdAt %}
+                            {% if product.data.createdAt is not null %}
                                 <p class="has-text-grey is-size-7">
                                     <span class="icon"><i class="fas fa-calendar"></i></span>
                                     Added: {{ product.data.createdAt }}
@@ -79,7 +79,7 @@
                                 <span>Back to Products</span>
                             </a>
 
-                            {% if roles and 'admin' in roles %}
+                            {% if roles is not empty and roles contains 'admin' %}
                                 <a href="{{ path }}/edit" class="button is-warning">
                                     <span class="icon"><i class="fas fa-edit"></i></span>
                                     <span>Edit Product</span>
@@ -159,7 +159,7 @@ async function deleteProduct() {
 
         if (response.ok) {
             // Redirect to product list
-            window.location.href = '{{ path | parentPath }}';
+            globalThis.location.href = '{{ path | parentPath }}';
         } else {
             alert('Error deleting product: ' + response.statusText);
         }

@@ -6,7 +6,7 @@
 <!-- Header with title and action button -->
 <hgroup>
     <h1>Products</h1>
-    {% if roles and 'admin' in roles %}
+    {% if roles is not empty and roles contains 'admin' %}
         <p><a href="{{ path }}/new" role="button">+ Add Product</a></p>
     {% endif %}
 </hgroup>
@@ -79,7 +79,7 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
 
 // Pre-populate filters from URL on page load
 window.addEventListener('DOMContentLoaded', function() {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(globalThis.location.search);
     const filterStr = params.get('filter');
 
     if (filterStr) {

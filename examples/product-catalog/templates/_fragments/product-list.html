@@ -10,14 +10,14 @@
     <div class="product-grid">
         {% for doc in items %}
             <article class="product-card">
-                {% if doc.data.imageUrl %}
+                {% if doc.data.imageUrl is not null %}
                     <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
                 {% endif %}
 
                 <footer>
                     <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
 
-                    {% if doc.data.description %}
+                    {% if doc.data.description is not null %}
                         <p><small>{{ doc.data.description }}</small></p>
                     {% endif %}
 
@@ -32,7 +32,7 @@
                         {% endif %}
                     </p>
 
-                    {% if doc.data.tags %}
+                    {% if doc.data.tags is not null and doc.data.tags is not empty %}
                         <p>
                             {% for tag in doc.data.tags %}
                                 <kbd>{{ tag }}</kbd>
@@ -43,7 +43,7 @@
                     <div role="group">
                         <a href="{{ path }}/{{ doc._id.value }}" role="button" class="secondary outline">View</a>
 
-                        {% if roles and 'admin' in roles %}
+                        {% if roles is not empty and roles contains 'admin' %}
                             <a href="{{ path }}/{{ doc._id.value }}/edit" role="button" class="outline">Edit</a>
                             <button type="button" class="secondary outline" onclick="deleteProduct('{{ doc._id.value }}')">Delete</button>
                         {% endif %}
@@ -69,14 +69,14 @@
                 {% for p in range(1, totalPages + 1) %}
                     {% if p == page %}
                         <li><strong>{{ p }}</strong></li>
-                    {% elif p == 1 or p == totalPages or (p >= page - 2 and p <= page + 2) %}
+                    {% elseif p == 1 or p == totalPages or (p >= page - 2 and p <= page + 2) %}
                         <li>
                             <a href="?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
                                hx-get="{{ path }}?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
                                hx-target="#product-list"
                                role="button" class="secondary outline">{{ p }}</a>
                         </li>
-                    {% elif p == page - 3 or p == page + 3 %}
+                    {% elseif p == page - 3 or p == page + 3 %}
                         <li>…</li>
                     {% endif %}
                 {% endfor %}
@@ -113,7 +113,7 @@ async function deleteProduct(id) {
 
         if (response.ok) {
             // Reload the product list
-            window.location.reload();
+            globalThis.location.reload();
         } else {
             alert('Error deleting product: ' + response.statusText);
         }

@@ -33,32 +33,31 @@
                     e.preventDefault();
                     const username = document.getElementById('username').value;
                     const password = document.getElementById('password').value;
-                    const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+                    const urlParams = new URLSearchParams(globalThis.location.search);
+                    const redirectTo = urlParams.get('redirect') || '/shop/products';
 
                     try {
-                        // Encode credentials
                         const credentials = btoa(`${username.trim()}:${password.trim()}`);
 
-                        // Use POST /token/cookie endpoint (RESTHeart 9+ standard)
                         const response = await fetch('/token/cookie', {
-                            method: 'POST',
+                            method: "POST",
                             headers: {
-                                'Authorization': `Basic ${credentials}`,
-                                'No-Auth-Challenge': 'true',
-                                'Content-Type': 'application/json'
+                                "Authorization": `Basic ${credentials}`,
+                                "No-Auth-Challenge": "true",
+                                "Content-Type": "application/json"
                             },
-                            credentials: 'include',
-                            body: JSON.stringify({}) // Empty body for POST
+                            credentials: "include",
+                            body: JSON.stringify({})
                         });
 
                         if (response.ok) {
-                            // Authentication successful - redirect to original page
-                            globalThis.location.href = redirect;
+                            globalThis.location.href = redirectTo;
                         } else {
-                            alert('Login failed. Please check your credentials.');
+                            alert('Invalid username or password');
                         }
                     } catch (error) {
-                        alert('Login error: ' + error.message);
+                        console.error("Login error:", error);
+                        alert('Login failed: ' + error.message);
                     }
                 });
             </script>

@@ -49,7 +49,7 @@
         <ul>
             <li><a href="/shop/products">Products</a></li>
             {% if username %}
-                <li>{{ username }}{% if roles %} <mark>{{ roles | join(', ') }}</mark>{% endif %}</li>
+                <li>{{ username }}{% if roles is not empty %} <mark>{{ roles | join(', ') }}</mark>{% endif %}</li>
                 <li><a href="/logout" role="button" class="secondary">Logout</a></li>
             {% else %}
                 <li><a href="/login" role="button">Login</a></li>
