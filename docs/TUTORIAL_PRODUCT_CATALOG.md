@@ -42,7 +42,7 @@ cd examples
 docker-compose up
 ```
 
-**Wait for services to start** (about 30 seconds), then open:
+**Wait for services to start** (few seconds), then open:
 
 👉 **http://localhost:8080/shop/products**
 
