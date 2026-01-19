@@ -56,19 +56,34 @@ We will use GitHub Releases to announce:
 
 ## Quick Start
 
-1. Set up RESTHeart with your MongoDB database
-2. Add Facet plugin to your RESTHeart configuration
-3. Create a template at `templates/yourdb/yourcollection/index.html`
-4. Access `GET /yourdb/yourcollection` with `Accept: text/html` to see server-rendered HTML
+Get started with Facet in 2 minutes using our complete product catalog example:
+
+```bash
+# Clone the repository
+git clone https://github.com/SoftInstigate/facet.git
+cd facet
+
+# Build the plugin
+mvn -pl core package -DskipTests
+
+# Start everything with Docker Compose
+cd examples
+docker-compose up
+```
+
+Open **http://localhost:8080/shop/products** to see a working product catalog with HTMX-powered sorting and pagination.
+
+**Learn by exploring:** Follow our [**Product Catalog Walkthrough**](docs/TUTORIAL_PRODUCT_CATALOG.md) to understand how it works by exploring the working code.
 
 ## Documentation
 
+- **[Product Catalog Walkthrough](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Learn Facet by exploring a complete working example
 - **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Complete reference for Facet features and capabilities
 - **[Template Context Reference](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - All available template variables
 
 ## Examples
 
-Examples coming soon.
+- **[Product Catalog](examples/product-catalog/)** - Complete e-commerce catalog with sorting, pagination, and HTMX
 
 ## License
 
