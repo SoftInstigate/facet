@@ -60,6 +60,36 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
             final TemplateProcessor templateProcessor) {
         this.mongoClient = mongoClient;
         this.templateProcessor = templateProcessor;
+
+        // Log Facet core build timestamp on first instantiation
+        logFacetCoreVersion();
+    }
+
+    /**
+     * Logs Facet core version information including build timestamp.
+     */
+    private static void logFacetCoreVersion() {
+        LOGGER.info("Facet core MongoHtmlResponseHandler loaded with BSON unwrapping support");
+
+        try {
+            final var classFile = MongoHtmlResponseHandler.class.getResource(
+                MongoHtmlResponseHandler.class.getSimpleName() + ".class");
+
+            if (classFile != null) {
+                final var connection = classFile.openConnection();
+                final var lastModified = connection.getLastModified();
+                if (lastModified > 0) {
+                    final var buildTime = new java.util.Date(lastModified);
+                    LOGGER.info("Facet core build timestamp: {}", buildTime);
+                } else {
+                    LOGGER.info("Facet core build timestamp: unable to determine (lastModified=0)");
+                }
+            } else {
+                LOGGER.info("Facet core build timestamp: unable to determine (classFile=null)");
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Could not determine Facet core build timestamp", e);
+        }
     }
 
     /**
@@ -589,8 +619,13 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     private static Map<String, Object> enrichSingleDocument(final BsonDocument documentBsonValue) {
         final var enrichedDoc = new HashMap<String, Object>();
 
-        // Store the full BSON document as plain Java Map (unwrapped values)
+        // Store unwrapped Map for field access (e.g., doc.data.name)
         enrichedDoc.put("data", bsonDocumentToMap(documentBsonValue));
+
+        // Store pre-serialized JSON string for display (e.g., doc.json)
+        final var settings = JsonWriterSettings.builder().indent(true).build();
+        enrichedDoc.put("json", documentBsonValue.toJson(settings));
+
         enrichedDoc.put("isString", false);
 
         if (documentBsonValue.containsKey("_id")) {
