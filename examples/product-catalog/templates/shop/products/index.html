@@ -3,98 +3,48 @@
 {% block title %}Products - Product Catalog{% endblock %}
 
 {% block main %}
-<section class="section">
-    <div class="container">
-        <div class="level">
-            <div class="level-left">
-                <div class="level-item">
-                    <h1 class="title">Products</h1>
-                </div>
-            </div>
-            <div class="level-right">
-                <div class="level-item">
-                    {% if roles and 'admin' in roles %}
-                        <a href="{{ path }}/new" class="button is-primary">
-                            <span class="icon"><i class="fas fa-plus"></i></span>
-                            <span>Add Product</span>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<!-- Header with title and action button -->
+<hgroup>
+    <h1>Products</h1>
+    {% if roles and 'admin' in roles %}
+        <p><a href="{{ path }}/new" role="button">+ Add Product</a></p>
+    {% endif %}
+</hgroup>
 
-        <!-- Search and Filter Form -->
-        <div class="box">
-            <form method="GET" action="{{ path }}" id="searchForm"
-                  hx-get="{{ path }}"
-                  hx-target="#product-list"
-                  hx-indicator="#loading">
+<!-- Search and Filter Form - Pico styles forms automatically -->
+<form method="GET" action="{{ path }}" id="searchForm"
+      hx-get="{{ path }}"
+      hx-target="#product-list"
+      hx-indicator="#loading">
 
-                <div class="field is-horizontal">
-                    <div class="field-body">
-                        <div class="field">
-                            <div class="control">
-                                <input class="input" type="text" id="searchText" placeholder="Search products...">
-                            </div>
-                        </div>
+    <fieldset role="group">
+        <input type="text" id="searchText" placeholder="Search products..." />
 
-                        <div class="field">
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select id="categorySelect">
-                                        <option value="">All Categories</option>
-                                        <option value="Electronics">Electronics</option>
-                                        <option value="Furniture">Furniture</option>
-                                        <option value="Appliances">Appliances</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+        <select id="categorySelect">
+            <option value="">All Categories</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Appliances">Appliances</option>
+        </select>
 
-                        <div class="field">
-                            <div class="control">
-                                <input class="input" type="number" id="maxPrice" placeholder="Max price" step="0.01">
-                            </div>
-                        </div>
+        <input type="number" id="maxPrice" placeholder="Max price" step="0.01" />
 
-                        <div class="field">
-                            <div class="control">
-                                <button type="submit" class="button is-link">
-                                    <span class="icon"><i class="fas fa-search"></i></span>
-                                    <span>Search</span>
-                                </button>
-                            </div>
-                        </div>
+        <button type="submit">Search</button>
+        <a href="{{ path }}" role="button" class="secondary">Clear</a>
+    </fieldset>
 
-                        <div class="field">
-                            <div class="control">
-                                <a href="{{ path }}" class="button is-light">
-                                    <span class="icon"><i class="fas fa-times"></i></span>
-                                    <span>Clear</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Hidden fields for MongoDB filter -->
+    <input type="hidden" name="filter" id="filterInput" />
+    <input type="hidden" name="sort" value='{"name":1}' />
+    <input type="hidden" name="page" value="1" />
 
-                <!-- Hidden field for MongoDB filter -->
-                <input type="hidden" name="filter" id="filterInput">
-                <input type="hidden" name="sort" value='{"name":1}'>
-                <input type="hidden" name="page" value="1">
-            </form>
+    <span id="loading" class="htmx-indicator" aria-busy="true">Loading...</span>
+</form>
 
-            <span id="loading" class="htmx-indicator">
-                <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span>
-                <span>Loading...</span>
-            </span>
-        </div>
-
-        <!-- Product List (replaced by HTMX on filter) -->
-        <div id="product-list">
-            {% include "_fragments/product-list" %}
-        </div>
-    </div>
-</section>
+<!-- Product List (replaced by HTMX on filter) -->
+<div id="product-list">
+    {% include "_fragments/product-list" %}
+</div>
 {% endblock %}
 
 {% block script %}

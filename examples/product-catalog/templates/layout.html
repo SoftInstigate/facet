@@ -5,102 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Product Catalog{% endblock %}</title>
 
-    <!-- Bulma CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Pico CSS (semantic, classless framework) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <!-- HTMX 2.x -->
+    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
 
     <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        /* Minimal custom CSS - let Pico handle most styling */
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator { display: inline-block; }
+
+        /* Product grid layout */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
-        .main-content {
-            flex: 1;
+
+        /* Product cards */
+        article.product-card {
+            margin: 0;
         }
-        .navbar-brand .title {
+        article.product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             margin-bottom: 0;
         }
-        .htmx-indicator {
-            display: none;
-        }
-        .htmx-request .htmx-indicator {
-            display: inline-block;
-        }
-        .htmx-request.htmx-indicator {
-            display: inline-block;
+        article.product-card footer {
+            padding: 1rem;
         }
     </style>
 
     {% block head %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item" href="/">
-                    <strong class="title is-4 has-text-white">🛍️ Product Catalog</strong>
-                </a>
-            </div>
-
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="/shop/products">
-                        <span class="icon"><i class="fas fa-box"></i></span>
-                        <span>Products</span>
-                    </a>
-                </div>
-
-                <div class="navbar-end">
-                    {% if username %}
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <span class="button is-light is-static">
-                                    <span class="icon"><i class="fas fa-user"></i></span>
-                                    <span>{{ username }}</span>
-                                    {% if roles %}
-                                        <span class="tag is-primary ml-2">{{ roles | join(', ') }}</span>
-                                    {% endif %}
-                                </span>
-                                <a class="button is-danger" href="/logout">
-                                    <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
-                                    <span>Logout</span>
-                                </a>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-primary" href="/login">
-                                    <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
-                                    <span>Login</span>
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+    <!-- Navigation - Pico styles nav ul li automatically -->
+    <nav class="container">
+        <ul>
+            <li><strong>🛍️ Product Catalog</strong></li>
+        </ul>
+        <ul>
+            <li><a href="/shop/products">Products</a></li>
+            {% if username %}
+                <li>{{ username }}{% if roles %} <mark>{{ roles | join(', ') }}</mark>{% endif %}</li>
+                <li><a href="/logout" role="button" class="secondary">Logout</a></li>
+            {% else %}
+                <li><a href="/login" role="button">Login</a></li>
+            {% endif %}
+        </ul>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
+    <!-- Main Content - Pico provides container spacing -->
+    <main class="container">
         {% block main %}{% endblock %}
-    </div>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-                <strong>Product Catalog</strong> powered by <a href="https://github.com/SoftInstigate/facet">Facet</a>
-                <br>
-                <span class="tag is-light">Example Application</span>
-            </p>
-        </div>
+    <!-- Footer - Pico provides footer styling -->
+    <footer class="container">
+        <small>
+            <strong>Product Catalog</strong> powered by <a href="https://github.com/SoftInstigate/facet">Facet</a> ·
+            Example Application
+        </small>
     </footer>
 
     {% block script %}{% endblock %}

@@ -2,124 +2,101 @@
 <!-- Product List Fragment (used for HTMX partial updates) -->
 
 {% if totalItems > 0 %}
-    <div class="notification is-info is-light">
-        Showing {{ (page - 1) * pagesize + 1 }} to {{ (page - 1) * pagesize + (items | length) }}
-        of {{ totalItems }} products
-    </div>
+    <p><small>Showing {{ (page - 1) * pagesize + 1 }} to {{ (page - 1) * pagesize + (items | length) }} of {{ totalItems }} products</small></p>
 {% endif %}
 
 {% if items is not empty %}
-    <div class="columns is-multiline">
+    <!-- Product Grid -->
+    <div class="product-grid">
         {% for doc in items %}
-            <div class="column is-one-third">
-                <div class="card">
-                    <div class="card-content">
-                        <p class="title is-5">
-                            <a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a>
-                        </p>
+            <article class="product-card">
+                {% if doc.data.imageUrl %}
+                    <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
+                {% endif %}
 
-                        {% if doc.data.description %}
-                            <p class="subtitle is-6">{{ doc.data.description }}</p>
+                <footer>
+                    <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
+
+                    {% if doc.data.description %}
+                        <p><small>{{ doc.data.description }}</small></p>
+                    {% endif %}
+
+                    <p><strong>${{ doc.data.price }}</strong></p>
+
+                    <p>
+                        <mark>{{ doc.data.category }}</mark>
+                        {% if doc.data.stock > 0 %}
+                            <ins>In Stock: {{ doc.data.stock }}</ins>
+                        {% else %}
+                            <del>Out of Stock</del>
                         {% endif %}
+                    </p>
 
-                        <div class="content">
-                            <p class="has-text-success has-text-weight-bold is-size-4">
-                                ${{ doc.data.price }}
-                            </p>
+                    {% if doc.data.tags %}
+                        <p>
+                            {% for tag in doc.data.tags %}
+                                <kbd>{{ tag }}</kbd>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
 
-                            <div class="tags">
-                                <span class="tag is-info">{{ doc.data.category }}</span>
-                                {% if doc.data.stock > 0 %}
-                                    <span class="tag is-success">In Stock: {{ doc.data.stock }}</span>
-                                {% else %}
-                                    <span class="tag is-danger">Out of Stock</span>
-                                {% endif %}
-                            </div>
-
-                            {% if doc.data.tags %}
-                                <div class="tags are-small">
-                                    {% for tag in doc.data.tags %}
-                                        <span class="tag is-light">{{ tag }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <footer class="card-footer">
-                        <a href="{{ path }}/{{ doc._id.value }}" class="card-footer-item">
-                            <span class="icon"><i class="fas fa-eye"></i></span>
-                            <span>View</span>
-                        </a>
+                    <div role="group">
+                        <a href="{{ path }}/{{ doc._id.value }}" role="button" class="secondary outline">View</a>
 
                         {% if roles and 'admin' in roles %}
-                            <a href="{{ path }}/{{ doc._id.value }}/edit" class="card-footer-item has-text-link">
-                                <span class="icon"><i class="fas fa-edit"></i></span>
-                                <span>Edit</span>
-                            </a>
-
-                            <a href="#" class="card-footer-item has-text-danger"
-                               onclick="deleteProduct('{{ doc._id.value }}'); return false;">
-                                <span class="icon"><i class="fas fa-trash"></i></span>
-                                <span>Delete</span>
-                            </a>
+                            <a href="{{ path }}/{{ doc._id.value }}/edit" role="button" class="outline">Edit</a>
+                            <button type="button" class="secondary outline" onclick="deleteProduct('{{ doc._id.value }}')">Delete</button>
                         {% endif %}
-                    </footer>
-                </div>
-            </div>
+                    </div>
+                </footer>
+            </article>
         {% endfor %}
     </div>
 
     <!-- Pagination -->
     {% if totalPages > 1 %}
-        <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
-            {% if page > 1 %}
-                <a class="pagination-previous"
-                   href="?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                   hx-get="{{ path }}?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                   hx-target="#product-list">
-                    Previous
-                </a>
-            {% else %}
-                <a class="pagination-previous" disabled>Previous</a>
-            {% endif %}
+        <nav aria-label="pagination" style="margin-top: 2rem;">
+            <ul style="display: flex; justify-content: center; gap: 0.5rem; list-style: none; padding: 0;">
+                {% if page > 1 %}
+                    <li>
+                        <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                           hx-get="{{ path }}?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                           hx-target="#product-list"
+                           role="button" class="secondary">Previous</a>
+                    </li>
+                {% endif %}
 
-            {% if page < totalPages %}
-                <a class="pagination-next"
-                   href="?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                   hx-get="{{ path }}?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                   hx-target="#product-list">
-                    Next page
-                </a>
-            {% else %}
-                <a class="pagination-next" disabled>Next page</a>
-            {% endif %}
-
-            <ul class="pagination-list">
                 {% for p in range(1, totalPages + 1) %}
                     {% if p == page %}
-                        <li><a class="pagination-link is-current" aria-label="Page {{ p }}">{{ p }}</a></li>
+                        <li><strong>{{ p }}</strong></li>
                     {% elif p == 1 or p == totalPages or (p >= page - 2 and p <= page + 2) %}
                         <li>
-                            <a class="pagination-link" aria-label="Goto page {{ p }}"
-                               href="?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                            <a href="?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
                                hx-get="{{ path }}?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                               hx-target="#product-list">
-                                {{ p }}
-                            </a>
+                               hx-target="#product-list"
+                               role="button" class="secondary outline">{{ p }}</a>
                         </li>
                     {% elif p == page - 3 or p == page + 3 %}
-                        <li><span class="pagination-ellipsis">&hellip;</span></li>
+                        <li>…</li>
                     {% endif %}
                 {% endfor %}
+
+                {% if page < totalPages %}
+                    <li>
+                        <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                           hx-get="{{ path }}?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                           hx-target="#product-list"
+                           role="button" class="secondary">Next</a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     {% endif %}
 {% else %}
-    <div class="notification is-warning">
-        <p class="title is-5">No products found</p>
+    <article>
+        <header><strong>No products found</strong></header>
         <p>Try adjusting your search criteria or <a href="{{ path }}">clear filters</a>.</p>
-    </div>
+    </article>
 {% endif %}
 
 <script>

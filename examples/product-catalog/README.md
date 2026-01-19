@@ -293,10 +293,23 @@ permissions:
 
 - **Add more features**: Shopping cart, checkout flow, reviews
 - **Explore HTMX**: Add more interactive components without JavaScript
-- **Customize styling**: Replace Bulma with your preferred CSS framework
+- **Customize styling**: Pico CSS provides semantic defaults - add custom CSS in `<style>` or create a custom theme
 - **Add validation**: Form validation and error handling
 - **Implement search**: Full-text search with MongoDB text indexes
 - **Add images**: Product images with file upload
+
+## Styling with Pico CSS
+
+This example uses [Pico CSS](https://picocss.com/) - a minimal, semantic CSS framework similar to the approach used by [FastHTML](https://fastht.ml/). Pico automatically styles semantic HTML elements without requiring class names:
+
+- Write `<nav><ul><li>` → Get a beautiful navigation bar
+- Write `<article>` → Get styled cards
+- Write `<button>` or `<a role="button">` → Get styled buttons
+- Use `<mark>`, `<ins>`, `<del>`, `<kbd>` → Get semantic highlights
+
+**Benefits**: Clean HTML, minimal custom CSS, better accessibility, smaller footprint (~10KB vs 200KB for utility frameworks).
+
+To customize: Add your own CSS in the `<style>` block or override Pico's CSS variables.
 
 ## Resources
 
@@ -306,6 +319,7 @@ permissions:
 - [RESTHeart Documentation](https://restheart.org/docs/)
 - [Pebble Templates](https://pebbletemplates.io/)
 - [HTMX Documentation](https://htmx.org/)
+- [Pico CSS Documentation](https://picocss.com/)
 
 ## Troubleshooting
 

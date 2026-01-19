@@ -23,6 +23,20 @@
   - what: "*"
     where: /
 
+# File ACL Authorizer - allows unauthenticated access to common static assets
+# This prevents browser auth popup for missing favicon, apple-touch-icon, etc.
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - roles: ['$unauthenticated']
+      predicate: >
+        path('/favicon.ico') or path-prefix('/apple-touch-icon')
+        or path('/robots.txt') or path-prefix('/static')
+      priority: 999
+      mongo:
+        readFilter: null
+        writeFilter: { "_$not": true }
+
 # Disable unused services for simplicity
 /graphql:
   enabled: false

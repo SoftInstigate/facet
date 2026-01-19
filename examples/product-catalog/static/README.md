@@ -38,10 +38,16 @@ Then reference them in templates:
 
 ## Why the Favicon?
 
-Browsers automatically request `/favicon.ico` when you visit any page. Without this file:
+Browsers automatically request `/favicon.ico` when you visit any page. Without proper handling:
 1. Request hits RESTHeart with no matching resource
-2. RESTHeart requires authentication → 401 response
-3. Browser sees `WWW-Authenticate` header → shows login popup
-4. User sees ugly browser auth dialog (not our custom login page)
+2. Without ACL rules, RESTHeart requires authentication → 401 response
+3. Browser sees `WWW-Authenticate` header → shows ugly login popup
+4. User sees browser auth dialog instead of custom login page
 
-By serving the favicon at `/favicon.ico`, we prevent this behavior.
+**How Facet handles this:**
+1. Base configuration (`shared/restheart-base.yml`) includes ACL rule allowing unauthenticated access to `/favicon.ico`, `/static/*`, etc.
+2. This prevents 401 auth challenges for static assets
+3. Missing files return 404 instead of triggering auth popup
+4. Provided files are served normally via `/static-resources`
+
+This two-layer approach ensures examples work smoothly even if static files are missing.

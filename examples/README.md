@@ -104,6 +104,7 @@ Default configuration baked into the Facet image:
 - Authentication mechanisms (JWT, cookies)
 - Development-friendly logging (debug level, full stack traces)
 - All Facet interceptors enabled
+- **ACL rule**: Allows unauthenticated access to common static assets (`/favicon.ico`, `/apple-touch-icon*`, `/robots.txt`, `/static/*`) to prevent browser auth popups
 
 Examples can override this by mounting their own `restheart.yml` file.
 
