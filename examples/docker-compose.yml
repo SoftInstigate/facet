@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Shared Docker Compose for Facet Examples
 # Run from any example directory with: docker-compose -f ../docker-compose.yml up
 
