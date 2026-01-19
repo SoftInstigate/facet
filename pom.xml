@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.facet</groupId>
@@ -22,6 +22,37 @@
         <restheart.version>9.0.0</restheart.version>
         <pebble.version>4.1.0</pebble.version>
     </properties>
+
+    <organization>
+        <name>SoftInstigate</name>
+        <url>https://softinstigate.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>mkj6</id>
+            <name>Maurizio Turatti</name>
+            <email>maurizio@softinstigate.com</email>
+            <url>https://www.linkedin.com/in/maurizioturatti/</url>
+            <organization>SoftInstigate</organization>
+            <organizationUrl>http://www.softinstigate.com</organizationUrl>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/SoftInstigate/facet/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
 
     <build>
         <plugins>

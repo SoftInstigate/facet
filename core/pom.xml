@@ -16,37 +16,6 @@
     <name>Facet Core</name>
     <description>Core SSR framework</description>
 
-    <organization>
-        <name>SoftInstigate</name>
-        <url>https://softinstigate.com</url>
-    </organization>
-
-    <licenses>
-        <license>
-            <name>Apache License version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-            <comments>A business-friendly OSS license</comments>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <id>mkj6</id>
-            <name>Maurizio Turatti</name>
-            <email>maurizio@softinstigate.com</email>
-            <url>https://www.linkedin.com/in/maurizioturatti/</url>
-            <organization>SoftInstigate</organization>
-            <organizationUrl>http://www.softinstigate.com</organizationUrl>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <url>https://github.com/SoftInstigate/facet/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
-
     <repositories>
         <repository>
             <name>Central Portal Snapshots</name>
