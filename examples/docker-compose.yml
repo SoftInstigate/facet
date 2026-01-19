@@ -1,0 +1,63 @@
+version: '3.8'
+
+# Shared Docker Compose for Facet Examples
+# Run from any example directory with: docker-compose -f ../docker-compose.yml up
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: facet-examples-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      # Mount example-specific init script if it exists
+      - ./init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
+    networks:
+      - facet-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  facet:
+    build:
+      context: ..
+      dockerfile: examples/Dockerfile
+    image: facet:latest
+    container_name: facet-examples
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: mongodb://admin:secret@mongodb:27017/admin
+    volumes:
+      # Mount example-specific templates (hot-reload enabled)
+      - ./templates:/opt/restheart/templates:ro
+      # Mount example-specific static assets (favicon, images, etc.)
+      - ./static:/opt/restheart/static:ro
+      # Mount example-specific configuration (overrides baked-in base config)
+      - ./restheart.yml:/opt/restheart/etc/restheart.yml:ro
+    networks:
+      - facet-network
+    healthcheck:
+      test: curl -f http://localhost:8080/ping || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongo-data:
+    name: facet-examples-mongo-data
+
+networks:
+  facet-network:
+    name: facet-examples-network
+    driver: bridge

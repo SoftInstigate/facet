@@ -1,0 +1,32 @@
+# User accounts for Product Catalog example
+# Password format: plain text (for development only!)
+
+users:
+  - userid: admin
+    password: secret
+    roles:
+      - admin
+
+  - userid: viewer
+    password: viewer
+    roles:
+      - viewer
+
+# Permissions (using RESTHeart ACL predicates)
+permissions:
+  # Admin can do anything
+  - role: admin
+    predicate: path-prefix[path=/]
+    priority: 0
+    mongo:
+      readFilter: null
+      writeFilter: null
+
+  # Viewer can only read
+  - role: viewer
+    predicate: path-prefix[path=/]
+    priority: 1
+    mongo:
+      readFilter: null
+      writeFilter: >
+        {"_$not": true}

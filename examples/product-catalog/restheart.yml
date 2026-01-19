@@ -1,0 +1,37 @@
+# Product Catalog Example Configuration
+# This file extends the base configuration in ../shared/restheart-base.yml
+
+/core:
+  name: facet-product-catalog
+
+/ping:
+  msg: Facet Product Catalog Example
+
+# Example uses authentication - enable login service
+/login-service:
+  enabled: true
+  uri: /login
+  redirect-param: redirect
+  roles-endpoint: /roles
+
+# Redirect unauthenticated HTML requests to login
+/html-auth-redirect-interceptor:
+  enabled: true
+  # login-uri is set by /login-service
+
+# Simple file-based users for this example
+/fileRealmAuthenticator:
+  enabled: true
+  conf-file: ./users.yml
+
+# Serve static assets (favicon, images, etc.)
+/static-resources:
+  # Serve favicon at root to prevent browser auth popup
+  # Browsers automatically request /favicon.ico regardless of <link> tags
+  - what: /opt/restheart/static/favicon.ico
+    where: /favicon.ico
+    embedded: false
+  # Serve other static assets from /static directory
+  - what: /opt/restheart/static
+    where: /static
+    embedded: false

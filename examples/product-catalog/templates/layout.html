@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Product Catalog{% endblock %}</title>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .navbar-brand .title {
+            margin-bottom: 0;
+        }
+        .htmx-indicator {
+            display: none;
+        }
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+        }
+        .htmx-request.htmx-indicator {
+            display: inline-block;
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <strong class="title is-4 has-text-white">🛍️ Product Catalog</strong>
+                </a>
+            </div>
+
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="/shop/products">
+                        <span class="icon"><i class="fas fa-box"></i></span>
+                        <span>Products</span>
+                    </a>
+                </div>
+
+                <div class="navbar-end">
+                    {% if username %}
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <span class="button is-light is-static">
+                                    <span class="icon"><i class="fas fa-user"></i></span>
+                                    <span>{{ username }}</span>
+                                    {% if roles %}
+                                        <span class="tag is-primary ml-2">{{ roles | join(', ') }}</span>
+                                    {% endif %}
+                                </span>
+                                <a class="button is-danger" href="/logout">
+                                    <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-primary" href="/login">
+                                    <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                                    <span>Login</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block main %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Product Catalog</strong> powered by <a href="https://github.com/SoftInstigate/facet">Facet</a>
+                <br>
+                <span class="tag is-light">Example Application</span>
+            </p>
+        </div>
+    </footer>
+
+    {% block script %}{% endblock %}
+</body>
+</html>
