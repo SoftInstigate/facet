@@ -269,7 +269,7 @@ For dynamic updates without page reloads:
 
 1. Add HTMX to layout:
    ```html
-   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+   <script src="https://unpkg.com/htmx.org@2.0.8"></script>
    ```
 
 2. Create fragment templates in `_fragments/`:
