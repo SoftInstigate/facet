@@ -15,7 +15,8 @@ public class CustomPebbleExtension extends AbstractExtension {
         return Map.of(
             "stripTrailingSlash", new StripTrailingSlashFilter(),
             "buildPath", new BuildPathFilter(),
-            "parentPath", new ParentPathFilter()
+            "parentPath", new ParentPathFilter(),
+            "toJson", new ToJsonFilter()
         );
     }
 }
