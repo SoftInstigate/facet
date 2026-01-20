@@ -2,6 +2,8 @@
 
 This directory contains runnable examples demonstrating Facet's features. Each example is self-contained with templates, configuration, and sample data.
 
+> ⚠️ Examples are work in progress and evolving rapidly, we are fixing them daily.
+
 ## Quick Start
 
 ### Prerequisites

@@ -20,6 +20,8 @@ Templates are opt-in. Add HTML rendering only where you need it; your REST API c
 
 ## Quick Start
 
+> ⚠️ We have not published a stable release yet, so the API is still subject to changes.
+
 ### Prerequisites
 
 Cookie authentication requires matching domains. **Add to `/etc/hosts`:**
