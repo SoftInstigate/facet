@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +13,13 @@
 
     <style>
         /* Minimal custom CSS - let Pico handle most styling */
-        .htmx-indicator { display: none; }
-        .htmx-request .htmx-indicator { display: inline-block; }
+        .htmx-indicator {
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+        }
 
         /* Product grid layout */
         .product-grid {
@@ -27,12 +33,14 @@
         article.product-card {
             margin: 0;
         }
+
         article.product-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
             margin-bottom: 0;
         }
+
         article.product-card footer {
             padding: 1rem;
         }
@@ -40,6 +48,7 @@
 
     {% block head %}{% endblock %}
 </head>
+
 <body>
     <!-- Navigation - Pico styles nav ul li automatically -->
     <nav class="container">
@@ -49,10 +58,17 @@
         <ul>
             <li><a href="/shop/products">Products</a></li>
             {% if username %}
-                <li>{{ username }}{% if roles is not empty %} <mark>{{ roles | join(', ') }}</mark>{% endif %}</li>
-                <li><a href="/logout" role="button" class="secondary">Logout</a></li>
+            <li>{{ username }}{% if roles is not empty %} <mark>{{ roles | join(', ') }}</mark>{% endif %}</li>
+            <li>
+                <button type="button" class="secondary"
+                    onclick="fetch('/logout', { method: 'POST', credentials: 'include' }).then(() => window.location.href = '/login')">Logout</button>
+            </li>
             {% else %}
-                <li><a href="/login" role="button">Login</a></li>
+            <li>
+                <form action="/login" method="get" style="display:inline;">
+                    <button type="submit" class="secondary">Login</button>
+                </form>
+            </li>
             {% endif %}
         </ul>
     </nav>
@@ -72,4 +88,5 @@
 
     {% block script %}{% endblock %}
 </body>
+
 </html>
