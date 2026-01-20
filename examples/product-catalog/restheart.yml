@@ -92,6 +92,7 @@
 /authCookieRemover:
   enabled: true
   secure: false
+  uri: /logout
 
 # Facet template engine - hot reload enabled for development
 /pebble-template-processor:
