@@ -17,19 +17,15 @@ This directory contains runnable examples demonstrating Facet's features. Each e
    mvn package -DskipTests
    ```
 
-2. **Navigate to an example**:
+2. **Navigate to an example and start it**:
    ```bash
    cd examples/product-catalog
-   ```
-
-3. **Start with Docker Compose**:
-   ```bash
-   docker-compose -f ../docker-compose.yml up --build
+   docker-compose up --build
    ```
 
    The `--build` flag builds the Facet Docker image with the plugin included. On first run, this may take a minute.
 
-4. **Access the application** (check example README for URL)
+3. **Access the application** (check example README for specific URL)
 
 ## Available Examples
 
@@ -53,12 +49,14 @@ A complete e-commerce product catalog demonstrating:
 
 ## Example Structure
 
-Each example follows this structure:
+Each example is **self-contained** with its own Docker setup:
 
 ```
 example-name/
 ├── README.md              # Example-specific documentation
-├── restheart.yml          # RESTHeart configuration (extends base)
+├── Dockerfile             # Custom RESTHeart image with Facet plugin
+├── docker-compose.yml     # MongoDB + Facet services
+├── restheart.yml          # RESTHeart configuration
 ├── users.yml              # Authentication users (if needed)
 ├── init-data.js           # MongoDB initialization script
 ├── static/                # Static assets (favicon, images, CSS, JS)
@@ -72,41 +70,43 @@ example-name/
         └── component.html
 ```
 
-## Shared Infrastructure
+Each example can be run independently from its own directory with simple `docker-compose up` commands.
 
-All examples share common infrastructure in the `examples/` directory:
+## Docker Setup
 
-### Docker Compose (`docker-compose.yml`)
+Each example includes its own Docker configuration:
 
-Provides MongoDB and Facet containers with:
-- MongoDB 7.0 with data persistence
-- Facet (built from local source with plugin included)
-- Automatic mounting of templates and configurations
+### Dockerfile
+
+Builds a custom Facet image based on `softinstigate/restheart:9` with:
+- **Facet core plugin** from `../../core/target/facet-core.jar`
+- **Plugin dependencies** from `../../core/target/lib/*.jar`
+- Development-friendly base configuration
+
+The Dockerfile references the built artifacts from the repository root, allowing each example to package the latest Facet plugin.
+
+### docker-compose.yml
+
+Defines a multi-container setup with:
+- **MongoDB 8.0** with data persistence and sample data initialization
+- **Facet/RESTHeart** built from the local Dockerfile
+- Volume mounts for configuration, templates, and static assets (enabling hot-reload)
 - Healthchecks for service readiness
+- Networking between containers
 
-### Dockerfile (`Dockerfile`)
+### Configuration Files
 
-Builds a custom Facet image based on `softinstigate/restheart:latest` with:
-- **Facet core plugin** pre-installed at `/opt/restheart/plugins/facet-core.jar`
-- **Default configuration** baked in at `/opt/restheart/etc/restheart.yml` (from `shared/restheart-base.yml`)
-- Development-friendly settings: hot-reload enabled, caching disabled, file-based template loading
+Each example's `restheart.yml` provides complete configuration including:
+- MongoDB connection settings
+- Facet plugin configuration (template processor, HTML interceptor)
+- Authentication mechanisms (JWT, cookies, file-based users)
+- Development-friendly settings: hot-reload enabled, caching disabled
+- Example-specific services and ACL rules
 
-The image is fully functional and can run standalone with just a MongoDB connection:
-```bash
-docker run -e MONGO_URI=mongodb://host:27017/admin -p 8080:8080 facet:latest
-```
-
-### Base Configuration (`shared/restheart-base.yml`)
-
-Default configuration baked into the Facet image:
-- MongoDB connection (via `MONGO_URI` environment variable)
-- Facet plugin enabled with hot-reload and no caching
-- Authentication mechanisms (JWT, cookies)
-- Development-friendly logging (debug level, full stack traces)
-- All Facet interceptors enabled
-- **ACL rule**: Allows unauthenticated access to common static assets (`/favicon.ico`, `/apple-touch-icon*`, `/robots.txt`, `/static/*`) to prevent browser auth popups
-
-Examples can override this by mounting their own `restheart.yml` file.
+This self-contained approach makes it easy to:
+- Run examples independently without shared dependencies
+- Customize Docker setup per example (different base images, plugins, etc.)
+- Package examples for distribution or deployment
 
 ## Development Workflow
 
@@ -121,33 +121,35 @@ Templates are loaded from the filesystem with caching disabled for development:
 ### Viewing Logs
 
 ```bash
-# From any example directory
+# From the example directory
 
 # Facet/RESTHeart logs
-docker-compose -f ../docker-compose.yml logs -f facet
+docker-compose logs -f facet
 
 # MongoDB logs
-docker-compose -f ../docker-compose.yml logs -f mongodb
+docker-compose logs -f mongodb
 
 # All services
-docker-compose -f ../docker-compose.yml logs -f
+docker-compose logs -f
 ```
 
 ### Stopping Services
 
 ```bash
+# From the example directory
+
 # Stop and remove containers
-docker-compose -f ../docker-compose.yml down
+docker-compose down
 
 # Also remove data volumes (reset to initial state)
-docker-compose -f ../docker-compose.yml down -v
+docker-compose down -v
 ```
 
 ### Accessing MongoDB
 
 ```bash
-# Connect to MongoDB shell
-docker exec -it facet-examples-mongo mongosh -u admin -p secret --authenticationDatabase admin
+# Connect to MongoDB shell (container name varies by example)
+docker exec -it facet-product-catalog-mongo mongosh
 
 # Run queries
 > use shop
@@ -174,33 +176,23 @@ curl -u admin:secret http://localhost:8080/shop/products
 
 To create a new example:
 
-1. **Create example directory**:
+1. **Copy the product-catalog example** as a starting point:
    ```bash
    cd examples
-   mkdir my-example
+   cp -r product-catalog my-example
    cd my-example
    ```
 
-2. **Create minimal structure**:
+2. **Update configuration files**:
+   - Edit `restheart.yml`: Change `/core/name` to `facet-my-example`
+   - Edit `docker-compose.yml`: Update container names and volume names
+   - Edit `README.md`: Document your example's features and URLs
+
+3. **Create your templates** matching your URL structure:
    ```
-   my-example/
-   ├── README.md
-   ├── restheart.yml
-   ├── init-data.js
-   └── templates/
-       └── myresource/
-           └── index.html
-   ```
-
-3. **Create `restheart.yml`** (extends base config):
-   ```yaml
-   /core:
-     name: facet-my-example
-
-   /ping:
-     msg: My Example
-
-   # Add example-specific configuration
+   templates/
+   └── myresource/
+       └── index.html
    ```
 
 4. **Create `init-data.js`** (MongoDB setup):
@@ -217,12 +209,12 @@ To create a new example:
    print('Initialization complete!');
    ```
 
-5. **Create templates** matching your URL structure
-
-6. **Run it**:
+5. **Run it**:
    ```bash
-   docker-compose -f ../docker-compose.yml up
+   docker-compose up --build
    ```
+
+The Dockerfile and docker-compose.yml from product-catalog will work for most examples with minimal changes.
 
 ## Tips and Best Practices
 
@@ -326,7 +318,7 @@ The plugin must exist at `core/target/facet-core.jar` for Docker Compose to moun
 ### Templates not updating
 
 Check that:
-1. Template caching is disabled in `shared/restheart-base.yml`:
+1. Template caching is disabled in your example's `restheart.yml`:
    ```yaml
    /pebble-template-processor:
      cache-active: false
@@ -339,8 +331,9 @@ Check that:
 To reset MongoDB data to initial state:
 
 ```bash
-docker-compose -f ../docker-compose.yml down -v
-docker-compose -f ../docker-compose.yml up
+# From the example directory
+docker-compose down -v
+docker-compose up
 ```
 
 This removes the data volume and re-runs `init-data.js`.

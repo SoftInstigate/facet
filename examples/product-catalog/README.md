@@ -28,17 +28,17 @@ A complete example demonstrating Facet's core features through a product catalog
    mvn package -DskipTests
    ```
 
-2. **Start the example** (from the example directory):
+2. **Start the example** (from the product-catalog directory):
    ```bash
    cd examples/product-catalog
-   docker-compose -f ../docker-compose.yml up --build
+   docker-compose up --build
    ```
 
    The `--build` flag ensures the Facet Docker image is built with the plugin included.
 
 3. **Wait for services to start** (watch logs for "RESTHeart started" message):
    ```bash
-   docker-compose -f ../docker-compose.yml logs -f facet
+   docker-compose logs -f facet
    ```
 
 4. **Access the application**:
@@ -87,10 +87,12 @@ templates/
 
 ### Configuration Files
 
-- `restheart.yml` - Example-specific RESTHeart configuration
-- `users.yml` - File-based user authentication and ACL rules
-- `init-data.js` - MongoDB initialization script with sample products
-- `static/` - Static assets (favicon, images, CSS, JS)
+- [restheart.yml](restheart.yml) - RESTHeart configuration with Facet settings
+- [users.yml](users.yml) - File-based user authentication and ACL rules
+- [init-data.js](init-data.js) - MongoDB initialization script with sample products
+- [static/](static/) - Static assets (favicon, images, CSS, JS)
+- [Dockerfile](Dockerfile) - Docker image with Facet plugin pre-installed
+- [docker-compose.yml](docker-compose.yml) - Multi-container setup (RESTHeart + MongoDB)
 
 ## Template Resolution Examples
 
@@ -197,10 +199,10 @@ Templates are loaded from the filesystem with caching disabled:
 
 ```bash
 # Facet/RESTHeart logs
-docker-compose -f ../docker-compose.yml logs -f facet
+docker-compose logs -f facet
 
 # MongoDB logs
-docker-compose -f ../docker-compose.yml logs -f mongodb
+docker-compose logs -f mongodb
 ```
 
 ### Testing the API
@@ -227,10 +229,10 @@ curl -X POST http://localhost:8080/shop/products \
 ### Stopping the Example
 
 ```bash
-docker-compose -f ../docker-compose.yml down
+docker-compose down
 
 # Remove data volume (reset to initial state)
-docker-compose -f ../docker-compose.yml down -v
+docker-compose down -v
 ```
 
 ## Extending the Example
@@ -331,13 +333,13 @@ lsof -i :8080
 lsof -i :27017
 
 # View detailed logs
-docker-compose -f ../docker-compose.yml logs
+docker-compose logs
 ```
 
 ### Template not found
 
 - Check template path matches URL structure
-- Ensure `templates/` directory is mounted in docker-compose.yml
+- Ensure [templates/](templates/) directory exists and is properly structured
 - Check RESTHeart logs for template resolution attempts
 
 ### Authentication issues
@@ -350,4 +352,4 @@ docker-compose -f ../docker-compose.yml logs
 
 - Check MongoDB logs: `docker-compose logs mongodb`
 - Verify init-data.js syntax
-- Manually insert data: `docker exec -it facet-examples-mongo mongosh`
+- Manually insert data: `docker exec -it facet-product-catalog-mongo mongosh`

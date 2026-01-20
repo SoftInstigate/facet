@@ -1,16 +1,16 @@
 # Docker Compose for Facet Product Catalog Example
-# Run from the examples directory with: docker-compose up
+# Run from the product-catalog directory with: docker-compose up
 
 services:
   mongodb:
     image: mongo:8.0
-    container_name: facet-examples-mongo
+    container_name: facet-product-catalog-mongo
     #ports:
     #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
       # Mount product catalog init script to populate sample data
-      - ./product-catalog/init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
+      - ./init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
     networks:
       - facet-network
     healthcheck:
@@ -21,10 +21,10 @@ services:
 
   facet:
     build:
-      context: ..
-      dockerfile: examples/Dockerfile
-    image: facet:latest
-    container_name: facet-examples
+      context: ../..
+      dockerfile: examples/product-catalog/Dockerfile
+    image: facet-product-catalog:latest
+    container_name: facet-product-catalog
     depends_on:
       mongodb:
         condition: service_healthy
@@ -36,14 +36,14 @@ services:
         /pebble-template-processor/enabled->true;
         /http-listener/host->"0.0.0.0";
     volumes:
-      # Mount product catalog configuration (overrides baked-in base config)
-      - ./product-catalog/restheart.yml:/opt/restheart/etc/restheart.yml:ro
+      # Mount product catalog configuration
+      - ./restheart.yml:/opt/restheart/etc/restheart.yml:ro
       # Mount users file for authentication
-      - ./product-catalog/users.yml:/opt/restheart/etc/users.yml:ro
+      - ./users.yml:/opt/restheart/etc/users.yml:ro
       # Mount product catalog templates (hot-reload enabled)
-      - ./product-catalog/templates:/opt/restheart/templates:ro
+      - ./templates:/opt/restheart/templates:ro
       # Mount product catalog static assets (CSS, images, etc.)
-      - ./product-catalog/static:/opt/restheart/static:ro
+      - ./static:/opt/restheart/static:ro
     networks:
       - facet-network
     healthcheck:
@@ -55,9 +55,9 @@ services:
 
 volumes:
   mongo-data:
-    name: facet-examples-mongo-data
+    name: facet-product-catalog-mongo-data
 
 networks:
   facet-network:
-    name: facet-examples-network
+    name: facet-product-catalog-network
     driver: bridge
