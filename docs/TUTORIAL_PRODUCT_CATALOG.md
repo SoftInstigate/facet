@@ -20,8 +20,9 @@ This guide walks you through a complete, working product catalog application to 
 5. [Level 4: MongoDB Query Parameters](#5-level-4-mongodb-query-parameters)
 6. [Level 5: Pagination](#6-level-5-pagination)
 7. [Level 6: HTMX Partial Updates](#7-level-6-htmx-partial-updates)
-8. [Level 7: Static Assets](#8-level-7-static-assets)
-9. [Production Considerations](#9-production-considerations)
+8. [Level 7: Authentication and JWT Cookies](#8-level-7-authentication-and-jwt-cookies)
+9. [Level 8: Static Assets](#9-level-8-static-assets)
+10. [Production Considerations](#10-production-considerations)
 
 ---
 
@@ -42,9 +43,23 @@ cd examples
 docker-compose up
 ```
 
-**Wait for services to start** (few seconds), then open:
+**Wait for services to start** (few seconds).
 
-👉 **http://localhost:8080/shop/products**
+**IMPORTANT - Set up authentication domain:**
+
+JWT cookies require an RFC 6265 compliant domain. Add this to `/etc/hosts` (on Windows: `C:\Windows\System32\drivers\etc\hosts`):
+
+```
+127.0.0.1  local.getfacet.org
+```
+
+**Note:** `getfacet.org` is just an example - you can use any domain you prefer (e.g., `myapp.local`, `facet.test`). Just ensure the domain in `/etc/hosts`, `authCookieSetter` config, and your browser URL all match.
+
+Then open:
+
+👉 **http://local.getfacet.org:8080/shop/products**
+
+**Critical:** You MUST use `local.getfacet.org` (not `localhost`) or login will fail silently. See the authentication section below for details.
 
 You should see a styled product catalog with laptops, headphones, and other electronics.
 
@@ -62,10 +77,10 @@ The same endpoint serves **both HTML and JSON**:
 
 ```bash
 # Browser request → HTML
-curl http://localhost:8080/shop/products -H "Accept: text/html"
+curl http://local.getfacet.org:8080/shop/products -H "Accept: text/html"
 
 # API request → JSON
-curl http://localhost:8080/shop/products -H "Accept: application/json"
+curl http://local.getfacet.org:8080/shop/products -H "Accept: application/json"
 ```
 
 **Key concept**: Templates are opt-in. No template = JSON API unchanged.
@@ -218,7 +233,7 @@ When you request a URL, Facet walks up the directory tree looking for templates.
 
 ### Example: Document Detail Page
 
-Visit: **http://localhost:8080/shop/products/{any-product-id}**
+Visit: **http://local.getfacet.org:8080/shop/products/{any-product-id}**
 
 Click on any product from the list to see its detail page.
 
@@ -299,9 +314,9 @@ Look at the sort links in [templates/shop/products/list.html](../examples/produc
 ```
 
 **Visit these URLs to see sorting in action:**
-- http://localhost:8080/shop/products?sort_by=name
-- http://localhost:8080/shop/products?sort_by=price
-- http://localhost:8080/shop/products?sort_by=-price (descending)
+- http://local.getfacet.org:8080/shop/products?sort_by=name
+- http://local.getfacet.org:8080/shop/products?sort_by=price
+- http://local.getfacet.org:8080/shop/products?sort_by=-price (descending)
 
 ### MongoDB Query Parameters
 
@@ -319,13 +334,13 @@ RESTHeart supports these query parameters (all available as context variables):
 
 **Test filtering via URL**:
 
-Visit: http://localhost:8080/shop/products?filter={"category":"Audio"}
+Visit: http://local.getfacet.org:8080/shop/products?filter={"category":"Audio"}
 
 Only audio products (headphones, earbuds) should appear.
 
 **Test combination**:
 
-Visit: http://localhost:8080/shop/products?filter={"price":{"$lt":100}}&sort={"price":1}
+Visit: http://local.getfacet.org:8080/shop/products?filter={"price":{"$lt":100}}&sort={"price":1}
 
 Products under $100, sorted by price ascending.
 
@@ -368,9 +383,9 @@ Look at [templates/shop/products/list.html](../examples/product-catalog/template
 
 **Test pagination**:
 
-1. **Change page size**: http://localhost:8080/shop/products?pagesize=3
+1. **Change page size**: http://local.getfacet.org:8080/shop/products?pagesize=3
 2. **Navigate pages**: Use Previous/Next links
-3. **Direct page access**: http://localhost:8080/shop/products?page=2&pagesize=5
+3. **Direct page access**: http://local.getfacet.org:8080/shop/products?page=2&pagesize=5
 
 The example has ~10 products, so you'll see multiple pages when pagesize is small.
 
@@ -443,7 +458,49 @@ Both full page and HTMX partial now show the same updated HTML.
 
 ---
 
-## 8. Level 7: Static Assets
+## 8. Level 7: Authentication and JWT Cookies
+
+### Why the Domain Setup Matters
+
+You may have noticed we're using `local.getfacet.org` instead of `localhost`. This is required for JWT cookie authentication.
+
+### The Problem with localhost
+
+According to **RFC 6265** (HTTP cookie specification), cookies set for `localhost` have inconsistent behavior and often fail silently in browsers. This causes login to appear successful but actually fail - creating an infinite redirect loop.
+
+### The Solution
+
+The domain must match in **three places**:
+
+1. **`/etc/hosts` entry:** `127.0.0.1  local.getfacet.org`
+2. **`authCookieSetter` config:** `domain: getfacet.org` (parent domain)
+3. **Browser URL:** `http://local.getfacet.org:8080`
+
+**Note:** `getfacet.org` is just an example. You can use any domain (`myapp.local`, `facet.test`, etc.) as long as all three places match.
+
+### Try It Yourself
+
+**Test the authentication flow:**
+
+1. Visit: http://local.getfacet.org:8080/login
+2. Log in as `admin` / `secret`
+3. Open DevTools → Application → Cookies
+4. Inspect the `rh_auth` cookie (domain: `.getfacet.org`)
+
+**See the failure with localhost:**
+
+1. Visit: http://localhost:8080/login
+2. Try to log in - appears to work
+3. Check DevTools → no `rh_auth` cookie appears!
+4. Infinite redirect back to login
+
+This demonstrates why the proper domain is required.
+
+**Full technical explanation:** See [Developer's Guide - JWT Cookie Authentication](DEVELOPERS_GUIDE.md#jwt-cookie-authentication-requires-proper-domain) for details on RFC 6265, alternative domains, and production setup.
+
+---
+
+## 9. Level 8: Static Assets
 
 ### Serving CSS, JS, and Images
 
@@ -495,8 +552,8 @@ And **lines 30-35** in the product template for images:
 
 **Test static file serving:**
 
-1. Visit: http://localhost:8080/static/images/ (see images if any are added)
-2. Visit: http://localhost:8080/static/images/placeholder-laptop.svg (see image)
+1. Visit: http://local.getfacet.org:8080/static/images/ (see images if any are added)
+2. Visit: http://local.getfacet.org:8080/static/images/placeholder-laptop.svg (see image)
 
 **Add a custom style:**
 
@@ -512,7 +569,7 @@ And **lines 30-35** in the product template for images:
 
 ---
 
-## 9. Production Considerations
+## 10. Production Considerations
 
 ### What Changes for Production?
 
@@ -570,7 +627,7 @@ docker-compose logs -f restheart
 ```
 
 **Health check endpoint:**
-http://localhost:8080/_ping
+http://local.getfacet.org:8080/_ping
 
 ---
 
