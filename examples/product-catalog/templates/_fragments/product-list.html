@@ -7,41 +7,42 @@
 {% endif %}
 
 {% if items is not empty %}
-<!-- Product Grid -->
-<div class="product-grid">
+<!-- Product Grid using Pico CSS grid system -->
+<div class="grid" style="--grid-min: 280px; --grid-gap: 2rem;">
     {% for doc in items %}
-    <article class="product-card">
+    <article class="product-card card-flex" style="min-width: 0;">
         {% if doc.data.imageUrl is not null %}
         <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
         {% endif %}
 
-        <footer>
-            <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
+        <footer class="card-footer-flex">
+            <div class="card-content-flex">
+                <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
 
-            {% if doc.data.description is not null %}
-            <p><small>{{ doc.data.description }}</small></p>
-            {% endif %}
-
-            <p><strong>${{ doc.data.price }}</strong></p>
-
-            <p>
-                <mark>{{ doc.data.category }}</mark>
-                {% if doc.data.stock is not null %}
-                <ins>In Stock: {{ doc.data.stock }}</ins>
-                {% else %}
-                <del>Out of Stock</del>
+                {% if doc.data.description is not null %}
+                <p><small>{{ doc.data.description }}</small></p>
                 {% endif %}
-            </p>
 
-            {% if doc.data.tags is not null and doc.data.tags is not empty %}
-            <p>
-                {% for tag in doc.data.tags %}
-                <kbd>{{ tag }}</kbd>
-                {% endfor %}
-            </p>
-            {% endif %}
+                <p><strong>${{ doc.data.price }}</strong></p>
 
-            <fieldset role="group">
+                <p>
+                    <mark>{{ doc.data.category }}</mark>
+                    {% if doc.data.stock is not null %}
+                    <ins>In Stock: {{ doc.data.stock }}</ins>
+                    {% else %}
+                    <del>Out of Stock</del>
+                    {% endif %}
+                </p>
+
+                {% if doc.data.tags is not null and doc.data.tags is not empty %}
+                <p>
+                    {% for tag in doc.data.tags %}
+                    <kbd>{{ tag }}</kbd>
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            <div class="button-group">
                 <button class="secondary outline" onclick="window.location.href='{{ path }}/{{ doc._id.value }}'"
                     onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='{{ path }}/{{ doc._id.value }}'}">
                     View
@@ -56,7 +57,7 @@
                 <button type="button" class="secondary outline"
                     onclick="deleteProduct('{{ doc._id.value }}')">Delete</button>
                 {% endif %}
-            </fieldset>
+            </div>
         </footer>
     </article>
     {% endfor %}
