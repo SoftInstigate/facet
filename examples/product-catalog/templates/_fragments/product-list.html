@@ -2,124 +2,128 @@
 <!-- Product List Fragment (used for HTMX partial updates) -->
 
 {% if totalItems > 0 %}
-    <p><small>Showing {{ (page - 1) * pagesize + 1 }} to {{ (page - 1) * pagesize + (items | length) }} of {{ totalItems }} products</small></p>
+<p><small>Showing {{ (page - 1) * pagesize + 1 }} to {{ (page - 1) * pagesize + (items | length) }} of {{ totalItems }}
+        products</small></p>
 {% endif %}
 
 {% if items is not empty %}
-    <!-- Product Grid -->
-    <div class="product-grid">
-        {% for doc in items %}
-            <article class="product-card">
-                {% if doc.data.imageUrl is not null %}
-                    <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
+<!-- Product Grid -->
+<div class="product-grid">
+    {% for doc in items %}
+    <article class="product-card">
+        {% if doc.data.imageUrl is not null %}
+        <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
+        {% endif %}
+
+        <footer>
+            <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
+
+            {% if doc.data.description is not null %}
+            <p><small>{{ doc.data.description }}</small></p>
+            {% endif %}
+
+            <p><strong>${{ doc.data.price }}</strong></p>
+
+            <p>
+                <mark>{{ doc.data.category }}</mark>
+                {% if doc.data.stock is not null %}
+                <ins>In Stock: {{ doc.data.stock }}</ins>
+                {% else %}
+                <del>Out of Stock</del>
                 {% endif %}
+            </p>
 
-                <footer>
-                    <h3><a href="{{ path }}/{{ doc._id.value }}">{{ doc.data.name }}</a></h3>
-
-                    {% if doc.data.description is not null %}
-                        <p><small>{{ doc.data.description }}</small></p>
-                    {% endif %}
-
-                    <p><strong>${{ doc.data.price }}</strong></p>
-
-                    <p>
-                        <mark>{{ doc.data.category }}</mark>
-                        {% if doc.data.stock is not null %}
-                            <ins>In Stock: {{ doc.data.stock }}</ins>
-                        {% else %}
-                            <del>Out of Stock</del>
-                        {% endif %}
-                    </p>
-
-                    {% if doc.data.tags is not null and doc.data.tags is not empty %}
-                        <p>
-                            {% for tag in doc.data.tags %}
-                                <kbd>{{ tag }}</kbd>
-                            {% endfor %}
-                        </p>
-                    {% endif %}
-
-                    <div role="group">
-                        <a href="{{ path }}/{{ doc._id.value }}" role="button" class="secondary outline">View</a>
-
-                        {% if roles is not empty and roles contains 'admin' %}
-                            <a href="{{ path }}/{{ doc._id.value }}/edit" role="button" class="outline">Edit</a>
-                            <button type="button" class="secondary outline" onclick="deleteProduct('{{ doc._id.value }}')">Delete</button>
-                        {% endif %}
-                    </div>
-                </footer>
-            </article>
-        {% endfor %}
-    </div>
-
-    <!-- Pagination -->
-    {% if totalPages > 1 %}
-        <nav aria-label="pagination" style="margin-top: 2rem;">
-            <ul style="display: flex; justify-content: center; gap: 0.5rem; list-style: none; padding: 0;">
-                {% if page > 1 %}
-                    <li>
-                        <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                           hx-get="{{ path }}?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                           hx-target="#product-list"
-                           role="button" class="secondary">Previous</a>
-                    </li>
-                {% endif %}
-
-                {% for p in range(1, totalPages + 1) %}
-                    {% if p == page %}
-                        <li><strong>{{ p }}</strong></li>
-                    {% elseif p == 1 or p == totalPages or (p >= page - 2 and p <= page + 2) %}
-                        <li>
-                            <a href="?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                               hx-get="{{ path }}?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                               hx-target="#product-list"
-                               role="button" class="secondary outline">{{ p }}</a>
-                        </li>
-                    {% elseif p == page - 3 or p == page + 3 %}
-                        <li>…</li>
-                    {% endif %}
+            {% if doc.data.tags is not null and doc.data.tags is not empty %}
+            <p>
+                {% for tag in doc.data.tags %}
+                <kbd>{{ tag }}</kbd>
                 {% endfor %}
+            </p>
+            {% endif %}
 
-                {% if page < totalPages %}
-                    <li>
-                        <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                           hx-get="{{ path }}?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
-                           hx-target="#product-list"
-                           role="button" class="secondary">Next</a>
-                    </li>
+            <fieldset role="group">
+                <button class="secondary outline" onclick="window.location.href='{{ path }}/{{ doc._id.value }}'"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='{{ path }}/{{ doc._id.value }}'}">
+                    View
+                </button>
+
+                {% if roles is not empty and roles contains 'admin' %}
+                <button type="button" class="outline"
+                    onclick="window.location.href='{{ path }}/{{ doc._id.value }}/edit'"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='{{ path }}/{{ doc._id.value }}/edit'}">
+                    Edit
+                </button>
+                <button type="button" class="secondary outline"
+                    onclick="deleteProduct('{{ doc._id.value }}')">Delete</button>
                 {% endif %}
-            </ul>
-        </nav>
-    {% endif %}
-{% else %}
-    <article>
-        <header><strong>No products found</strong></header>
-        <p>Try adjusting your search criteria or <a href="{{ path }}">clear filters</a>.</p>
+            </fieldset>
+        </footer>
     </article>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if totalPages > 1 %}
+<nav aria-label="pagination" style="margin-top: 2rem;">
+    <ul style="display: flex; justify-content: center; gap: 0.5rem; list-style: none; padding: 0;">
+        {% if page > 1 %}
+        <li>
+            <a href="?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                hx-get="{{ path }}?page={{ page - 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                hx-target="#product-list" role="button" class="secondary">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for p in range(1, totalPages + 1) %}
+        {% if p == page %}
+        <li><strong>{{ p }}</strong></li>
+        {% elseif p == 1 or p == totalPages or (p >= page - 2 and p <= page + 2) %} <li>
+            <a href="?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                hx-get="{{ path }}?page={{ p }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                hx-target="#product-list" role="button" class="secondary outline">{{ p }}</a>
+            </li>
+            {% elseif p == page - 3 or p == page + 3 %}
+            <li>…</li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page < totalPages %} <li>
+                <a href="?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                    hx-get="{{ path }}?page={{ page + 1 }}&pagesize={{ pagesize }}{% if filter %}&filter={{ filter | urlencode }}{% endif %}{% if sort %}&sort={{ sort | urlencode }}{% endif %}"
+                    hx-target="#product-list" role="button" class="secondary">Next</a>
+                </li>
+                {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% else %}
+<article>
+    <header><strong>No products found</strong></header>
+    <p>Try adjusting your search criteria or <a href="{{ path }}">clear filters</a>.</p>
+</article>
 {% endif %}
 
 <script>
-async function deleteProduct(id) {
-    if (!confirm('Are you sure you want to delete this product?')) {
-        return;
-    }
-
-    try {
-        const response = await fetch('{{ path }}/' + id, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-
-        if (response.ok) {
-            // Reload the product list
-            globalThis.location.reload();
-        } else {
-            alert('Error deleting product: ' + response.statusText);
+    async function deleteProduct(id) {
+        if (!confirm('Are you sure you want to delete this product?')) {
+            return;
         }
-    } catch (error) {
-        alert('Error: ' + error.message);
+
+        try {
+            const response = await fetch('{{ path }}/' + id, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                // Reload the product list
+                globalThis.location.reload();
+            } else {
+                alert('Error deleting product: ' + response.statusText);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
     }
-}
 </script>
 {% endparallel %}
