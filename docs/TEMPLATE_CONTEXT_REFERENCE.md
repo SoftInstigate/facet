@@ -13,6 +13,12 @@ This document provides a complete reference for all variables available in Facet
 - [Generic JSON Service Context](#generic-json-service-context)
 - [Enriched Items Structure](#enriched-items-structure)
 - [Common Patterns](#common-patterns)
+- [Custom Pebble Filters](#custom-pebble-filters)
+  - [stripTrailingSlash](#striptrailingslash)
+  - [buildPath(segment)](#buildpathsegment)
+  - [parentPath](#parentpath)
+  - [toJson](#tojson)
+  - [Filter Chaining](#filter-chaining)
 
 ---
 
@@ -402,8 +408,188 @@ The `_id.type` field helps generate correct URLs:
 
 ---
 
+## Custom Pebble Filters
+
+Facet provides custom Pebble filters for common path manipulation and data formatting tasks. These filters are registered via [CustomPebbleExtension](../core/src/main/java/org/facet/templates/pebble/CustomPebbleExtension.java).
+
+### `stripTrailingSlash`
+
+**Purpose**: Removes trailing slashes from paths while preserving the root path `/`.
+
+**Syntax**: `{{ path | stripTrailingSlash }}`
+
+**Arguments**: None
+
+**Examples**:
+```html
+{{ "/api/testdb/" | stripTrailingSlash }}  {# → "/api/testdb" #}
+{{ "/mydb" | stripTrailingSlash }}         {# → "/mydb" (unchanged) #}
+{{ "/" | stripTrailingSlash }}             {# → "/" (root preserved) #}
+```
+
+**Use Cases**:
+- Normalize paths before appending segments to avoid double slashes
+- Clean up paths for comparison or display
+- Prepare base paths for navigation URLs
+
+**Implementation**: [StripTrailingSlashFilter.java](../core/src/main/java/org/facet/templates/pebble/StripTrailingSlashFilter.java)
+
+---
+
+### `buildPath(segment)`
+
+**Purpose**: Appends a segment to a base path with proper `/` handling.
+
+**Syntax**: `{{ basePath | buildPath(segment) }}`
+
+**Arguments**:
+- `segment` (required): The path segment to append
+
+**Examples**:
+```html
+{{ "/api/testdb" | buildPath("mycoll") }}  {# → "/api/testdb/mycoll" #}
+{{ "/" | buildPath("testdb") }}            {# → "/testdb" #}
+{{ "" | buildPath("testdb") }}             {# → "/testdb" #}
+{{ mongoPath | buildPath(dbName) }}        {# Dynamic segment #}
+```
+
+**Edge Cases**:
+- Empty base path → `/segment`
+- Root base path `/` → `/segment`
+- Normal path → `basePath/segment`
+
+**Use Cases**:
+- Build navigation URLs that work with any MongoDB mount configuration
+- Construct resource paths dynamically
+- Generate links to child resources
+
+**Common Pattern**:
+```html
+{% set basePath = path | stripTrailingSlash %}
+<a href="{{ basePath | buildPath('new-resource') }}">
+    Create New Resource
+</a>
+```
+
+**Implementation**: [BuildPathFilter.java](../core/src/main/java/org/facet/templates/pebble/BuildPathFilter.java)
+
+---
+
+### `parentPath`
+
+**Purpose**: Returns the parent path by removing the last segment.
+
+**Syntax**: `{{ path | parentPath }}`
+
+**Arguments**: None
+
+**Examples**:
+```html
+{{ "/api/testdb/docs/item123" | parentPath }}  {# → "/api/testdb/docs" #}
+{{ "/testdb/docs" | parentPath }}              {# → "/testdb" #}
+{{ "/testdb" | parentPath }}                   {# → "/" #}
+{{ "/" | parentPath }}                         {# → "/" (root preserved) #}
+```
+
+**Use Cases**:
+- Navigation breadcrumbs with "back" or "up" links
+- Traversing resource hierarchies
+- Building parent resource URLs
+
+**Common Pattern**:
+```html
+<!-- "Back to Collection" link on document detail page -->
+<a href="{{ path | stripTrailingSlash | parentPath }}" role="button">
+    ← Back to {{ coll }}
+</a>
+```
+
+**Implementation**: [ParentPathFilter.java](../core/src/main/java/org/facet/templates/pebble/ParentPathFilter.java)
+
+---
+
+### `toJson`
+
+**Purpose**: Serializes objects to JSON strings with optional pretty printing.
+
+**Syntax**: `{{ object | toJson }}` or `{{ object | toJson(pretty=false) }}`
+
+**Arguments**:
+- `pretty` (optional, default: `true`): Enable pretty printing with indentation
+
+**Examples**:
+```html
+<!-- Pretty printed JSON (default) -->
+{{ doc.data | toJson }}
+{# →
+{
+  "name": "Product",
+  "price": 99.99
+}
+#}
+
+<!-- Compact JSON -->
+{{ filter | toJson(pretty=false) }}
+{# → {"category":"Electronics"} #}
+
+<!-- Use in data attributes -->
+<div data-product="{{ item.data | toJson | escape }}">...</div>
+```
+
+**Use Cases**:
+- Displaying MongoDB query filters or sort specifications
+- Debugging document structure
+- Embedding data in HTML data attributes for JavaScript
+- Generating JSON for copy/paste or API testing
+
+**Common Pattern**:
+```html
+<!-- Show current filter in search interface -->
+{% if filter %}
+<details>
+  <summary>Current Filter</summary>
+  <pre><code>{{ filter | toJson }}</code></pre>
+</details>
+{% endif %}
+
+<!-- Pass document data to JavaScript -->
+<script>
+const productData = {{ item.data | toJson | raw }};
+console.log('Product:', productData);
+</script>
+```
+
+**Implementation**: [ToJsonFilter.java](../core/src/main/java/org/facet/templates/pebble/ToJsonFilter.java)
+
+---
+
+### Filter Chaining
+
+Filters can be chained together for complex transformations:
+
+```html
+<!-- Navigate to parent collection -->
+<a href="{{ path | stripTrailingSlash | parentPath }}">Up</a>
+
+<!-- Build URL with cleaned base path -->
+{% set cleanPath = mongoPath | stripTrailingSlash %}
+<a href="{{ cleanPath | buildPath(item.value) }}">{{ item.value }}</a>
+
+<!-- Breadcrumb navigation -->
+{% set segments = path | split('/') %}
+{% set currentPath = mongoPrefix %}
+{% for segment in segments %}
+  {% if segment != '' %}
+    {% set currentPath = currentPath | buildPath(segment) %}
+    <a href="{{ currentPath }}">{{ segment }}</a>
+  {% endif %}
+{% endfor %}
+```
+
+---
+
 ## See Also
 
-- [Developer's Guide](DEVELOPERS_GUIDE.md) - Complete guide to Facet development
+- [Developer's Guide](DEVELOPERS_GUIDE.md) - Complete guide to Facet development with filter usage examples
 - [Pebble Template Documentation](https://pebbletemplates.io/) - Template syntax reference
 - [RESTHeart Documentation](https://restheart.org/docs/) - RESTHeart API reference
