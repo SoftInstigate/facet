@@ -44,6 +44,44 @@
         article.product-card footer {
             padding: 1rem;
         }
+
+        .card-flex {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-footer-flex {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            height: 100%;
+        }
+
+        .card-content-flex {
+            flex: 1 1 auto;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0 0 0;
+            padding: 0;
+            min-width: 0;
+        }
+
+        .button-group>* {
+            flex: 1 1 auto;
+            min-width: 100px;
+            margin-bottom: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
     </style>
 
     {% block head %}{% endblock %}
