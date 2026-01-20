@@ -619,13 +619,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     private static Map<String, Object> enrichSingleDocument(final BsonDocument documentBsonValue) {
         final var enrichedDoc = new HashMap<String, Object>();
 
-        // Store unwrapped Map for field access (e.g., doc.data.name)
         enrichedDoc.put("data", bsonDocumentToMap(documentBsonValue));
-
-        // Store pre-serialized JSON string for display (e.g., doc.json)
-        final var settings = JsonWriterSettings.builder().indent(true).build();
-        enrichedDoc.put("json", documentBsonValue.toJson(settings));
-
         enrichedDoc.put("isString", false);
 
         if (documentBsonValue.containsKey("_id")) {
