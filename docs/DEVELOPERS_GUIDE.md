@@ -268,13 +268,17 @@ RESTHeart includes a **default admin user** for development and testing:
 - **Username:** `admin`
 - **Password:** `secret`
 
-This user is stored in:
-- MongoDB's `/users` collection when using Docker Compose
-- RESTHeart configuration file when running standalone
-
 **⚠️ IMPORTANT: This is a development credential only. Change this password before deploying to production!**
 
-To change the admin password:
+### Authentication Methods
+
+RESTHeart supports two authentication storage approaches (both use HTTP Basic Auth for requests):
+
+**1. MongoDB-based Authentication (Default)**
+- Users stored in MongoDB `/users` collection
+- Default in Docker Compose setups
+- Dynamic user management via REST API
+- To change the admin password:
 
 ```bash
 $ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
@@ -282,9 +286,16 @@ $ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
   -d '{"password": "my-strong-password"}'
 ```
 
-All `curl` examples in this guide use `-u admin:secret` for authentication. In production, replace these with your actual credentials.
+**2. File-based Authentication (Alternative)**
+- Users defined in `restheart.yml` or external YAML file (e.g., `users.yml`)
+- Useful for simple deployments, Docker containers, or testing
+- Static configuration - requires RESTHeart restart to apply changes
+- To change the admin password: Edit the YAML file and restart RESTHeart
+- Example: See [examples/product-catalog/users.yml](../examples/product-catalog/users.yml)
 
-For comprehensive security guidance, see the [RESTHeart Security Fundamentals](https://restheart.org/docs/foundations/security-fundamentals) documentation.
+**Making requests:** All `curl` examples in this guide use `-u admin:secret` for HTTP Basic Authentication. This works with both authentication methods. In production, replace these with your actual credentials.
+
+For comprehensive security guidance including JWT authentication, ACL configuration, and best practices, see the [RESTHeart Security Fundamentals](https://restheart.org/docs/foundations/security-fundamentals) documentation.
 
 ---
 
