@@ -261,6 +261,33 @@ HX-Target: #product-list
 
 ---
 
+## Default Credentials & Security
+
+RESTHeart includes a **default admin user** for development and testing:
+
+- **Username:** `admin`
+- **Password:** `secret`
+
+This user is stored in:
+- MongoDB's `/users` collection when using Docker Compose
+- RESTHeart configuration file when running standalone
+
+**⚠️ IMPORTANT: This is a development credential only. Change this password before deploying to production!**
+
+To change the admin password:
+
+```bash
+$ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
+  -H "Content-Type: application/json" \
+  -d '{"password": "my-strong-password"}'
+```
+
+All `curl` examples in this guide use `-u admin:secret` for authentication. In production, replace these with your actual credentials.
+
+For comprehensive security guidance, see the [RESTHeart Security Fundamentals](https://restheart.org/docs/foundations/security-fundamentals) documentation.
+
+---
+
 ## Tutorial: Creating Your First Application
 
 Let's build a simple MongoDB data viewer application using Facet:
