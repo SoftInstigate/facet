@@ -225,17 +225,16 @@ The same endpoints serve JSON for API clients:
 
 ```bash
 # List products (JSON)
-curl http://localhost:8080/shop/products
+curl -u admin:secret http://localhost:8080/shop/products
 
 # Get single product
-curl http://localhost:8080/shop/products/65abc123...
+curl -u admin:secret http://localhost:8080/shop/products/65abc123...
 
 # Search with filter
-curl "http://localhost:8080/shop/products?filter=%7B%22category%22%3A%22Electronics%22%7D"
+curl -u admin:secret "http://localhost:8080/shop/products?filter=%7B%22category%22%3A%22Electronics%22%7D"
 
 # Create product (requires authentication)
-curl -X POST http://localhost:8080/shop/products \
-  -u admin:secret \
+curl -u admin:secret -X POST http://localhost:8080/shop/products \
   -H "Content-Type: application/json" \
   -d '{"name":"New Product","price":99.99,"category":"Test","stock":10}'
 ```
@@ -280,8 +279,7 @@ db.products.insertMany([
 Or use the API:
 
 ```bash
-curl -X POST http://localhost:8080/shop/products \
-  -u admin:secret \
+curl -u admin:secret -X POST http://localhost:8080/shop/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Runtime Product","price":19.99,"category":"Dynamic","stock":5}'
 ```

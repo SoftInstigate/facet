@@ -77,10 +77,10 @@ The same endpoint serves **both HTML and JSON**:
 
 ```bash
 # Browser request → HTML
-curl http://local.getfacet.org:8080/shop/products -H "Accept: text/html"
+curl -u admin:secret http://local.getfacet.org:8080/shop/products -H "Accept: text/html"
 
 # API request → JSON
-curl http://local.getfacet.org:8080/shop/products -H "Accept: application/json"
+curl -u admin:secret http://local.getfacet.org:8080/shop/products -H "Accept: application/json"
 ```
 
 **Key concept**: Templates are opt-in. No template = JSON API unchanged.

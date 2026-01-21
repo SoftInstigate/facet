@@ -650,11 +650,11 @@ Clients control the response format via `Accept` header:
 
 ```bash
 # Request HTML (browser default)
-curl -H "Accept: text/html" http://localhost:8080/mydb/products
+curl -u admin:secret -H "Accept: text/html" http://localhost:8080/mydb/products
 → HTML (if template exists)
 
 # Request JSON explicitly
-curl -H "Accept: application/json" http://localhost:8080/mydb/products
+curl -u admin:secret -H "Accept: application/json" http://localhost:8080/mydb/products
 → JSON (always available)
 ```
 
