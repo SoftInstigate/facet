@@ -71,8 +71,16 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
     // Build MongoDB filter
     let filter = {};
 
+    function escapeForRegex(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     if (searchText) {
-        filter.$text = { $search: searchText };
+        var re = escapeForRegex(searchText);
+        filter.$or = [
+            { name: { $regex: re, $options: "i" } },
+            { description: { $regex: re, $options: "i" } }
+        ];
     }
 
     if (category) {
@@ -100,6 +108,13 @@ window.addEventListener('DOMContentLoaded', function() {
 
             if (filter.$text && filter.$text.$search) {
                 document.getElementById('searchText').value = filter.$text.$search;
+            } else if (filter.$or && Array.isArray(filter.$or) && filter.$or.length > 0) {
+                var first = filter.$or[0];
+                if (first.name && first.name.$regex) {
+                    document.getElementById('searchText').value = first.name.$regex;
+                } else if (first.description && first.description.$regex) {
+                    document.getElementById('searchText').value = first.description.$regex;
+                }
             }
 
             if (filter.category) {
