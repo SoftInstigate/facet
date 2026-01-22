@@ -1,14 +1,24 @@
 <!doctype html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - Facet Product Catalog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        /* Minimal custom CSS - let Pico handle most styling */
+        :root {
+            --pico-form-element-spacing-vertical: 0.35rem;
+            --pico-form-element-spacing-horizontal: 0.75rem;
+            --pico-font-size: 1rem;
+        }
+    </style>
 </head>
+
 <body>
     <main class="container">
-        <article style="max-width: 500px; margin: 4rem auto;">
+        <article style="max-width: 400px; margin: 4rem auto;">
             <header>
                 <h1>Login</h1>
                 <p>Please sign in to access the product catalog</p>
@@ -17,12 +27,14 @@
             <form id="loginForm">
                 <label for="username">
                     Username
-                    <input type="text" id="username" name="username" placeholder="Enter username" required autofocus value="admin">
+                    <input type="text" id="username" name="username" placeholder="Enter username" required autofocus
+                        value="admin">
                 </label>
 
                 <label for="password">
                     Password
-                    <input type="password" id="password" name="password" placeholder="Enter password" required value="secret">
+                    <input type="password" id="password" name="password" placeholder="Enter password" required
+                        value="secret">
                 </label>
 
                 <button type="submit">Sign In</button>
@@ -72,4 +84,5 @@
         </article>
     </main>
 </body>
+
 </html>
