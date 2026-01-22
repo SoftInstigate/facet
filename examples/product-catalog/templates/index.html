@@ -1,0 +1,23 @@
+{% extends "layout" %}
+
+{% block title %}Welcome — Product Catalog{% endblock %}
+
+{% block main %}
+<h1>Welcome to the Product Catalog example</h1>
+
+<p>This example demonstrates Facet: server-side rendering for RESTHeart with Pebble templates and HTMX fragments.</p>
+
+<section>
+  <h2>Explore</h2>
+  <ul>
+    <li><a href="/shop/products">Browse products</a></li>
+    <li><a href="/login">Login</a> (demo credentials in the example `users.yml`)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Notes</h2>
+  <p>The root path is now served by this template to avoid the JSON list of Mongo databases.</p>
+</section>
+
+{% endblock %}
