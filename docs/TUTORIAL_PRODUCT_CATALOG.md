@@ -39,7 +39,7 @@ cd facet
 mvn package -DskipTests
 
 # Start everything with Docker Compose
-cd examples
+cd examples/product-catalog
 docker-compose up
 ```
 
