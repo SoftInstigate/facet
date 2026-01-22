@@ -1713,7 +1713,7 @@ GET /mydb/products
 
 ### Framework Agnostic
 
-Facet works with any CSS framework (Bootstrap, Tailwind, Bulma, Material UI, etc.) and any JavaScript framework (React, Vue, Alpine.js, Svelte, vanilla JS, etc.). The examples in this guide use Bootstrap and Alpine.js for demonstration, but these are not requirements - choose the tools that fit your project.
+Facet works with any CSS framework (Bootstrap, Tailwind, Bulma, Pico CSS, Material UI, etc.) and any JavaScript framework (React, Vue, Alpine.js, Svelte, vanilla JS, etc.). The product catalog example (`examples/product-catalog`) uses Pico CSS v2, a semantic classless framework. Choose the tools that fit your project.
 
 ---
 
