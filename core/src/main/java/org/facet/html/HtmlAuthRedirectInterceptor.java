@@ -134,6 +134,11 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
         response.getExchange().setStatusCode(StatusCodes.FOUND);
         response.getExchange().getResponseHeaders().put(Headers.LOCATION, loginUri + "?redirect=" + path);
 
+        // Clear expired/invalid auth cookie to prevent infinite redirect loop
+        // This ensures the browser doesn't keep sending an expired JWT token
+        response.getExchange().getResponseHeaders().put(Headers.SET_COOKIE,
+            "rh_auth=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax");
+
         // Set content type to prevent any body processing
         response.setContentTypeAsJson();
     }
