@@ -83,7 +83,9 @@
   secure: false  # Must be false for HTTP (localhost development)
   http-only: true
   same-site: true
-  same-site-mode: strict
+  # Use Lax to allow cookie on top-level navigations after JS login POST
+  # Strict can block cookies in some POST/fetch+redirect flows in browsers.
+  same-site-mode: lax
   ttl: 15  # Cookie expiration time in minutes (matches jwtTokenManager/ttl)
   allow-legacy: true  # Allow legacy ?set-auth-cookie query parameter for backward compatibility
 
