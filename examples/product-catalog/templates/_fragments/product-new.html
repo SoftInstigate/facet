@@ -1,0 +1,110 @@
+<article>
+    <header>
+        <h2>Create New Product</h2>
+    </header>
+
+    <form id="productNewForm">
+        <label>
+            Name
+            <input type="text" name="name" required>
+        </label>
+
+        <label>
+            Description
+            <textarea name="description" rows="3"></textarea>
+        </label>
+
+        <div class="grid">
+            <label>
+                Price ($)
+                <input type="number" name="price" step="0.01" required>
+            </label>
+
+            <label>
+                Stock
+                <input type="number" name="stock" required>
+            </label>
+        </div>
+
+        <label>
+            Category
+            <select name="category" required>
+                <option value="">Select a category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Appliances">Appliances</option>
+            </select>
+        </label>
+
+        <label>
+            Tags (comma-separated)
+            <input type="text" name="tags" placeholder="e.g., premium, bestseller">
+            <small>Separate tags with commas</small>
+        </label>
+
+        <div class="grid">
+            <button type="submit">Create Product</button>
+            <button type="button" class="secondary" onclick="cancelNew()">Cancel</button>
+        </div>
+    </form>
+
+    <div id="newFormMessage" style="display: none; margin-top: 1rem;"></div>
+</article>
+
+<script>
+// Submit form via POST request
+document.getElementById('productNewForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    // Convert form data to JSON
+    const data = {
+        name: formData.get('name'),
+        description: formData.get('description') || null,
+        price: parseFloat(formData.get('price')),
+        stock: parseInt(formData.get('stock')),
+        category: formData.get('category'),
+        tags: formData.get('tags')
+            ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t)
+            : []
+    };
+
+    const messageDiv = document.getElementById('newFormMessage');
+
+    try {
+        const response = await fetch('{{ path }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            messageDiv.innerHTML = '<mark>Product created successfully!</mark>';
+            messageDiv.style.display = 'block';
+
+            // Reload the page after a short delay to show the new product in the list
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            const errorText = await response.text();
+            messageDiv.innerHTML = '<mark class="error">Error creating product: ' + (errorText || response.statusText) + '</mark>';
+            messageDiv.style.display = 'block';
+        }
+    } catch (error) {
+        messageDiv.innerHTML = '<mark class="error">Error: ' + error.message + '</mark>';
+        messageDiv.style.display = 'block';
+    }
+});
+
+function cancelNew() {
+    // Hide the new product form and show the product list
+    document.getElementById('product-new').style.display = 'none';
+    document.getElementById('product-list-container').style.display = 'block';
+}
+</script>

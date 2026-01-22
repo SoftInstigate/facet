@@ -3,48 +3,60 @@
 {% block title %}Products - Product Catalog{% endblock %}
 
 {% block main %}
-<!-- Header with title and action button -->
-<hgroup>
-    <h1>Products</h1>
-    {% if roles is not empty and roles contains 'admin' %}
-        <p><a href="{{ path }}/new" role="button">+ Add Product</a></p>
-    {% endif %}
-</hgroup>
+<div id="product-list-container">
+    <!-- Header with title and action button -->
+    <hgroup>
+        <h1>Products</h1>
+        {% if roles is not empty and roles contains 'admin' %}
+            <p>
+                <button hx-get="{{ path }}"
+                        hx-target="#product-new"
+                        hx-swap="innerHTML"
+                        onclick="document.getElementById('product-list-container').style.display='none'; document.getElementById('product-new').style.display='block';">
+                    + Add Product
+                </button>
+            </p>
+        {% endif %}
+    </hgroup>
 
-<!-- Search and Filter Form - Pico styles forms automatically -->
-<form method="GET" action="{{ path }}" id="searchForm"
-      hx-get="{{ path }}"
-      hx-target="#product-list"
-      hx-indicator="#loading">
+    <!-- Search and Filter Form - Pico styles forms automatically -->
+    <form method="GET" action="{{ path }}" id="searchForm"
+          hx-get="{{ path }}"
+          hx-target="#product-list"
+          hx-indicator="#loading">
 
-    <fieldset role="group">
-        <input type="text" id="searchText" placeholder="Search products..." />
+        <fieldset role="group">
+            <input type="text" id="searchText" placeholder="Search products..." />
 
-        <select id="categorySelect">
-            <option value="">All Categories</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Furniture">Furniture</option>
-            <option value="Appliances">Appliances</option>
-        </select>
+            <select id="categorySelect">
+                <option value="">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Appliances">Appliances</option>
+            </select>
 
-        <input type="number" id="maxPrice" placeholder="Max price" step="0.01" />
+            <input type="number" id="maxPrice" placeholder="Max price" step="0.01" />
 
-        <button type="submit">Search</button>
-        <a href="{{ path }}" role="button" class="secondary">Clear</a>
-    </fieldset>
+            <button type="submit">Search</button>
+            <a href="{{ path }}" role="button" class="secondary">Clear</a>
+        </fieldset>
 
-    <!-- Hidden fields for MongoDB filter -->
-    <input type="hidden" name="filter" id="filterInput" />
-    <input type="hidden" name="sort" value='{"name":1}' />
-    <input type="hidden" name="page" value="1" />
+        <!-- Hidden fields for MongoDB filter -->
+        <input type="hidden" name="filter" id="filterInput" />
+        <input type="hidden" name="sort" value='{"name":1}' />
+        <input type="hidden" name="page" value="1" />
 
-    <span id="loading" class="htmx-indicator" aria-busy="true">Loading...</span>
-</form>
+        <span id="loading" class="htmx-indicator" aria-busy="true">Loading...</span>
+    </form>
 
-<!-- Product List (replaced by HTMX on filter) -->
-<div id="product-list">
-    {% include "_fragments/product-list" %}
+    <!-- Product List (replaced by HTMX on filter) -->
+    <div id="product-list">
+        {% include "_fragments/product-list" %}
+    </div>
 </div>
+
+<!-- New Product Form Container (hidden by default) -->
+<div id="product-new" style="display: none;"></div>
 {% endblock %}
 
 {% block script %}
