@@ -1,5 +1,62 @@
 Purpose
 -------
+This file gives an AI coding agent the minimal, actionable knowledge to be productive in Facet: the architecture, where to change behaviour, build/run commands, and project-specific conventions.
+
+High-level overview
+-------------------
+- Facet is an SSR layer for RESTHeart that renders Mongo/JSON into full HTML pages or HTMX fragments.
+- Core code is under `core/src/main/java/org/facet` (interceptors, resolver, template processor, HTMX helpers).
+
+Key files to read first
+----------------------
+- `core/src/main/java/org/facet/html/HtmlResponseInterceptor.java`: main plugin entrypoint, HTMX handling and response selection.
+- `core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java`: error rendering and fallback HTML.
+- `core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java`: path-based lookup, action-aware resolution (`list`/`view`/`index`).
+- `core/src/main/java/org/facet/templates/TemplateProcessor.java`: template engine contract (provider `pebble-template-processor`).
+- `core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java`: ETag/caching logic and development toggle.
+
+Developer workflows (practical)
+------------------------------
+- Build full repo: `mvn -DskipTests package` (repo root).
+- Build core only: `mvn -pl core package`.
+- Required JDK: project targets Java 25 (check top-level POM). Verify local JDK compatibility before building.
+- Examples: `examples/product-catalog` builds a Docker image that mounts `core/target/facet-core.jar` and `core/target/lib/*.jar`.
+
+Project-specific conventions
+--------------------------
+- Templates are resolved without `.html`; Pebble adds extensions at render time.
+- Template lookup is hierarchical for full pages; HTMX fragments live under `_fragments/` and are searched locally then globally.
+- HTMX strict-mode: when `HX-Target` is present, missing fragments cause a 500 for HTMX requests (see `HtmlResponseInterceptor`).
+- Action-aware resolution: `list` used for collections, `view` for documents, fallback to `index`.
+- Caching: ETag derived from rendered HTML `hashCode()`; `HtmlResponseHelper.setCachingHeaders` returns whether to send 304. Dev mode can disable caching via the interceptor config.
+
+Runtime/integration notes
+-------------------------
+- RESTHeart integration: plugins use RESTHeart types and `@RegisterPlugin` to register interceptors.
+- Template provider name: `pebble-template-processor` (see `core/src/main/java/org/facet/templates/pebble`).
+- Mongo client is injected as `mclient` into runtime components; code often inspects `MongoRequest`/`ResolvedContext` for canonical paths.
+
+Recommended first actions for an AI agent
+---------------------------------------
+- Grep for `pebble-template-processor`, `mclient`, and `@RegisterPlugin` to map runtime wiring.
+- Read `PathBasedTemplateResolver` to understand lookup and fallback semantics.
+- Inspect `HtmlResponseInterceptor` to see when HTML vs JSON is chosen and how HTMX is treated.
+
+Quick examples (copy/paste)
+--------------------------
+Build and run the product-catalog example:
+```bash
+mvn -DskipTests package
+cd examples/product-catalog
+docker-compose up --build
+```
+Resolve fragment `product-list` for `/shop/products`:
+- `templates/shop/products/_fragments/product-list.html`
+- fallback `templates/_fragments/product-list.html`
+
+If you want, I can add a short checklist of common edits (e.g., how to change template lookup, how to toggle caching, or how to add a template context value). Tell me which to include.
+Purpose
+-------
 This repository contains Facet, a small server-side rendering (SSR) framework extracted for use with RESTHeart. The goal of this file is to give an AI coding agent the minimal, actionable knowledge it needs to be productive: architecture, build/test feedback loop, important conventions, and concrete examples from the codebase.
 
 **Big picture**
