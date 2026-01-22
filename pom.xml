@@ -19,7 +19,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <restheart.version>9.0.0</restheart.version>
+        <restheart.version>9.1.0</restheart.version>
         <pebble.version>4.1.0</pebble.version>
     </properties>
 
