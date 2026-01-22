@@ -77,17 +77,8 @@
 /authCookieSetter:
   enabled: true
   name: rh_auth
-  # IMPORTANT: JWT cookies require RFC 6265 compliant domain (NOT "localhost")
-  # Using "localhost" causes silent authentication failures across browsers
-  #
-  # THE DOMAIN MUST MATCH IN THREE PLACES:
-  # 1. /etc/hosts: "127.0.0.1  local.getfacet.org" (Windows: C:\Windows\System32\drivers\etc\hosts)
-  # 2. This config: domain: getfacet.org (parent domain, no subdomain)
-  # 3. Browser URL: http://local.getfacet.org:8080 (not http://localhost:8080)
-  #
-  # NOTE: "getfacet.org" is just an example - you can use any domain (e.g., myapp.local, facet.test)
-  # as long as all three places match. See docs/DEVELOPERS_GUIDE.md for details.
-  domain: getfacet.org  # RFC 6265 compliant: no leading dot, parent domain only
+  # Uncomment and set your domain for production use
+  #domain: getfacet.org  # RFC 6265 compliant: no leading dot, parent domain only
   path: /
   secure: false  # Must be false for HTTP (localhost development)
   http-only: true

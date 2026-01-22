@@ -41,22 +41,12 @@ A complete example demonstrating Facet's core features through a product catalog
    docker-compose logs -f facet
    ```
 
-4. **Configure local domain for JWT authentication** (required for login to work):
+4. **Access the application**:
+   - Product Catalog: http://localhost:8080/shop/products
+   - Facet API: http://localhost:8080/shop/products (with `Accept: application/json`)
+   - Ping endpoint: http://localhost:8080/ping
 
-   JWT cookies require an RFC 6265 compliant domain (cannot use `localhost`). Add this line to `/etc/hosts`:
-
-   ```
-   127.0.0.1  local.getfacet.org
-   ```
-
-   On Windows, edit `C:\Windows\System32\drivers\etc\hosts` instead.
-
-5. **Access the application**:
-   - Product Catalog: http://local.getfacet.org:8080/shop/products
-   - Facet API: http://local.getfacet.org:8080/shop/products (with `Accept: application/json`)
-   - Ping endpoint: http://local.getfacet.org:8080/ping
-
-   **Important:** You MUST use `local.getfacet.org` (not `localhost`) for authentication to work. See the [Authentication Setup](#authentication-setup) section for details.
+   **Important:** You MUST use `localhost` (not `localhost`) for authentication to work. See the [Authentication Setup](#authentication-setup) section for details.
 
 ### User Accounts
 
@@ -67,9 +57,7 @@ The example includes two pre-configured users:
 | `admin`  | `secret` | admin   | Full access (CRUD)         |
 | `viewer` | `viewer` | viewer  | Read-only access           |
 
-**Login URL**: http://local.getfacet.org:8080/login
-
-> **Why not localhost?** JWT cookies require an RFC 6265 compliant domain. Using `localhost` will cause login to silently fail. See [Authentication Setup](#authentication-setup) for details.
+**Login URL**: http://localhost:8080/login
 
 ## What's Included
 
@@ -335,48 +323,7 @@ To customize: Add your own CSS in the `<style>` block or override Pico's CSS var
 - [HTMX Documentation](https://htmx.org/)
 - [Pico CSS Documentation](https://picocss.com/)
 
-## Authentication Setup
-
-### Quick Setup
-
-JWT authentication requires a proper domain (not `localhost`). Add this to `/etc/hosts`:
-
-**macOS/Linux:**
-```bash
-echo "127.0.0.1  local.getfacet.org" | sudo tee -a /etc/hosts
-```
-
-**Windows (as Administrator):**
-```
-echo 127.0.0.1  local.getfacet.org >> C:\Windows\System32\drivers\etc\hosts
-```
-
-Then access the app at **http://local.getfacet.org:8080** (not `localhost`).
-
-### Why This Is Required
-
-Using `localhost` causes JWT cookies to fail silently due to RFC 6265 restrictions. The domain must match in three places:
-1. `/etc/hosts` entry (e.g., `local.getfacet.org`)
-2. `authCookieSetter` domain in [restheart.yml](restheart.yml) (e.g., `getfacet.org`)
-3. Browser URL (e.g., `http://local.getfacet.org:8080`)
-
-**Note:** `getfacet.org` is just an example. You can use any domain (`myapp.local`, `facet.test`, etc.) as long as all three places match.
-
-**Full details:** See [Developer's Guide - JWT Cookie Authentication](../../docs/DEVELOPERS_GUIDE.md#jwt-cookie-authentication-requires-proper-domain)
-
 ## Troubleshooting
-
-### Login doesn't work / infinite redirect
-
-**Symptom:** Clicking login redirects you back to the login page, or you can't stay logged in.
-
-**Cause:** You're accessing the app via `localhost` instead of the configured domain.
-
-**Solution:**
-1. Verify `/etc/hosts` contains `127.0.0.1  local.getfacet.org`
-2. Access the app via http://local.getfacet.org:8080 (not `localhost`)
-3. Clear browser cookies for `localhost` and `local.getfacet.org`
-4. Try logging in again
 
 ### Services won't start
 
@@ -394,41 +341,3 @@ docker-compose logs
 - Check template path matches URL structure
 - Ensure [templates/](templates/) directory exists and is properly structured
 - Check RESTHeart logs for template resolution attempts
-
-### Authentication issues
-
-**If login doesn't work, check these in order:**
-
-1. **Are you using the correct domain?**
-   - ✅ Use: http://local.getfacet.org:8080/login
-   - ❌ Not: http://localhost:8080/login
-   - See [Authentication Setup](#authentication-setup) for why this matters
-
-2. **Is your hosts file configured?**
-   ```bash
-   # macOS/Linux
-   cat /etc/hosts | grep getfacet
-
-   # Should show: 127.0.0.1  local.getfacet.org
-   ```
-
-3. **Clear browser cookies:**
-   - Open browser DevTools → Application → Cookies
-   - Delete all cookies for `localhost` and `local.getfacet.org`
-   - Try logging in again
-
-4. **Verify users.yml syntax:**
-   - Check [users.yml](users.yml) for typos
-   - Ensure proper YAML indentation
-
-5. **Test authentication with curl:**
-   ```bash
-   # This should work (basic auth)
-   curl -u admin:secret http://local.getfacet.org:8080/shop/products
-   ```
-
-### Data not loading
-
-- Check MongoDB logs: `docker-compose logs mongodb`
-- Verify init-data.js syntax
-- Manually insert data: `docker exec -it facet-product-catalog-mongo mongosh`

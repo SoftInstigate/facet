@@ -22,20 +22,6 @@ Templates are opt-in. Add HTML rendering only where you need it; your REST API c
 
 > ⚠️ We have not published a stable release yet, so the API is still subject to changes.
 
-### Prerequisites
-
-Cookie authentication requires matching domains. **Add to `/etc/hosts`:**
-
-```bash
-# Linux/macOS
-echo "127.0.0.1 local.getfacet.org" | sudo tee -a /etc/hosts
-
-# Windows: Edit C:\Windows\System32\drivers\etc\hosts as Administrator
-# Add: 127.0.0.1 local.getfacet.org
-```
-
-**Want a different domain?** Update both `/etc/hosts` AND `examples/product-catalog/restheart.yml` to match. See [JWT Cookie Authentication Setup](docs/DEVELOPERS_GUIDE.md#jwt-cookie-authentication-setup) for details.
-
 ### Run the Example
 
 ```bash
@@ -49,17 +35,11 @@ cd examples/product-catalog
 docker-compose up
 ```
 
-**Open:** http://local.getfacet.org:8080/shop/products (**use `local.getfacet.org`, not `localhost`**)
+**Open:** http://localhost:8080/shop/products
 
 **Login:** Admin (`admin`/`secret`) or Viewer (`viewer`/`viewer`)
 
 **[→ Product Catalog Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Learn by exploring the working code
-
-## Troubleshooting
-
-**Login not working?** Ensure you're using `http://local.getfacet.org:8080`, not `localhost`. See [Authentication Troubleshooting](docs/DEVELOPERS_GUIDE.md#jwt-cookie-authentication-setup).
-
-**Using a custom domain?** Update both `/etc/hosts` and `restheart.yml`. See [JWT Cookie Authentication Setup](docs/DEVELOPERS_GUIDE.md#jwt-cookie-authentication-setup).
 
 ## Template Example
 
