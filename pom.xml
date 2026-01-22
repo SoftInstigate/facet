@@ -23,6 +23,19 @@
         <pebble.version>4.1.0</pebble.version>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <organization>
         <name>SoftInstigate</name>
         <url>https://softinstigate.com</url>
@@ -37,33 +50,8 @@
         </license>
     </licenses>
 
-    <developers>
-        <developer>
-            <id>mkj6</id>
-            <name>Maurizio Turatti</name>
-            <email>maurizio@softinstigate.com</email>
-            <url>https://www.linkedin.com/in/maurizioturatti/</url>
-            <organization>SoftInstigate</organization>
-            <organizationUrl>http://www.softinstigate.com</organizationUrl>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
-
     <issueManagement>
         <url>https://github.com/SoftInstigate/facet/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <release>${maven.compiler.release}</release>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
