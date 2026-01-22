@@ -20,7 +20,7 @@
 
             <div class="columns">
                 <div class="column is-8">
-                    <div class="box">
+                    <div id="product-details" class="box">
                         <h1 class="title is-2">{{ product.data.name }}</h1>
 
                         {% if product.data.description is not null %}
@@ -80,10 +80,14 @@
                             </a>
 
                             {% if roles is not empty and roles contains 'admin' %}
-                                <a href="{{ path }}/edit" class="button is-warning">
+                                <button class="button is-warning"
+                                        hx-get="{{ path }}"
+                                        hx-target="#product-form"
+                                        hx-swap="innerHTML"
+                                        onclick="document.getElementById('product-details').style.display='none'; document.getElementById('product-form').style.display='block';">
                                     <span class="icon"><i class="fas fa-edit"></i></span>
                                     <span>Edit Product</span>
-                                </a>
+                                </button>
 
                                 <button class="button is-danger" onclick="deleteProduct()">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
@@ -92,6 +96,9 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    <!-- Edit form container (hidden by default) -->
+                    <div id="product-form" style="display: none;"></div>
                 </div>
 
                 <div class="column is-4">

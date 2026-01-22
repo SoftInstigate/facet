@@ -1,0 +1,120 @@
+{% if items is not empty %}
+    {% set product = items[0] %}
+
+    <article>
+        <header>
+            <h2>Edit Product</h2>
+        </header>
+
+        <form id="productEditForm">
+            <label>
+                Name
+                <input type="text" name="name" value="{{ product.data.name }}" required>
+            </label>
+
+            <label>
+                Description
+                <textarea name="description" rows="3">{{ product.data.description }}</textarea>
+            </label>
+
+            <div class="grid">
+                <label>
+                    Price ($)
+                    <input type="number" name="price" value="{{ product.data.price }}" step="0.01" required>
+                </label>
+
+                <label>
+                    Stock
+                    <input type="number" name="stock" value="{{ product.data.stock }}" required>
+                </label>
+            </div>
+
+            <label>
+                Category
+                <select name="category" required>
+                    <option value="Electronics" {% if product.data.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                    <option value="Furniture" {% if product.data.category == 'Furniture' %}selected{% endif %}>Furniture</option>
+                    <option value="Appliances" {% if product.data.category == 'Appliances' %}selected{% endif %}>Appliances</option>
+                </select>
+            </label>
+
+            <label>
+                Tags (comma-separated)
+                <input type="text" name="tags"
+                       value="{% if product.data.tags is not empty %}{{ product.data.tags | join(', ') }}{% endif %}"
+                       placeholder="e.g., premium, bestseller">
+                <small>Separate tags with commas</small>
+            </label>
+
+            <div class="grid">
+                <button type="submit">Save Changes</button>
+                <button type="button" class="secondary" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+
+        <div id="formMessage" style="display: none; margin-top: 1rem;"></div>
+    </article>
+
+    <script>
+    // Submit form via PATCH request
+    document.getElementById('productEditForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        // Convert form data to JSON
+        const data = {
+            name: formData.get('name'),
+            description: formData.get('description') || null,
+            price: parseFloat(formData.get('price')),
+            stock: parseInt(formData.get('stock')),
+            category: formData.get('category'),
+            tags: formData.get('tags')
+                ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t)
+                : []
+        };
+
+        const messageDiv = document.getElementById('formMessage');
+
+        try {
+            const response = await fetch('{{ path }}', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                messageDiv.innerHTML = '<mark>Product updated successfully!</mark>';
+                messageDiv.style.display = 'block';
+
+                // Reload the page after a short delay to show the updated data
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                const errorText = await response.text();
+                messageDiv.innerHTML = '<mark class="error">Error updating product: ' + (errorText || response.statusText) + '</mark>';
+                messageDiv.style.display = 'block';
+            }
+        } catch (error) {
+            messageDiv.innerHTML = '<mark class="error">Error: ' + error.message + '</mark>';
+            messageDiv.style.display = 'block';
+        }
+    });
+
+    function cancelEdit() {
+        // Hide the edit form and show the product details again
+        document.getElementById('product-form').style.display = 'none';
+        document.getElementById('product-details').style.display = 'block';
+    }
+    </script>
+
+{% else %}
+    <article>
+        <p>⚠️ Product not found.</p>
+    </article>
+{% endif %}
