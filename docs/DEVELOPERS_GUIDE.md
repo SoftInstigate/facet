@@ -1398,6 +1398,350 @@ This is useful for:
 6. **Document custom events** in template comments or README
 7. **Test event handlers** by dispatching events manually in browser console
 
+---
+
+## CRUD Operations with HTMX Fragments
+
+Facet uses path-based resolution that maps URLs to REST resources. For dynamic UI components like forms, use HTMX fragments to load them on demand while keeping URLs clean and REST-compliant.
+
+### The Pattern
+
+In Facet:
+- **URLs represent resources**: `/products/{id}` maps to a MongoDB document
+- **Templates match URLs**: [templates/products/view.html](../examples/product-catalog/templates/shop/products/view.html) renders the document
+- **Forms are components**: [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html) loaded via HTMX
+- **HTTP methods are actions**: POST (create), GET (read), PATCH (update), DELETE (delete)
+
+This keeps URLs REST-compliant and avoids routing conflicts with MongoDB document IDs.
+
+### Complete Example: Product CRUD
+
+The product catalog example demonstrates full CRUD functionality. Let's explore each operation.
+
+#### View Product (GET)
+
+**Template**: [templates/shop/products/view.html](../examples/product-catalog/templates/shop/products/view.html)
+
+Displays product details at `/shop/products/{id}`:
+
+```html
+{% extends "layout" %}
+
+{% block main %}
+{% if documents is not empty %}
+    {% set product = documents[0] %}
+
+    <article>
+        <header>
+            <h1>{{ product.name }}</h1>
+        </header>
+
+        <h2 style="color: var(--pico-primary);">${{ product.price }}</h2>
+        <p>{{ product.description }}</p>
+
+        <footer>
+            <button hx-get="{{ path }}"
+                    hx-target="#product-form"
+                    hx-swap="innerHTML">
+                Edit Product
+            </button>
+        </footer>
+    </article>
+
+    <div id="product-form" style="display: none;"></div>
+{% endif %}
+{% endblock %}
+```
+
+**Key points**:
+- URL stays clean: `/products/{id}`
+- Form loads via HTMX into `#product-form` div
+- Progressive enhancement: works with/without JavaScript
+
+#### Edit Product (PATCH via HTMX Fragment)
+
+**Fragment Template**: [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html)
+
+Loaded dynamically when user clicks "Edit Product":
+
+```html
+<article>
+    <header>
+        <h2>Edit Product</h2>
+        <p><a href="{{ path | parentPath }}" class="secondary">← Back to Products</a></p>
+    </header>
+
+    <form id="productEditForm">
+        <label>
+            Name
+            <input type="text" name="name" value="{{ product.data.name }}" required>
+        </label>
+
+        <label>
+            Price ($)
+            <input type="number" name="price" value="{{ product.data.price }}" step="0.01" required>
+        </label>
+
+        <div class="grid">
+            <button type="submit">Save Changes</button>
+            <button type="button" class="secondary" onclick="cancelEdit()">Cancel</button>
+        </div>
+    </form>
+</article>
+
+<script>
+document.getElementById('productEditForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const data = {
+        name: formData.get('name'),
+        price: parseFloat(formData.get('price')),
+        // ... other fields
+    };
+
+    const response = await fetch('{{ path }}', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        // Remove query parameters and reload
+        const url = new URL(globalThis.location.href);
+        url.search = '';
+        globalThis.location.href = url.toString();
+    }
+});
+
+function cancelEdit() {
+    document.getElementById('product-form').style.display = 'none';
+    document.getElementById('product-details').style.display = 'block';
+}
+</script>
+```
+
+**HTMX Request Flow**:
+1. User clicks "Edit Product" button with `hx-get="{{ path }}"`
+2. HTMX sends request with `HX-Request: true` and `HX-Target: #product-form` headers
+3. Facet resolves fragment: [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html)
+4. Form HTML loads into `#product-form` div
+5. Form submits via `fetch()` with PATCH method to update document
+
+**Fragment Resolution Order**:
+1. `templates/shop/products/{documentId}/_fragments/product-form.html` (document-specific)
+2. `templates/_fragments/product-form.html` ✅ (root fallback)
+
+#### Create Product (POST via HTMX Fragment)
+
+**Fragment Template**: [templates/_fragments/product-new.html](../examples/product-catalog/templates/_fragments/product-new.html)
+
+Similar pattern for creating new products:
+
+```html
+<article>
+    <header>
+        <h2>Create New Product</h2>
+        <p><a href="{{ path }}" class="secondary">← Back to Products</a></p>
+    </header>
+
+    <form id="productNewForm">
+        <label>
+            Name
+            <input type="text" name="name" required>
+        </label>
+
+        <label>
+            Price ($)
+            <input type="number" name="price" step="0.01" required>
+        </label>
+
+        <div class="grid">
+            <button type="submit">Create Product</button>
+            <button type="button" class="secondary" onclick="cancelNew()">Cancel</button>
+        </div>
+    </form>
+</article>
+
+<script>
+document.getElementById('productNewForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const data = {
+        name: formData.get('name'),
+        price: parseFloat(formData.get('price')),
+        createdAt: new Date().toISOString()
+    };
+
+    const response = await fetch('{{ path }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        window.location.reload();
+    }
+});
+</script>
+```
+
+**Triggered from list page** ([templates/shop/products/index.html](../examples/product-catalog/templates/shop/products/index.html)):
+
+```html
+<button hx-get="{{ path }}"
+        hx-target="#product-new"
+        hx-swap="innerHTML">
+    + Add Product
+</button>
+
+<div id="product-new" style="display: none;"></div>
+```
+
+#### Delete Product (DELETE)
+
+Delete operations use JavaScript `fetch()` with confirmation:
+
+```html
+<button class="secondary" onclick="deleteProduct()">Delete Product</button>
+
+<script>
+async function deleteProduct() {
+    if (!confirm('Are you sure you want to delete this product?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('{{ path }}', {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            window.location.href = '{{ path | parentPath }}';
+        } else {
+            alert('Failed to delete product');
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+</script>
+```
+
+### Query Parameters for Deep Linking
+
+Use query parameters to create shareable links to specific UI states:
+
+```html
+<!-- In product list -->
+<button onclick="window.location.href='{{ path }}/{{ doc._id }}?mode=edit'">
+    Edit
+</button>
+```
+
+**Auto-detect in view template**:
+
+```javascript
+globalThis.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(globalThis.location.search);
+    if (params.get('mode') === 'edit') {
+        document.querySelector('button[hx-target="#product-form"]').click();
+    }
+});
+```
+
+This allows bookmarkable edit links like `/products/123?mode=edit` while keeping the resource URL clean.
+
+### HTTP Methods Summary
+
+RESTHeart's MongoDB API uses standard HTTP methods:
+
+**Create (POST)**:
+```javascript
+const response = await fetch('/shop/products', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+});
+```
+
+**Read (GET)**:
+```javascript
+// Full page: browser navigation to /shop/products/{id}
+// Fragment: HTMX loads template with HX-Request header
+```
+
+**Update (PATCH)**:
+```javascript
+const response = await fetch('/shop/products/{id}', {
+    method: 'PATCH',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+});
+```
+
+**Delete (DELETE)**:
+```javascript
+const response = await fetch('/shop/products/{id}', {
+    method: 'DELETE',
+    credentials: 'include'
+});
+```
+
+### Benefits
+
+This architectural pattern provides:
+
+- **Clean URLs**: `/products/123` not `/products/123/edit`
+- **No routing conflicts**: Document IDs never conflict with action names (e.g., a document with `_id: "edit"` works correctly)
+- **Progressive enhancement**: Forms work with JavaScript, can fallback to traditional POST/redirect pattern
+- **Separation of concerns**: Templates follow resource structure, forms are reusable components
+- **REST compliance**: URLs represent resources, HTTP methods represent actions
+- **Component reusability**: Same `product-form.html` fragment can be loaded from list page or detail page
+
+### Architectural Benefits
+
+**Clean REST URLs**:
+```
+✅ /products/{id}          - View product
+✅ /products/{id}?mode=edit - View product with edit form open (shareable)
+✅ /products               - Product list with add form
+```
+
+**No Routing Conflicts**:
+With path-based resolution, there's never ambiguity:
+- `/products/edit` is always document ID "edit" (a valid MongoDB document)
+- Edit form loads via HTMX fragment, not URL routing
+- `/products/new` is always document ID "new" (if it exists)
+- Create form loads via HTMX fragment from `/products` list page
+
+**Progressive Enhancement**:
+- JavaScript enabled: Forms load inline via HTMX with smooth UX
+- JavaScript disabled: Forms can still work with traditional POST/redirect pattern (with minor template changes)
+
+**Component Reusability**:
+- Fragment templates are reusable across different contexts
+- Same `product-form.html` can be loaded from list page or detail page
+- Consistent UI without code duplication
+
 ### Common Patterns
 
 #### Pattern: Optimistic UI Updates

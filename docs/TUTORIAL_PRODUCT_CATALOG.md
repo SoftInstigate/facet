@@ -553,6 +553,276 @@ And **lines 30-35** in the product template for images:
 
 ---
 
+## 9. Level 9: CRUD with HTMX Fragments
+
+Learn how the product catalog implements full CRUD functionality using HTMX fragments.
+
+### Understanding the Architecture
+
+Facet uses **path-based template resolution**:
+- `GET /shop/products/{id}` → [templates/shop/products/view.html](../examples/product-catalog/templates/shop/products/view.html)
+- Forms load as **HTMX fragments** → [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html)
+
+This keeps URLs clean and REST-compliant while providing rich interactivity.
+
+### The User Experience
+
+1. **View Product**: Click product card → Full page with URL `/products/{id}`
+2. **Edit Product**: Click "Edit" button → Form loads inline via HTMX (URL stays `/products/{id}`)
+3. **Create Product**: Click "+ Add Product" → Form loads as fragment
+4. **Delete Product**: Click "Delete" → Confirmation dialog + API call
+
+### How It Works
+
+#### View Product Page
+
+Open [templates/shop/products/view.html](../examples/product-catalog/templates/shop/products/view.html) (lines 40-55):
+
+```html
+<footer style="margin-top: 2rem;">
+    <div class="grid">
+        <a href="{{ path | parentPath }}" role="button" class="secondary">
+            ← Back to Products
+        </a>
+        <button hx-get="{{ path }}"
+                hx-target="#product-form"
+                hx-swap="innerHTML">
+            Edit Product
+        </button>
+        <button class="secondary" onclick="deleteProduct()">
+            Delete Product
+        </button>
+    </div>
+</footer>
+
+<div id="product-form" style="display: none;"></div>
+```
+
+**Key HTMX attributes**:
+- `hx-get="{{ path }}"` - Requests current URL (e.g., `/shop/products/123`)
+- `hx-target="#product-form"` - Tells Facet to load fragment for target `product-form`
+- `hx-swap="innerHTML"` - Replaces content inside the div
+
+#### Fragment Resolution
+
+When HTMX makes the request:
+
+1. **HTMX sends headers**:
+   - `HX-Request: true` - Identifies as HTMX request
+   - `HX-Target: product-form` - Specifies which fragment to load
+
+2. **Facet resolves fragment template**:
+   - Checks: `templates/shop/products/{documentId}/_fragments/product-form.html` (document-specific)
+   - Fallback: `templates/_fragments/product-form.html` ✅ (root level)
+
+3. **Returns just the form HTML** (not full page)
+
+#### Edit Form Fragment
+
+Open [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html):
+
+**Lines 1-50: Pico CSS form**:
+```html
+<article>
+    <header>
+        <h2>Edit Product</h2>
+        <p><a href="{{ path | parentPath }}" class="secondary">← Back to Products</a></p>
+    </header>
+
+    <form id="productEditForm">
+        <label>
+            Name
+            <input type="text" name="name" value="{{ product.data.name }}" required>
+        </label>
+
+        <label>
+            Description
+            <textarea name="description" rows="3">{{ product.data.description }}</textarea>
+        </label>
+
+        <div class="grid">
+            <label>
+                Price ($)
+                <input type="number" name="price" value="{{ product.data.price }}" step="0.01" required>
+            </label>
+
+            <label>
+                Stock
+                <input type="number" name="stock" value="{{ product.data.stock }}" required>
+            </label>
+        </div>
+
+        <div class="grid">
+            <button type="submit">Save Changes</button>
+            <button type="button" class="secondary" onclick="cancelEdit()">Cancel</button>
+        </div>
+    </form>
+</article>
+```
+
+**Lines 52-95: JavaScript form submission**:
+```javascript
+document.getElementById('productEditForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    // Build JSON data
+    const data = {
+        name: formData.get('name'),
+        description: formData.get('description'),
+        price: parseFloat(formData.get('price')),
+        stock: parseInt(formData.get('stock')),
+        // ... other fields
+    };
+
+    // PATCH request to update document
+    const response = await fetch('{{ path }}', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        // Success: reload page (removes query parameters)
+        const url = new URL(globalThis.location.href);
+        url.search = '';
+        globalThis.location.href = url.toString();
+    } else {
+        // Error handling
+        const errorText = await response.text();
+        alert('Error: ' + errorText);
+    }
+});
+```
+
+#### Create Product Fragment
+
+The create flow works similarly. Open [templates/shop/products/index.html](../examples/product-catalog/templates/shop/products/index.html) (lines 18-26):
+
+```html
+<button hx-get="{{ path }}"
+        hx-target="#product-new"
+        hx-swap="innerHTML">
+    + Add Product
+</button>
+
+<div id="product-new" style="display: none;"></div>
+```
+
+Fragment: [templates/_fragments/product-new.html](../examples/product-catalog/templates/_fragments/product-new.html)
+
+Uses **POST method** instead of PATCH:
+
+```javascript
+const response = await fetch('{{ path }}', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+});
+
+if (response.ok) {
+    window.location.reload();  // Reload to show new product
+}
+```
+
+#### Delete Product
+
+Delete uses JavaScript `fetch()` with DELETE method (no fragment needed):
+
+```javascript
+async function deleteProduct() {
+    if (!confirm('Are you sure you want to delete this product?')) {
+        return;
+    }
+
+    const response = await fetch('{{ path }}', {
+        method: 'DELETE',
+        credentials: 'include'
+    });
+
+    if (response.ok) {
+        // Navigate back to product list
+        window.location.href = '{{ path | parentPath }}';
+    }
+}
+```
+
+### Try It Yourself
+
+**Watch the Network Tab**:
+
+1. Open browser DevTools → Network tab
+2. Click "Edit Product" on a product page
+3. **Notice the HTMX request**:
+   - Request headers include `HX-Request: true` and `HX-Target: product-form`
+   - Response is just the form HTML (not a full page)
+   - No page flash/reload
+4. Submit the form
+5. **Notice the PATCH request**:
+   - Method: PATCH
+   - Content-Type: application/json
+   - Body: JSON representation of form data
+
+**Test the URL pattern**:
+
+1. View a product at `/shop/products/{id}`
+2. Click "Edit" - URL stays `/shop/products/{id}`, form loads inline
+3. Compare to traditional approach: `/shop/products/{id}/edit` would be a new page
+
+**Test deep linking**:
+
+1. From product list, click an "Edit" button
+2. URL becomes `/shop/products/{id}?mode=edit`
+3. Share this URL with someone (or bookmark it)
+4. When visited, page auto-opens edit form via JavaScript detection
+
+### Key Files
+
+- [templates/shop/products/view.html](../examples/product-catalog/templates/shop/products/view.html) - Product detail page with HTMX buttons
+- [templates/shop/products/index.html](../examples/product-catalog/templates/shop/products/index.html) - Product list with "Add Product" button
+- [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html) - Edit form (HTMX fragment)
+- [templates/_fragments/product-new.html](../examples/product-catalog/templates/_fragments/product-new.html) - Create form (HTMX fragment)
+
+### The Pattern
+
+This pattern works for any resource:
+
+1. **Create view template**: `templates/{resource}/view.html` for the detail page
+2. **Create form fragment**: `templates/_fragments/{resource}-form.html` for editing
+3. **Add HTMX trigger**: Button with `hx-get` + `hx-target` to load fragment
+4. **Submit via fetch()**: Use appropriate HTTP method (POST/PATCH/DELETE)
+5. **Keep URLs clean**: Resource URLs stay as `/resource/{id}`, not `/resource/{id}/edit`
+
+### Benefits
+
+**Clean URLs**:
+- `/products/123` - View product
+- `/products/123?mode=edit` - View product with edit form open (shareable!)
+- No need for `/products/123/edit` route
+
+**No Routing Conflicts**:
+- What if you have a document with `_id: "edit"`?
+- With action suffixes: `/products/edit` is ambiguous (document or action?)
+- With fragments: `/products/edit` is always the document, edit form loads via HTMX
+
+**Progressive Enhancement**:
+- JavaScript enabled: Smooth inline forms via HTMX
+- JavaScript disabled: Can add traditional POST/redirect fallback
+
+**Component Reusability**:
+- Same `product-form.html` fragment used from both list and detail pages
+- Consistent UI without code duplication
+
+---
+
 ## 10. Production Considerations
 
 ### What Changes for Production?

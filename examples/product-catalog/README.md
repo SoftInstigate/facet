@@ -10,8 +10,36 @@ A complete example demonstrating Facet's core features through a product catalog
 - **Pagination** - Navigate large datasets with `page` and `pagesize`
 - **HTMX partial updates** - Search and paginate without full page reloads
 - **Authentication** - Role-based access control (admin vs viewer)
-- **CRUD operations** - Create, read, update, delete products (admin only)
+- **CRUD operations** - Full create, read, update, delete using HTMX fragments (see below)
 - **Template inheritance** - Shared layout and reusable fragments
+
+## CRUD Operations
+
+The product catalog demonstrates full CRUD using HTMX fragments:
+
+- **Create**: Click "+ Add Product" → HTMX loads [_fragments/product-new.html](templates/_fragments/product-new.html) fragment → Form submits via POST
+- **Read**: Click product card → Navigates to `/products/{id}` with [view.html](templates/shop/products/view.html) template
+- **Update**: Click "Edit Product" → HTMX loads [_fragments/product-form.html](templates/_fragments/product-form.html) fragment → Form submits via PATCH
+- **Delete**: Click "Delete Product" → JavaScript `fetch()` with DELETE method
+
+All operations use RESTHeart's native MongoDB REST API with standard HTTP methods (POST/GET/PATCH/DELETE) - no custom backend code needed.
+
+### Why Fragments?
+
+- **Keeps URLs clean and REST-compliant**: `/products/{id}` not `/products/{id}/edit`
+- **No routing conflicts**: Document IDs never conflict with action names (e.g., a document with `_id: "edit"` works correctly as `/products/edit`)
+- **Forms load instantly**: No page refresh, smooth user experience via HTMX
+- **URLs remain shareable**: Use query parameters like `?mode=edit` for deep linking to specific UI states
+- **Component reusability**: Same fragment can be loaded from list page or detail page
+
+### The Pattern
+
+This architectural approach provides:
+1. **Clean REST URLs** - Resources, not actions: `/products/{id}` represents the resource
+2. **HTTP methods for actions** - POST (create), GET (read), PATCH (update), DELETE (delete)
+3. **Fragments for UI components** - Forms are reusable components loaded via HTMX
+4. **Progressive enhancement** - Works with JavaScript (HTMX), can fallback to traditional POST/redirect
+5. **No backend code** - RESTHeart handles all MongoDB operations directly
 
 ## Quick Start
 
