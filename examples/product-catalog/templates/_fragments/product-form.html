@@ -4,6 +4,7 @@
     <article>
         <header>
             <h2>Edit Product</h2>
+            <p><a href="{{ path | parentPath }}" class="secondary">← Back to Products</a></p>
         </header>
 
         <form id="productEditForm">
@@ -103,9 +104,11 @@
                 messageDiv.innerHTML = '<mark>Product updated successfully!</mark>';
                 messageDiv.style.display = 'block';
 
-                // Reload the page after a short delay to show the updated data
+                // Redirect to product view (without ?mode=edit) after a short delay
                 setTimeout(() => {
-                    window.location.reload();
+                    const url = new URL(globalThis.location.href);
+                    url.search = ''; // Remove all query parameters
+                    globalThis.location.href = url.toString();
                 }, 1000);
             } else {
                 const errorText = await response.text();
@@ -119,9 +122,18 @@
     });
 
     function cancelEdit() {
-        // Hide the edit form and show the product details again
-        document.getElementById('product-form').style.display = 'none';
-        document.getElementById('product-details').style.display = 'block';
+        // Check if we came here via ?mode=edit parameter
+        const params = new URLSearchParams(globalThis.location.search);
+        if (params.get('mode') === 'edit') {
+            // Remove the parameter and redirect
+            const url = new URL(globalThis.location.href);
+            url.search = '';
+            globalThis.location.href = url.toString();
+        } else {
+            // Just hide the form and show the product details
+            document.getElementById('product-form').style.display = 'none';
+            document.getElementById('product-details').style.display = 'block';
+        }
     }
     </script>
 

@@ -50,8 +50,8 @@
 
                 {% if roles is not empty and roles contains 'admin' %}
                 <button type="button" class="outline"
-                    onclick="window.location.href='{{ path }}/{{ doc._id.value }}/edit'"
-                    onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='{{ path }}/{{ doc._id.value }}/edit'}">
+                    onclick="window.location.href='{{ path }}/{{ doc._id.value }}?mode=edit'"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='{{ path }}/{{ doc._id.value }}?mode=edit'}">
                     Edit
                 </button>
                 <button type="button" class="secondary outline"

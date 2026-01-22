@@ -5,150 +5,124 @@
 {% endblock %}
 
 {% block main %}
-<section class="section">
-    <div class="container">
-        {% if items is not empty %}
-            {% set product = items[0] %}
+{% if items is not empty %}
+    {% set product = items[0] %}
 
-            <nav class="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/shop/products">Products</a></li>
-                    <li class="is-active"><a href="#" aria-current="page">{{ product.data.name }}</a></li>
-                </ul>
-            </nav>
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop/products">Products</a></li>
+            <li>{{ product.data.name }}</li>
+        </ul>
+    </nav>
 
-            <div class="columns">
-                <div class="column is-8">
-                    <div id="product-details" class="box">
-                        <h1 class="title is-2">{{ product.data.name }}</h1>
+    <div class="grid" style="--grid-columns: 2; gap: 2rem; margin-top: 2rem;">
+        <div>
+            <article id="product-details">
+                <header>
+                    <h1>{{ product.data.name }}</h1>
+                    {% if product.data.description is not null %}
+                        <p>{{ product.data.description }}</p>
+                    {% endif %}
+                </header>
 
-                        {% if product.data.description is not null %}
-                            <p class="subtitle is-4">{{ product.data.description }}</p>
-                        {% endif %}
+                <h2 style="color: var(--pico-primary); margin: 1rem 0;">${{ product.data.price }}</h2>
 
-                        <hr>
-
-                        <div class="content">
-                            <h2 class="title is-3 has-text-success">${{ product.data.price }}</h2>
-
-                            <div class="notification {% if product.data.stock > 0 %}is-success{% else %}is-danger{% endif %} is-light">
-                                <p class="is-size-5">
-                                    {% if product.data.stock > 0 %}
-                                        <span class="icon"><i class="fas fa-check-circle"></i></span>
-                                        <strong>In Stock:</strong> {{ product.data.stock }} units available
-                                    {% else %}
-                                        <span class="icon"><i class="fas fa-times-circle"></i></span>
-                                        <strong>Out of Stock</strong>
-                                    {% endif %}
-                                </p>
-                            </div>
-
-                            <div class="field is-grouped is-grouped-multiline">
-                                <div class="control">
-                                    <div class="tags has-addons">
-                                        <span class="tag is-dark">Category</span>
-                                        <span class="tag is-info">{{ product.data.category }}</span>
-                                    </div>
-                                </div>
-
-                                {% if product.data.tags is not null and product.data.tags is not empty %}
-                                    {% for tag in product.data.tags %}
-                                        <div class="control">
-                                            <div class="tags">
-                                                <span class="tag is-light">{{ tag }}</span>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-
-                            {% if product.data.createdAt is not null %}
-                                <p class="has-text-grey is-size-7">
-                                    <span class="icon"><i class="fas fa-calendar"></i></span>
-                                    Added: {{ product.data.createdAt }}
-                                </p>
-                            {% endif %}
-                        </div>
-
-                        <hr>
-
-                        <div class="buttons">
-                            <a href="{{ path | parentPath }}" class="button is-link">
-                                <span class="icon"><i class="fas fa-arrow-left"></i></span>
-                                <span>Back to Products</span>
-                            </a>
-
-                            {% if roles is not empty and roles contains 'admin' %}
-                                <button class="button is-warning"
-                                        hx-get="{{ path }}"
-                                        hx-target="#product-form"
-                                        hx-swap="innerHTML"
-                                        onclick="document.getElementById('product-details').style.display='none'; document.getElementById('product-form').style.display='block';">
-                                    <span class="icon"><i class="fas fa-edit"></i></span>
-                                    <span>Edit Product</span>
-                                </button>
-
-                                <button class="button is-danger" onclick="deleteProduct()">
-                                    <span class="icon"><i class="fas fa-trash"></i></span>
-                                    <span>Delete Product</span>
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- Edit form container (hidden by default) -->
-                    <div id="product-form" style="display: none;"></div>
-                </div>
-
-                <div class="column is-4">
-                    <div class="box">
-                        <h3 class="title is-5">Product Information</h3>
-                        <div class="content">
-                            <table class="table is-fullwidth is-striped">
-                                <tbody>
-                                    <tr>
-                                        <th>ID</th>
-                                        <td><code class="is-size-7">{{ product._id.value }}</code></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Category</th>
-                                        <td>{{ product.data.category }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Price</th>
-                                        <td class="has-text-success has-text-weight-bold">${{ product.data.price }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Stock</th>
-                                        <td>{{ product.data.stock }} units</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="box">
-                        <h3 class="title is-5">Raw JSON</h3>
-                        <pre class="has-background-light p-3"><code class="is-size-7">{{ product.data | toJson }}</code></pre>
-                    </div>
-                </div>
-            </div>
-
-        {% else %}
-            <div class="notification is-warning">
-                <p class="title is-4">Product Not Found</p>
-                <p>The product you're looking for doesn't exist or has been removed.</p>
-                <p class="mt-3">
-                    <a href="/shop/products" class="button is-link">
-                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
-                        <span>Back to Products</span>
-                    </a>
+                <p>
+                    {% if product.data.stock > 0 %}
+                        <mark>✓ In Stock: {{ product.data.stock }} units available</mark>
+                    {% else %}
+                        <mark style="background-color: var(--pico-del-color);">✗ Out of Stock</mark>
+                    {% endif %}
                 </p>
-            </div>
-        {% endif %}
+
+                <p style="margin: 1rem 0;">
+                    <strong>Category:</strong> <mark>{{ product.data.category }}</mark>
+                </p>
+
+                {% if product.data.tags is not null and product.data.tags is not empty %}
+                    <p style="margin: 1rem 0;">
+                        <strong>Tags:</strong>
+                        {% for tag in product.data.tags %}
+                            <kbd>{{ tag }}</kbd>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+                {% if product.data.createdAt is not null %}
+                    <p><small>Added: {{ product.data.createdAt }}</small></p>
+                {% endif %}
+
+                <footer style="margin-top: 2rem;">
+                    <div class="grid">
+                        <a href="{{ path | parentPath }}" role="button" class="secondary">← Back to Products</a>
+
+                        {% if roles is not empty and roles contains 'admin' %}
+                            <button hx-get="{{ path }}"
+                                    hx-target="#product-form"
+                                    hx-swap="innerHTML"
+                                    onclick="document.getElementById('product-details').style.display='none'; document.getElementById('product-form').style.display='block';">
+                                Edit Product
+                            </button>
+
+                            <button class="secondary" onclick="deleteProduct()">Delete Product</button>
+                        {% endif %}
+                    </div>
+                </footer>
+            </article>
+
+            <!-- Edit form container (hidden by default) -->
+            <div id="product-form" style="display: none;"></div>
+        </div>
+
+        <div>
+            <article>
+                <header>
+                    <h3>Product Information</h3>
+                </header>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th scope="row">ID</th>
+                            <td><code style="font-size: 0.875rem;">{{ product._id.value }}</code></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Category</th>
+                            <td>{{ product.data.category }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Price</th>
+                            <td><strong>${{ product.data.price }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Stock</th>
+                            <td>{{ product.data.stock }} units</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+
+            <article>
+                <header>
+                    <h3>Raw JSON</h3>
+                </header>
+                <pre><code style="font-size: 0.875rem;">{{ product.data | toJson }}</code></pre>
+            </article>
+        </div>
     </div>
-</section>
+
+{% else %}
+    <article>
+        <header>
+            <h2>Product Not Found</h2>
+        </header>
+        <p>The product you're looking for doesn't exist or has been removed.</p>
+        <footer>
+            <a href="/shop/products" role="button">← Back to Products</a>
+        </footer>
+    </article>
+{% endif %}
 {% endblock %}
 
 {% block script %}
@@ -174,5 +148,17 @@ async function deleteProduct() {
         alert('Error: ' + error.message);
     }
 }
+
+// Check if ?mode=edit is in the URL and automatically open edit form
+globalThis.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(globalThis.location.search);
+    if (params.get('mode') === 'edit') {
+        // Trigger the edit button click
+        const editButton = document.querySelector('button[hx-target="#product-form"]');
+        if (editButton) {
+            editButton.click();
+        }
+    }
+});
 </script>
 {% endblock %}
