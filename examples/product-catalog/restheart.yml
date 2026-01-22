@@ -78,7 +78,7 @@
   enabled: true
   name: rh_auth
   # Uncomment and set your domain for production use
-  #domain: getfacet.org  # RFC 6265 compliant: no leading dot, parent domain only
+  domain: localhost  # RFC 6265 compliant: no leading dot, parent domain only
   path: /
   secure: false  # Must be false for HTTP (localhost development)
   http-only: true
