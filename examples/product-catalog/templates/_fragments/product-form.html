@@ -62,13 +62,25 @@
 
         const formData = new FormData(e.target);
 
+        // Generate placeholder image URL based on category and name
+        const category = formData.get('category');
+        const name = formData.get('name');
+        const categoryColors = {
+            'Electronics': '4A5568',
+            'Furniture': '059669',
+            'Appliances': 'DC2626'
+        };
+        const color = categoryColors[category] || '6B7280';
+        const imageUrl = `https://placehold.co/400x300/${color}/FFF?text=${encodeURIComponent(name)}`;
+
         // Convert form data to JSON
         const data = {
-            name: formData.get('name'),
+            name: name,
             description: formData.get('description') || null,
             price: parseFloat(formData.get('price')),
             stock: parseInt(formData.get('stock')),
-            category: formData.get('category'),
+            category: category,
+            imageUrl: imageUrl,
             tags: formData.get('tags')
                 ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t)
                 : []
