@@ -232,32 +232,93 @@ RESTHeart includes a **default admin user** for development and testing:
 
 **⚠️ IMPORTANT: This is a development credential only. Change this password before deploying to production!**
 
-### Authentication Methods
+### Authentication and Authorization
 
-RESTHeart supports two authentication storage approaches (both use HTTP Basic Auth for requests):
+RESTHeart separates **authentication** (who you are) from **authorization** (what you can do). Understanding this distinction is important for proper configuration.
 
-**1. MongoDB-based Authentication (Default)**
-- Users stored in MongoDB `/users` collection
-- Default in Docker Compose setups
-- Dynamic user management via REST API
-- To change the admin password:
+#### File-Based Setup (Recommended for Examples)
 
-```bash
-$ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
-  -H "Content-Type: application/json" \
-  -d '{"password": "my-strong-password"}'
+The [product-catalog example](../examples/product-catalog/) demonstrates the recommended file-based approach:
+
+**Authentication** - User credentials and role assignments in [users.yml](../examples/product-catalog/users.yml):
+```yaml
+users:
+  - userid: admin
+    password: secret
+    roles:
+      - admin
+  - userid: viewer
+    password: viewer
+    roles:
+      - viewer
 ```
 
-**2. File-based Authentication (Alternative)**
-- Users defined in `restheart.yml` or external YAML file (e.g., `users.yml`)
-- Useful for simple deployments, Docker containers, or testing
-- Static configuration - requires RESTHeart restart to apply changes
-- To change the admin password: Edit the YAML file and restart RESTHeart
-- Example: See [examples/product-catalog/users.yml](../examples/product-catalog/users.yml)
+**Authorization** - Role-based permissions (ACL) in [restheart.yml](../examples/product-catalog/restheart.yml):
+```yaml
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - role: admin
+      predicate: path-prefix[path=/]
+      mongo:
+        readFilter: null
+        writeFilter: null  # Can read and write
+    - role: viewer
+      predicate: path-prefix[path=/]
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'  # Read-only
+```
 
-**Making requests:** All `curl` examples in this guide use `-u admin:secret` for HTTP Basic Authentication. This works with both authentication methods. In production, replace these with your actual credentials.
+**Configuration** - Enable file-based authentication:
+```yaml
+/fileRealmAuthenticator:
+  enabled: true
+  conf-file: /opt/restheart/etc/users.yml
 
-For comprehensive security guidance including JWT authentication, ACL configuration, and best practices, see the [RESTHeart Security Fundamentals](https://restheart.org/docs/foundations/security-fundamentals) documentation.
+/basicAuthMechanism:
+  enabled: true
+  authenticator: fileRealmAuthenticator
+```
+
+**Key Points:**
+- `users.yml` contains ONLY credentials and role assignments
+- `restheart.yml` contains permissions (what each role can do)
+- Requires RESTHeart restart to apply changes
+- Simple and secure for development and small deployments
+
+#### MongoDB-Based Authentication (Alternative)
+
+For dynamic user management:
+- Users stored in MongoDB `restheart.users` collection
+- Manage via REST API (no restart needed)
+- To change password:
+  ```bash
+  curl -u admin:secret -X PATCH http://localhost:8080/restheart/users/admin \
+    -H "Content-Type: application/json" \
+    -d '{"password": "my-strong-password"}'
+  ```
+
+**Enable in restheart.yml:**
+```yaml
+/mongoRealmAuthenticator:
+  enabled: true
+
+/basicAuthMechanism:
+  enabled: true
+  authenticator: mongoRealmAuthenticator
+```
+
+#### Making Requests
+
+All `curl` examples in this guide use `-u admin:secret` for HTTP Basic Authentication. This works with both authentication methods. In production, replace with your actual credentials.
+
+#### Further Reading
+
+For comprehensive security guidance including JWT authentication, LDAP/Active Directory, OAuth2/OIDC, and production best practices, see:
+- [RESTHeart Security Fundamentals](https://restheart.org/docs/foundations/security-fundamentals)
+- [RESTHeart Authentication](https://restheart.org/docs/security/authentication)
+- [RESTHeart Authorization](https://restheart.org/docs/security/authorization)
 
 ---
 

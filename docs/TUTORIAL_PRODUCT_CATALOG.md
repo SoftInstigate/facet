@@ -444,45 +444,117 @@ Both full page and HTMX partial now show the same updated HTML.
 
 ---
 
-## 8. Level 7: Authentication and JWT Cookies
+## 8. Level 7: Authentication and Authorization
 
-### Why the Domain Setup Matters
+### Understanding the Security Model
 
-You may have noticed we're using `localhost` instead of `localhost`. This is required for JWT cookie authentication.
+The product catalog demonstrates RESTHeart's separation of **authentication** (who you are) from **authorization** (what you can do).
 
-### The Problem with localhost
+### User Accounts
 
-According to **RFC 6265** (HTTP cookie specification), cookies set for `localhost` have inconsistent behavior and often fail silently in browsers. This causes login to appear successful but actually fail - creating an infinite redirect loop.
+The example includes two pre-configured users:
 
-### The Solution
+| Username | Password | Role    | Permissions |
+|----------|----------|---------|-------------|
+| `admin`  | `secret` | admin   | Full CRUD access |
+| `viewer` | `viewer` | viewer  | Read-only access |
 
-The domain must match in **three places**:
+### How It Works
 
-1. **`/etc/hosts` entry:** `127.0.0.1  localhost`
-2. **`authCookieSetter` config:** `domain: getfacet.org` (parent domain)
-3. **Browser URL:** `http://localhost:8080`
+#### 1. Authentication Configuration
 
-**Note:** `getfacet.org` is just an example. You can use any domain (`myapp.local`, `facet.test`, etc.) as long as all three places match.
+User credentials and role assignments are in [users.yml](../examples/product-catalog/users.yml):
+
+```yaml
+users:
+  - userid: admin
+    password: secret
+    roles:
+      - admin
+  - userid: viewer
+    password: viewer
+    roles:
+      - viewer
+```
+
+This file contains ONLY credentials and role assignments - no permissions.
+
+#### 2. Authorization Configuration
+
+Permissions (ACL) are in [restheart.yml](../examples/product-catalog/restheart.yml):
+
+```yaml
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    # Admin can do anything
+    - role: admin
+      predicate: path-prefix[path=/]
+      priority: 0
+      mongo:
+        readFilter: null
+        writeFilter: null
+
+    # Viewer can only read
+    - role: viewer
+      predicate: path-prefix[path=/]
+      priority: 1
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'
+```
+
+This defines what each role can do (read vs write operations).
+
+#### 3. Authentication Flow
+
+When you log in:
+
+1. Browser sends credentials to `/token/cookie` endpoint
+2. `fileRealmAuthenticator` validates credentials from users.yml
+3. `jwtTokenManager` issues a JWT token with username and roles
+4. `authCookieSetter` stores JWT in `rh_auth` cookie
+5. Templates receive `username` and `roles` variables
+6. `fileAclAuthorizer` enforces role-based permissions
 
 ### Try It Yourself
 
-**Test the authentication flow:**
+**Test the authentication:**
 
 1. Visit: http://localhost:8080/login
 2. Log in as `admin` / `secret`
-3. Open DevTools → Application → Cookies
-4. Inspect the `rh_auth` cookie (domain: `.getfacet.org`)
+3. Click "+ Add Product" - button should appear (admin-only feature)
+4. Log out, log in as `viewer` / `viewer`
+5. "+ Add Product" button is hidden (viewers can't create)
+6. Try to access the API:
+   ```bash
+   # Admin can write
+   curl -u admin:secret -X POST http://localhost:8080/shop/products \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Test","price":99.99}'
 
-**See the failure with localhost:**
+   # Viewer can only read
+   curl -u viewer:viewer http://localhost:8080/shop/products
+   ```
 
-1. Visit: http://localhost:8080/login
-2. Try to log in - appears to work
-3. Check DevTools → no `rh_auth` cookie appears!
-4. Infinite redirect back to login
+**Test role-based UI:**
 
-This demonstrates why the proper domain is required.
+Open [templates/shop/products/list.html](../examples/product-catalog/templates/shop/products/list.html) and find line ~18:
 
-**Full technical explanation:** See [Developer's Guide - JWT Cookie Authentication](DEVELOPERS_GUIDE.md#jwt-cookie-authentication-requires-proper-domain) for details on RFC 6265, alternative domains, and production setup.
+```html
+{% if roles and 'admin' in roles %}
+    <button>+ Add Product</button>
+{% endif %}
+```
+
+Templates use the `roles` variable to show/hide features based on user permissions.
+
+### Adding New Users
+
+See the [product-catalog README Authentication Setup](../examples/product-catalog/README.md#authentication-setup) section for detailed instructions on:
+- Adding new users with different roles
+- Configuring custom permissions
+- Alternative authentication methods (MongoDB, LDAP, OAuth2)
 
 ---
 
