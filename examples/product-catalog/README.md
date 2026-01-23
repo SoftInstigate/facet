@@ -74,7 +74,7 @@ This architectural approach provides:
    - Facet API: http://localhost:8080/shop/products (with `Accept: application/json`)
    - Ping endpoint: http://localhost:8080/ping
 
-   **Important:** You MUST use `localhost` (not `localhost`) for authentication to work. See the [Authentication Setup](#authentication-setup) section for details.
+   **Authentication:** See the [Authentication Setup](#authentication-setup) section below for details on user credentials and permissions.
 
 ### User Accounts
 
@@ -117,8 +117,8 @@ templates/
 
 ### Configuration Files
 
-- [restheart.yml](restheart.yml) - RESTHeart configuration with Facet settings
-- [users.yml](users.yml) - File-based user authentication and ACL rules
+- [restheart.yml](restheart.yml) - RESTHeart configuration with Facet settings and ACL permissions
+- [users.yml](users.yml) - File-based user credentials and role assignments
 - [init-data.js](init-data.js) - MongoDB initialization script with sample products
 - [static/](static/) - Static assets (favicon, images, CSS, JS)
 - [Dockerfile](Dockerfile) - Docker image with Facet plugin pre-installed
@@ -186,11 +186,14 @@ Templates use `roles` context variable to show/hide features:
 {% endif %}
 ```
 
-**Authentication Flow**:
+**Authentication & Authorization Flow**:
 1. Unauthenticated user → redirected to `/login`
-2. Login sets `rh_auth` cookie with JWT token
-3. Templates receive `username` and `roles` variables
-4. RESTHeart ACL enforces write restrictions
+2. Login validates credentials via `fileRealmAuthenticator` (users.yml)
+3. On success, `jwtTokenManager` issues JWT token stored in `rh_auth` cookie
+4. Templates receive `username` and `roles` variables from JWT
+5. `fileAclAuthorizer` enforces role-based permissions (defined in restheart.yml)
+
+See the [Authentication Setup](#authentication-setup) section for details.
 
 ### 4. Template Context Variables
 
@@ -300,24 +303,103 @@ curl -u admin:secret -X POST http://localhost:8080/shop/products \
   -d '{"name":"Runtime Product","price":19.99,"category":"Dynamic","stock":5}'
 ```
 
-### Customizing Authentication
+## Authentication Setup
 
-Edit `users.yml` to add more users or change permissions:
+This example uses **file-based authentication** for simplicity. RESTHeart separates authentication (who you are) from authorization (what you can do):
+
+### Authentication (fileRealmAuthenticator)
+
+User credentials and role assignments are defined in [users.yml](users.yml):
 
 ```yaml
 users:
-  - userid: editor
-    password: editor123
-    roles: [editor]
-
-permissions:
-  - role: editor
-    predicate: path-prefix[path=/shop/products]
-    priority: 2
-    mongo:
-      readFilter: null
-      writeFilter: null
+  - userid: admin
+    password: secret
+    roles:
+      - admin
+  - userid: viewer
+    password: viewer
+    roles:
+      - viewer
 ```
+
+The `fileRealmAuthenticator` validates credentials and assigns roles during login. Configured in [restheart.yml](restheart.yml):
+
+```yaml
+/fileRealmAuthenticator:
+  enabled: true
+  conf-file: /opt/restheart/etc/users.yml
+
+/basicAuthMechanism:
+  enabled: true
+  authenticator: fileRealmAuthenticator
+```
+
+### Authorization (fileAclAuthorizer)
+
+Role-based permissions (ACL) are defined in [restheart.yml](restheart.yml):
+
+```yaml
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    # Admin can do anything
+    - role: admin
+      predicate: path-prefix[path=/]
+      priority: 0
+      mongo:
+        readFilter: null
+        writeFilter: null
+
+    # Viewer can only read
+    - role: viewer
+      predicate: path-prefix[path=/]
+      priority: 1
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'
+```
+
+The `fileAclAuthorizer` enforces what authenticated users can do based on their roles.
+
+### Adding New Users and Roles
+
+**To add a new user:**
+
+1. Edit [users.yml](users.yml):
+   ```yaml
+   - userid: editor
+     password: editor123
+     roles:
+       - editor
+   ```
+
+2. Add permissions for the role in [restheart.yml](restheart.yml):
+   ```yaml
+   - role: editor
+     predicate: path-prefix[path=/shop/products]
+     priority: 2
+     mongo:
+       readFilter: null
+       writeFilter: null  # Can write to products
+   ```
+
+3. Restart the container: `docker-compose restart facet`
+
+### Alternative Authenticators
+
+RESTHeart supports multiple authentication methods. To use MongoDB-based users instead of files:
+
+1. Enable `mongoRealmAuthenticator` in [restheart.yml](restheart.yml)
+2. Disable `fileRealmAuthenticator`
+3. Store users in MongoDB `restheart.users` collection
+
+For production, consider:
+- **MongoDB-based authentication** for dynamic user management
+- **LDAP/Active Directory** for enterprise SSO
+- **OAuth2/OIDC** for social login
+
+See [RESTHeart Security Documentation](https://restheart.org/docs/security/overview) for complete configuration options.
 
 ## Next Steps
 
