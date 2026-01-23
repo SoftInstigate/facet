@@ -8,9 +8,9 @@
 
 {% if items is not empty %}
 <!-- Product Grid using Pico CSS grid system -->
-<div class="grid" style="--grid-min: 280px; --grid-gap: 2rem;">
+<div class="grid" style="--grid-column-gap: 2rem; --grid-row-gap: 2rem; justify-items: center;">
     {% for doc in items %}
-    <article class="product-card card-flex" style="min-width: 0;">
+    <article class="product-card card-flex" style="min-width: 280px; max-width: 400px; width: 100%;">
         {% if doc.data.imageUrl is not null %}
         <img src="{{ doc.data.imageUrl }}" alt="{{ doc.data.name }}" />
         {% endif %}
