@@ -131,12 +131,12 @@ The `documents` variable contains all products from MongoDB.
 
 ### Template Naming Convention
 
-Facet uses action-aware resolution:
+Facet uses explicit action-aware resolution:
 
-- **Collection requests** → looks for `list.html` first, then `index.html`
-- **Document requests** → looks for `view.html` first, then `index.html`
+- **Collection requests** → looks for `list.html` first, then `index.html` (optional fallback)
+- **Document requests** → looks for `view.html` first, then `index.html` (optional fallback)
 
-This is why our file is named `list.html` not `index.html`.
+**Recommended:** Use explicit templates (`list.html` and `view.html`) for cleaner code without conditional logic. This example uses `list.html` for the collection view and `view.html` for the document view, keeping each template focused and simple.
 
 ---
 
@@ -253,10 +253,12 @@ When requesting `/shop/products/65abc123...`:
 
 1. `templates/shop/products/65abc123.../view.html` ❌ (document-specific, doesn't exist)
 2. `templates/shop/products/view.html` ✅ **FOUND!**
-3. `templates/shop/products/index.html` (fallback if view.html missing)
-4. `templates/shop/index.html` (parent directory fallback)
-5. `templates/index.html` (root fallback)
-6. **No template found** → return JSON (API unchanged)
+3. `templates/shop/products/index.html` (optional fallback if view.html missing)
+4. `templates/shop/view.html` (parent-level document template)
+5. `templates/shop/index.html` (parent directory fallback)
+6. `templates/view.html` (global document template)
+7. `templates/index.html` (root fallback)
+8. **No template found** → return JSON (API unchanged)
 
 This is **hierarchical resolution** - walks up the tree until it finds a template.
 
@@ -701,7 +703,7 @@ document.getElementById('productEditForm').addEventListener('submit', async func
 
 #### Create Product Fragment
 
-The create flow works similarly. Open [templates/shop/products/index.html](../examples/product-catalog/templates/shop/products/index.html) (lines 18-26):
+The create flow works similarly. Open [templates/shop/products/list.html](../examples/product-catalog/templates/shop/products/list.html) (lines 18-26):
 
 ```html
 <button hx-get="{{ path }}"
@@ -787,7 +789,7 @@ async function deleteProduct() {
 ### Key Files
 
 - [templates/shop/products/view.html](../examples/product-catalog/templates/shop/products/view.html) - Product detail page with HTMX buttons
-- [templates/shop/products/index.html](../examples/product-catalog/templates/shop/products/index.html) - Product list with "Add Product" button
+- [templates/shop/products/list.html](../examples/product-catalog/templates/shop/products/list.html) - Product list with "Add Product" button
 - [templates/_fragments/product-form.html](../examples/product-catalog/templates/_fragments/product-form.html) - Edit form (HTMX fragment)
 - [templates/_fragments/product-new.html](../examples/product-catalog/templates/_fragments/product-new.html) - Create form (HTMX fragment)
 

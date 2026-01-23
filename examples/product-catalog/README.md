@@ -109,8 +109,8 @@ templates/
 ├── layout.html                      # Base layout with navigation
 ├── shop/
 │   └── products/
-│       ├── index.html              # Product list page
-│       └── view.html               # Product detail page
+│       ├── list.html               # Product list page (collection view)
+│       └── view.html               # Product detail page (document view)
 └── _fragments/
     └── product-list.html           # Reusable product list (for HTMX)
 ```
@@ -130,8 +130,8 @@ When you request different URLs, Facet resolves templates hierarchically:
 
 | Request URL | Template Resolved | Fallback Order |
 |-------------|-------------------|----------------|
-| `GET /shop/products` | `shop/products/index.html` | → `shop/index.html` → `index.html` |
-| `GET /shop/products/65abc...` | `shop/products/view.html` | → `shop/products/index.html` → ... |
+| `GET /shop/products` | `shop/products/list.html` | → `shop/products/index.html` → `shop/list.html` → `shop/index.html` → `list.html` → `index.html` |
+| `GET /shop/products/65abc...` | `shop/products/view.html` | → `shop/products/index.html` → `shop/view.html` → ... |
 | `GET /shop/products` (HTMX, target: `#product-list`) | `_fragments/product-list.html` | No fallback (strict mode) |
 
 ## Key Features Explained

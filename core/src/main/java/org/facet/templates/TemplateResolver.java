@@ -11,20 +11,27 @@ import org.restheart.exchange.ExchangeKeys.TYPE;
  * in the Facet SSR framework. Implementations determine which template
  * file should be used to render a given resource path.
  *
+ * <p><strong>Recommended Convention:</strong> Use explicit action templates for clean separation:
+ * <ul>
+ * <li><strong>list.html</strong> - For collection views (multiple items)</li>
+ * <li><strong>view.html</strong> - For document views (single item)</li>
+ * <li><strong>index.html</strong> - Optional unified fallback (when list/view can share logic)</li>
+ * </ul>
+ *
  * <p>Example resolution for path "/products" (collection):
  * <pre>
- * 1. templates/products/list.html      (explicit - recommended)
- * 2. templates/products/index.html     (unified fallback)
- * 3. templates/list.html               (global explicit)
+ * 1. templates/products/list.html      (recommended - explicit collection view)
+ * 2. templates/products/index.html     (optional unified fallback)
+ * 3. templates/list.html               (global collection template)
  * 4. templates/index.html              (global fallback)
  * </pre>
  *
  * <p>Example resolution for path "/products/:id" (document):
  * <pre>
- * 1. templates/products/:id/view.html  (specific override)
- * 2. templates/products/view.html      (explicit - recommended)
- * 3. templates/products/index.html     (unified fallback)
- * 4. templates/view.html               (global explicit)
+ * 1. templates/products/:id/view.html  (document-specific override)
+ * 2. templates/products/view.html      (recommended - explicit document view)
+ * 3. templates/products/index.html     (optional unified fallback)
+ * 4. templates/view.html               (global document template)
  * 5. templates/index.html              (global fallback)
  * </pre>
  *
@@ -35,10 +42,10 @@ public interface TemplateResolver {
     /**
      * Resolves a template name for the given request path.
      *
-     * <p>This method uses the legacy resolution strategy that only checks for index.html.
-     * For action-aware resolution (list.html, view.html), use {@link #resolve(TemplateProcessor, String, TYPE)}.
+     * <p>This method only checks for index.html templates.
+     * For explicit action-aware resolution (list.html, view.html), use {@link #resolve(TemplateProcessor, String, TYPE)}.
      *
-     * <p>The resolver should search for templates in a hierarchical manner,
+     * <p>The resolver searches for templates in a hierarchical manner,
      * starting with the most specific path and falling back to parent paths
      * until a template is found.
      *
@@ -50,10 +57,14 @@ public interface TemplateResolver {
     Optional<String> resolve(TemplateProcessor templateProcessor, String requestPath);
 
     /**
-     * Resolves a template name for the given request path with action-aware resolution.
+     * Resolves a template name for the given request path with explicit action-aware resolution.
      *
-     * <p>This method supports both explicit action-based templates (list.html, view.html)
-     * and unified templates (index.html) as fallback.
+     * <p><strong>Recommended Pattern:</strong> Use explicit templates for clarity:
+     * <ul>
+     * <li><strong>list.html</strong> - Collection views (no conditional logic needed)</li>
+     * <li><strong>view.html</strong> - Document views (no conditional logic needed)</li>
+     * <li><strong>index.html</strong> - Optional fallback (for simple cases)</li>
+     * </ul>
      *
      * <p><strong>Resolution Strategy:</strong></p>
      * <ul>

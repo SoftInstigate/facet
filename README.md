@@ -13,7 +13,7 @@ Facet is a server-side rendering framework that maps REST API responses to HTML 
 ```http
 GET /shop/products
 Accept: application/json  →  JSON response (REST API unchanged)
-Accept: text/html         →  HTML rendered from templates/shop/products/index.html
+Accept: text/html         →  HTML rendered from templates/shop/products/list.html
 ```
 
 Templates are opt-in. Add HTML rendering only where you need it; your REST API continues working unchanged.
@@ -74,14 +74,19 @@ Here's the actual product list template from the example (simplified):
 
 ### Convention-Based Routing
 
-Templates automatically resolve based on request path:
+Templates automatically resolve based on request path with explicit action templates:
 
 ```http
-GET /shop/products  →  templates/shop/products/index.html
-GET /shop/products/123  →  templates/shop/products/view.html
+GET /shop/products      →  templates/shop/products/list.html (collection view)
+GET /shop/products/123  →  templates/shop/products/view.html (document view)
 ```
 
-Hierarchical fallback: if `shop/products/index.html` doesn't exist, tries `shop/index.html`, then `index.html`.
+**Naming convention:**
+- **`list.html`** - Collection views (recommended - no conditional logic needed)
+- **`view.html`** - Document views (recommended - no conditional logic needed)
+- **`index.html`** - Optional fallback (when list/view can share template logic)
+
+Hierarchical fallback: if `shop/products/list.html` doesn't exist, tries `shop/products/index.html`, then `shop/list.html`, then `shop/index.html`, finally `list.html` and `index.html`.
 
 ### HTMX Support Built In
 

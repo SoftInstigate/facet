@@ -9,7 +9,7 @@ This guide provides a complete reference for Facet's features and capabilities. 
 
 Facet is a data-driven web framework that transforms JSON documents into server-rendered HTML through path-based templates. It's a RESTHeart plugin that provides **hybrid API/UI from the same endpoint**—JSON for API clients, HTML for browsers.
 
-**Core principle**: Convention over Configuration. Your template structure mirrors your API paths. A request to `/mydb/products` automatically uses `templates/mydb/products/index.html` when the browser requests HTML.
+**Core principle**: Convention over Configuration. Your template structure mirrors your API paths. A request to `/mydb/products` (collection) automatically uses `templates/mydb/products/list.html` or falls back to `index.html` when the browser requests HTML.
 
 **Technology stack**:
 - **[RESTHeart](https://restheart.org/)** - MongoDB REST API server (provides the plugin architecture, HTTP layer, auth, and more)
@@ -58,18 +58,46 @@ Accept: text/html
 5. Browser receives HTML page
 ```
 
+### Template Naming Convention
+
+**Recommended Pattern (Explicit):**
+- **`list.html`** - For collection views (recommended - clean, no conditional logic)
+- **`view.html`** - For document views (recommended - clean, no conditional logic)
+- **`index.html`** - Optional fallback (use when list/view can share template logic)
+
+**Why explicit templates?** Templates are cleaner without conditional logic checking request type. File names clearly indicate purpose.
+
 ### Template Resolution Algorithm
 
-**Full Page Requests** (no HTMX headers):
+**Collection Requests** (e.g., `/mydb/products`):
 ```
 GET /mydb/products?page=1
 Accept: text/html
 
 Search order:
-1. templates/mydb/products/index.html    ✓ (if exists)
-2. templates/mydb/index.html              (parent fallback)
-3. templates/index.html                    (global fallback)
-4. No template → return JSON (the API remains unchanged)
+1. templates/mydb/products/list.html      (recommended - explicit collection view)
+2. templates/mydb/products/index.html     (optional fallback)
+3. templates/mydb/list.html               (parent fallback)
+4. templates/mydb/index.html              (parent fallback)
+5. templates/list.html                    (global collection template)
+6. templates/index.html                   (global fallback)
+7. No template → return JSON (the API remains unchanged)
+```
+
+**Document Requests** (e.g., `/mydb/products/123`):
+```
+GET /mydb/products/123
+Accept: text/html
+
+Search order:
+1. templates/mydb/products/123/view.html  (document-specific override)
+2. templates/mydb/products/view.html      (recommended - explicit document view)
+3. templates/mydb/products/index.html     (optional fallback)
+4. templates/mydb/view.html               (parent fallback)
+5. templates/mydb/index.html              (parent fallback)
+6. templates/view.html                    (global document template)
+7. templates/index.html                   (global fallback)
+8. No template → return JSON (the API remains unchanged)
 ```
 
 **HTMX Fragment Requests** (with HX-Target header):
@@ -102,22 +130,28 @@ Organize templates by resource path to match your API structure:
 ```
 templates/
 ├── layout.html              # Your main layout
-├── index.html               # Root resource template (e.g., databases list)
+├── list.html                # Root resource template (e.g., databases list)
 ├── error.html               # Global error page
 ├── _fragments/              # HTMX-routable fragments (optional)
 │   └── my-fragment.html
 └── mydb/                    # Database-specific templates
-    ├── index.html           # Collections list for 'mydb'
+    ├── list.html            # Collections list for 'mydb' (recommended)
+    ├── view.html            # Database detail view (if needed)
+    ├── index.html           # Optional fallback for both
     └── products/
-        └── index.html       # Documents list for 'products' collection
+        ├── list.html        # Product collection view (recommended)
+        ├── view.html        # Single product detail view (recommended)
+        └── index.html       # Optional fallback for both
 ```
 
 **You can organize templates however you prefer** - this is just a recommended pattern that mirrors your API paths.
 
 ### Naming Conventions
 
+- **`list.html`**: Collection view template (recommended - explicit, no conditional logic)
+- **`view.html`**: Document view template (recommended - explicit, no conditional logic)
+- **`index.html`**: Optional unified fallback (when list/view share logic, or for simple cases)
 - **`_fragments/`**: HTMX-routable fragments (underscore prefix indicates not directly accessible via URL)
-- **`index.html`**: Default template for a resource path
 - **`layout.html`**: Base layout template using Pebble inheritance
 - **Path-based**: Directory structure mirrors your API URLs
 

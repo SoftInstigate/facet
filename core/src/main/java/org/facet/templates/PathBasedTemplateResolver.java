@@ -12,22 +12,46 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * This resolver maps request paths to template files using a convention-over-configuration
- * approach. Templates are organized in a directory structure that mirrors the URL structure,
- * with each resource having an optional {@code index.html} template.
+ * approach. Templates are organized in a directory structure that mirrors the URL structure.
  *
  * <p>
- * <strong>Full Page Resolution Algorithm:</strong>
+ * <strong>Recommended Template Naming Convention:</strong>
+ * </p>
+ * <ul>
+ * <li><strong>list.html</strong> - For collection views (recommended for clarity, no conditional logic needed)</li>
+ * <li><strong>view.html</strong> - For document views (recommended for clarity, no conditional logic needed)</li>
+ * <li><strong>index.html</strong> - Optional unified fallback (use when list/view can share template logic)</li>
+ * </ul>
+ *
+ * <p>
+ * <strong>Collection Request Resolution Example:</strong>
  * </p>
  *
  * <pre>
- * Request: GET /a/b/c
+ * Request: GET /products (COLLECTION)
  *
  * Search order:
- * 1. templates/a/b/c/index.html    (most specific - exact match)
- * 2. templates/a/b/index.html      (parent level)
- * 3. templates/a/index.html        (top level)
- * 4. templates/index.html          (root fallback - catch-all)
- * 5. return empty Optional         (no template found)
+ * 1. templates/products/list.html      (recommended - explicit collection view)
+ * 2. templates/products/index.html     (optional fallback)
+ * 3. templates/list.html               (global collection template)
+ * 4. templates/index.html              (global fallback)
+ * 5. return empty Optional             (no template found)
+ * </pre>
+ *
+ * <p>
+ * <strong>Document Request Resolution Example:</strong>
+ * </p>
+ *
+ * <pre>
+ * Request: GET /products/123 (DOCUMENT)
+ *
+ * Search order:
+ * 1. templates/products/123/view.html  (document-specific override)
+ * 2. templates/products/view.html      (recommended - explicit document view)
+ * 3. templates/products/index.html     (optional fallback)
+ * 4. templates/view.html               (global document template)
+ * 5. templates/index.html              (global fallback)
+ * 6. return empty Optional             (no template found)
  * </pre>
  *
  * <p>
@@ -86,8 +110,8 @@ public class PathBasedTemplateResolver implements TemplateResolver {
     /**
      * Resolves a template name for the given request path using hierarchical fallback.
      *
-     * <p>This method uses the legacy resolution strategy (index.html only).
-     * For action-aware resolution, use {@link #resolve(TemplateProcessor, String, TYPE)}.
+     * <p>This method only checks for index.html templates.
+     * For explicit action-aware resolution (list.html, view.html), use {@link #resolve(TemplateProcessor, String, TYPE)}.
      *
      * @param templateProcessor the template processor to check for template existence
      * @param requestPath the request path (e.g., "/restheart/users")
@@ -99,23 +123,30 @@ public class PathBasedTemplateResolver implements TemplateResolver {
     }
 
     /**
-     * Resolves a template name with action-aware resolution (list.html, view.html, index.html).
+     * Resolves a template name with explicit action-aware resolution (list.html, view.html, index.html).
+     *
+     * <p><strong>Recommended Pattern:</strong> Use explicit templates for clean separation:
+     * <ul>
+     * <li><strong>list.html</strong> - Collection views (recommended - no conditional logic needed)</li>
+     * <li><strong>view.html</strong> - Document views (recommended - no conditional logic needed)</li>
+     * <li><strong>index.html</strong> - Optional fallback (for simple cases where list/view share logic)</li>
+     * </ul>
      *
      * <p><strong>Resolution Strategy:</strong></p>
      * <ul>
      * <li><strong>COLLECTION requests:</strong>
      *   <ol>
-     *     <li>products/list.html (explicit - recommended)</li>
-     *     <li>products/index.html (unified fallback)</li>
+     *     <li>products/list.html (recommended - explicit collection view)</li>
+     *     <li>products/index.html (optional fallback)</li>
      *     <li>Hierarchical parent fallback</li>
      *   </ol>
      * </li>
      * <li><strong>DOCUMENT requests:</strong>
      *   <ol>
-     *     <li>products/:id/view.html (specific override)</li>
-     *     <li>products/:id/index.html (specific unified)</li>
-     *     <li>products/view.html (explicit generic)</li>
-     *     <li>products/index.html (unified fallback)</li>
+     *     <li>products/:id/view.html (document-specific override)</li>
+     *     <li>products/:id/index.html (document-specific fallback)</li>
+     *     <li>products/view.html (recommended - explicit document view)</li>
+     *     <li>products/index.html (optional fallback)</li>
      *     <li>Hierarchical parent fallback</li>
      *   </ol>
      * </li>
