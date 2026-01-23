@@ -26,21 +26,35 @@
   - what: "*"
     where: /
 
-# File ACL Authorizer - allows unauthenticated access to common static assets
-# This prevents browser auth popup for missing favicon, apple-touch-icon, etc.
+# File ACL Authorizer - defines permissions for users and roles
 /fileAclAuthorizer:
   enabled: true
   permissions:
+    # Unauthenticated users can access static assets
     - roles: ['$unauthenticated']
       predicate: >
         path('/favicon.ico') or path-prefix('/apple-touch-icon')
         or path('/robots.txt') or path-prefix('/static')
       priority: 999
       mongo:
-          allowManagementRequests: false # default false
-          allowBulkPatch: false          # default false
-          allowBulkDelete: false         # default false
-          allowWriteMode: false          # default false
+          allowManagementRequests: false
+          allowBulkPatch: false
+          allowBulkDelete: false
+          allowWriteMode: false
+    # Admin can do anything
+    - role: admin
+      predicate: path-prefix[path=/]
+      priority: 0
+      mongo:
+        readFilter: null
+        writeFilter: null
+    # Viewer can only read
+    - role: viewer
+      predicate: path-prefix[path=/]
+      priority: 1
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'
 
 # Disable unused services for simplicity
 /graphql:
@@ -122,6 +136,18 @@
 /html-auth-redirect-interceptor:
   enabled: true
   login-uri: /login
+
+# Disable MongoDB-based authentication (use file-based instead)
+/mongoRealmAuthenticator:
+  enabled: false
+
+/mongoAclAuthorizer:
+  enabled: false
+
+# Configure Basic Auth to use file-based authenticator
+/basicAuthMechanism:
+  enabled: true
+  authenticator: fileRealmAuthenticator
 
 # Simple file-based users for this example
 /fileRealmAuthenticator:
