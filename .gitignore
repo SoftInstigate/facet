@@ -25,3 +25,4 @@ Thumbs.db
 CLAUDE.md
 .claude/settings.local.json
 **/.cache/
+core/restheart.log
