@@ -142,19 +142,6 @@ Facet detects HTMX requests and renders only what changed.
 
 Edit templates, refresh browser, see changes. No restart required.
 
-## Database Compatibility
-
-| Database | Support Level | Notes |
-|----------|---------------|-------|
-| ✅ **MongoDB** | Full | All versions 3.6+ |
-| ✅ **MongoDB Atlas** | Full | Cloud-native support |
-| ✅ **Percona Server** | Full | Drop-in MongoDB replacement |
-| ⚙️ **FerretDB** | Good | PostgreSQL-backed MongoDB alternative |
-| ⚙️ **AWS DocumentDB** | Good | Most features work, some MongoDB 4.0+ features missing |
-| ⚙️ **Azure Cosmos DB** | Good | With MongoDB API compatibility layer |
-
-_Compatibility depends on MongoDB wire protocol implementation._
-
 ## When to Use Facet
 
 **Good for:**
@@ -198,6 +185,19 @@ Built on proven technologies:
 - Native image: <100ms startup, minimal memory (~50MB)
 
 **Deployment:** Single JAR or native binary, runs anywhere—Docker, Kubernetes, bare metal.
+
+### Database Compatibility
+
+| Database | Support Level | Notes |
+|----------|---------------|-------|
+| ✅ **MongoDB** | Full | All versions 3.6+ |
+| ✅ **MongoDB Atlas** | Full | Cloud-native support |
+| ✅ **Percona Server** | Full | Drop-in MongoDB replacement |
+| ⚙️ **FerretDB** | Good | PostgreSQL-backed MongoDB alternative |
+| ⚙️ **AWS DocumentDB** | Good | Most features work, some MongoDB 4.0+ features missing |
+| ⚙️ **Azure Cosmos DB** | Good | With MongoDB API compatibility layer |
+
+_Compatibility depends on MongoDB wire protocol implementation._
 
 ## Get Started
 
