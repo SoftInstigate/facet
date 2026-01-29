@@ -1,127 +1,107 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-Server-side rendering for REST APIs using convention-based templates. Built on RESTHeart and MongoDB.
+Turn your API into HTML. No code required.
 
 <img src="docs/decorate.png" alt="decorate API" width="98%" height="auto" />
 
 ## What is Facet?
 
-Facet is a server-side rendering framework that maps REST API responses to HTML templates using path-based conventions. The same endpoint serves JSON or HTML based on the `Accept` header—no duplicate logic, no separate view layer.
+Facet transforms REST APIs into web interfaces using simple HTML templates. You already have the API—just add templates where you want HTML.
 
-**Core concept:** Request path = template path
+**The core idea:** Your API structure is your site structure.
+```
+Your API:
+├── /shop/products     → Returns JSON
+└── /shop/products/123 → Returns JSON
 
-```http
-GET /shop/products
-Accept: application/json  →  JSON response (REST API unchanged)
-Accept: text/html         →  HTML rendered from templates/shop/products/list.html
+Add templates:
+└── templates/
+    └── shop/
+        └── products/
+            ├── list.html   → Renders /shop/products as HTML
+            └── view.html   → Renders /shop/products/123 as HTML
+
+Result:
+├── /shop/products     → HTML for browsers, JSON for APIs
+└── /shop/products/123 → HTML for browsers, JSON for APIs
 ```
 
-Templates are opt-in. Add HTML rendering only where you need it; your REST API continues working unchanged.
+No routing files. No controllers. No duplicate logic. Just drop templates where your data lives.
 
-## Quick Start
+## See It in Action
 
-> ⚠️ We have not published a stable release yet, so the API is still subject to changes.
-
-### Run the Example
-
+Try the working example:
 ```bash
-# Clone and build
 git clone https://github.com/SoftInstigate/facet.git
 cd facet
 mvn package -DskipTests
 
-# Run the product catalog example
 cd examples/product-catalog
 docker-compose up
 ```
 
 **Open:** http://localhost:8080/shop/products
 
-**Login:** Admin (`admin`/`secret`) or Viewer (`viewer`/`viewer`)
+You'll see a complete product catalog with search, pagination, and authentication—all built with templates.
 
-**[→ Product Catalog Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Learn by exploring the working code
+**[→ Follow the Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** to understand how it works by exploring the code.
 
-## Template Example
+## How It Works
 
-Here's the actual product list template from the example (simplified):
+### 1. You have data in MongoDB
+```json
+{
+  "name": "Laptop Pro",
+  "price": 1299,
+  "category": "Electronics"
+}
+```
 
+### 2. RESTHeart exposes it as REST API
+```bash
+curl http://localhost:8080/shop/products
+# Returns JSON array of products
+```
+
+### 3. Add a template
 ```html
 {% extends "layout" %}
 
 {% block main %}
 <h1>Products</h1>
 
-<form method="GET" hx-get="{{ path }}" hx-target="#product-list">
-  <input type="text" name="search" placeholder="Search...">
-  <button>Search</button>
-</form>
-
-<div id="product-list">
-  {% for item in items %}
-  <article>
-    <h3>{{ item.data.name }}</h3>
-    <p>{{ item.data.description }}</p>
-    <span>${{ item.data.price }}</span>
-  </article>
-  {% endfor %}
-</div>
+{% for product in items %}
+<article>
+  <h3>{{ product.data.name }}</h3>
+  <p>Category: {{ product.data.category }}</p>
+  <span>${{ product.data.price }}</span>
+</article>
+{% endfor %}
 {% endblock %}
 ```
 
-**That's it.** No controllers, no services, no routing configuration. The template path matches the API path.
+### 4. Done
 
-## Key Features
+Open http://localhost:8080/shop/products in your browser—you get HTML. Call it from your app with `Accept: application/json`—you get JSON.
 
-### Convention-Based Routing
+## What You Get
 
-Templates automatically resolve based on request path with explicit action templates:
+### Convention Over Configuration
 
-```http
-GET /shop/products      →  templates/shop/products/list.html (collection view)
-GET /shop/products/123  →  templates/shop/products/view.html (document view)
+Templates automatically match API paths:
+```
+GET /shop/products      →  templates/shop/products/list.html
+GET /shop/products/123  →  templates/shop/products/view.html
+GET /shop/categories    →  templates/shop/categories/list.html
 ```
 
-**Naming convention:**
-- **`list.html`** - Collection views (recommended - no conditional logic needed)
-- **`view.html`** - Document views (recommended - no conditional logic needed)
-- **`index.html`** - Optional fallback (when list/view can share template logic)
+No routing configuration needed.
 
-Hierarchical fallback: if `shop/products/list.html` doesn't exist, tries `shop/products/index.html`, then `shop/list.html`, then `shop/index.html`, finally `list.html` and `index.html`.
+### Everything You Need in Templates
 
-### HTMX Support Built In
-
-Facet detects HTMX requests automatically and renders fragment templates:
-
+Pagination, filters, sorting—all available automatically:
 ```html
-<!-- Full page template includes fragment -->
-<div id="product-list">
-  {% include "_fragments/product-list" %}
-</div>
-
-<!-- HTMX request with HX-Target: #product-list renders just the fragment -->
-<a href="?sort=price" hx-get="?sort=price" hx-target="#product-list">
-  Sort by Price
-</a>
-```
-
-No backend code needed. Facet routes HTMX requests to fragment templates automatically.
-
-### Hot Reload Templates
-
-Edit templates, refresh browser, see changes. No restart required.
-
-```yaml
-/pebble-template-processor:
-  use-file-loader: true    # Load from filesystem
-  cache-active: false      # Disable cache in dev
-```
-
-### Rich Template Context
-
-Templates have access to request data, MongoDB query parameters, pagination, and auth:
-
-```html
-<!-- Automatic pagination -->
+<!-- Pagination works out of the box -->
 <nav>
   Page {{ page }} of {{ totalPages }}
   {% if page < totalPages %}
@@ -129,127 +109,123 @@ Templates have access to request data, MongoDB query parameters, pagination, and
   {% endif %}
 </nav>
 
-<!-- MongoDB query parameters available -->
+<!-- MongoDB queries accessible -->
 {% if filter %}
-  <p>Filtered by: {{ filter }}</p>
+  <p>Showing filtered results</p>
 {% endif %}
 
-<!-- Role-based rendering -->
+<!-- Authentication built in -->
 {% if roles contains 'admin' %}
   <button>Delete</button>
 {% endif %}
 ```
 
-**[→ Template Context Reference](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - Complete variable reference
+### HTMX for Smooth Interactions
 
-## Developer Workflow
+Partial page updates work automatically—no backend code needed:
+```html
+<!-- Click updates just the product list -->
+<a href="?sort=price" 
+   hx-get="?sort=price" 
+   hx-target="#product-list">
+  Sort by Price
+</a>
 
-1. **MongoDB data** - Your collections are your data model
-2. **REST API** - RESTHeart automatically exposes MongoDB as REST
-3. **Templates** - Drop HTML templates where paths match resources
-4. **Done** - Browsers get HTML, APIs get JSON
+<div id="product-list">
+  <!-- Products here -->
+</div>
+```
 
-No routing files. No controller layer. No DTO mapping. Just templates and data.
+Facet detects HTMX requests and renders only what changed.
+
+### Live Development
+
+Edit templates, refresh browser, see changes. No restart required.
+
+## When to Use Facet
+
+**Good for:**
+- Admin dashboards over MongoDB data
+- Content-driven websites
+- Internal tools and CRUD interfaces
+- Adding web UI to existing REST APIs
+- Projects where you want HTML without complex frameworks
+
+**Not for:**
+- Heavy client-side state management (use React/Vue)
+- Non-MongoDB databases (RESTHeart requires MongoDB)
+- Projects without REST API layer
+
+## Quick Comparison
+
+### vs Traditional Frameworks (Spring MVC, Django, Rails)
+
+**Facet:** Drop templates in folder matching API path → Done  
+**Traditional:** Write routes + controllers + views + models
+
+### vs JavaScript Frameworks (Next.js, Remix)
+
+**Facet:** Server-renders from REST API, simpler stack  
+**Next.js:** Full-stack React, complex build process, more moving parts
+
+### vs Hypermedia Frameworks (HTMX + Flask/Express)
+
+**Facet:** Built-in HTMX support, convention-based routing  
+**HTMX + Framework:** More manual setup, explicit route definitions
 
 ## Technical Details
 
-### Runtime Options
+Built on proven technologies:
+- **[RESTHeart](https://restheart.org)** - Production-grade MongoDB REST API server
+- **[Pebble](https://pebbletemplates.io)** - Fast template engine (similar to Jinja2/Twig)
+- **[GraalVM](https://www.graalvm.org)** - High-performance runtime with optional native compilation
 
-**GraalVM JDK** (default):
-- ~1s startup time
-- ~150MB memory footprint
-- JavaScript plugin support via Polyglot API
-- Full JVM capabilities
+**Runtime options:**
+- Standard JVM: ~1s startup, full plugin support
+- Native image: <100ms startup, minimal memory (~50MB)
 
-**Native Image** (optional):
-- <100ms startup time
-- ~50MB memory footprint
-- No JavaScript plugins (GraalVM polyglot unavailable in native images)
-- Optimal for cloud deployment
+**Deployment:** Single JAR or native binary, runs anywhere—Docker, Kubernetes, bare metal.
 
-### Deployment
+## Get Started
 
-- **Format:** Single JAR or native binary
-- **Packaging:** Docker, Kubernetes, bare metal
-- **Architecture:** Stateless, horizontally scalable
-- **Dependencies:** MongoDB only
+**Learn by example:**
+1. **[Product Catalog Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Walk through working code
+2. **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Complete reference
+3. **[Template Variables](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - What's available in templates
 
-### Performance
+**Try it yourself:**
+```bash
+# Start with MongoDB
+docker-compose up -d
 
-- Direct MongoDB streaming to templates (no ORM)
-- ETag-based response caching
-- Handles thousands of concurrent requests
-- Production-tested on RESTHeart runtime
+# Add data
+curl -X POST http://localhost:8080/mydb/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Laptop","price":999}'
 
-## Technology Stack
+# Create template
+mkdir -p templates/mydb/products
+echo '<h1>{{ item.data.name }}</h1>' > templates/mydb/products/view.html
 
-- **[RESTHeart](https://restheart.org)** - MongoDB REST API server (plugin architecture, auth, WebSocket)
-- **[Pebble](https://pebbletemplates.io)** - Template engine (Twig/Jinja2-like syntax)
-- **[GraalVM](https://www.graalvm.org)** - High-performance JDK with native compilation
+# Visit in browser
+open http://localhost:8080/mydb/products
+```
 
-## Use Cases
-
-**Good fit:**
-- Data-driven web applications (dashboards, admin panels, content sites)
-- MongoDB-backed applications needing HTML views
-- Projects wanting SSR without complex frameworks
-- Teams preferring convention over configuration
-- Applications requiring both API and web UI
-
-**Not a fit:**
-- Complex frontend state management (use React/Vue directly)
-- Non-MongoDB databases (RESTHeart requires MongoDB)
-- Applications with no REST API layer
-
-## Documentation
-
-- **[Product Catalog Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Guided walkthrough of complete example
-- **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Architecture, patterns, advanced features
-- **[Template Context Reference](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - All available template variables
-- **[Examples README](examples/README.md)** - How to run and create examples
-
-## Examples
-
-- **[Product Catalog](examples/product-catalog/)** - E-commerce with search, pagination, HTMX, auth
-
-More examples coming soon.
-
-## Comparison
-
-### vs Spring Boot / Java MVC
-
-- **Facet:** Convention-based templates, zero controllers, hot reload
-- **Spring:** Explicit routing, controller layer, requires restart
-
-### vs Laravel / Django / Rails
-
-- **Facet:** JVM performance, stateless deployment, native image support
-- **Script frameworks:** Rapid development but operational complexity at scale
-
-### vs Next.js / Remix
-
-- **Facet:** Server-side only, works with existing REST APIs, simpler mental model
-- **Next.js:** Full-stack React, complex build process, frontend-focused
-
-Facet occupies a unique position: JVM stability with scripting-language developer experience.
-
-## Development Status
+## Project Status
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
 [![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
 
-Facet is in active development (pre-1.0). APIs may change.
-
-**Track releases:** Click **Watch → Custom → Releases** to be notified of stable releases and breaking changes.
+⚠️ **Pre-1.0 Status:** API may change. [Watch releases](https://github.com/SoftInstigate/facet/releases) for updates.
 
 ## Contributing
 
-Contributions welcome! See open issues or propose new features via GitHub Discussions.
+Contributions welcome! See [open issues](https://github.com/SoftInstigate/facet/issues) or start a [discussion](https://github.com/SoftInstigate/facet/discussions).
 
 ## License
 
-Apache License 2.0
+Apache License 2.0 - Free for commercial use.
 
-## Credits
+---
 
-Developed by [SoftInstigate](https://softinstigate.com) as a separate product from [RESTHeart](https://restheart.org).
+**Made by [SoftInstigate](https://softinstigate.com)** - Creators of [RESTHeart](https://restheart.org)
