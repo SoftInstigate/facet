@@ -57,7 +57,7 @@ You'll see a complete product catalog with search, pagination, and authenticatio
 }
 ```
 
-### 2. RESTHeart exposes it as REST API
+### 2. Facet exposes it as REST API
 ```bash
 curl http://localhost:8080/shop/products
 # Returns JSON array of products
@@ -142,6 +142,19 @@ Facet detects HTMX requests and renders only what changed.
 
 Edit templates, refresh browser, see changes. No restart required.
 
+## Database Compatibility
+
+| Database | Support Level | Notes |
+|----------|---------------|-------|
+| ✅ **MongoDB** | Full | All versions 3.6+ |
+| ✅ **MongoDB Atlas** | Full | Cloud-native support |
+| ✅ **Percona Server** | Full | Drop-in MongoDB replacement |
+| ⚙️ **FerretDB** | Good | PostgreSQL-backed MongoDB alternative |
+| ⚙️ **AWS DocumentDB** | Good | Most features work, some MongoDB 4.0+ features missing |
+| ⚙️ **Azure Cosmos DB** | Good | With MongoDB API compatibility layer |
+
+_Compatibility depends on MongoDB wire protocol implementation._
+
 ## When to Use Facet
 
 **Good for:**
@@ -153,7 +166,7 @@ Edit templates, refresh browser, see changes. No restart required.
 
 **Not for:**
 - Heavy client-side state management (use React/Vue)
-- Non-MongoDB databases (RESTHeart requires MongoDB)
+- Non-MongoDB databases (Facet requires a MongoDB-compatible database)
 - Projects without REST API layer
 
 ## Quick Comparison
