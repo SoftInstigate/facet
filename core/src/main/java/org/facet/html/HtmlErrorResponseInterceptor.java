@@ -4,7 +4,6 @@ import static org.facet.html.internal.HtmlResponseHelper.acceptsHtml;
 import static org.facet.html.internal.HtmlResponseHelper.renderErrorPage;
 
 import org.facet.templates.TemplateProcessor;
-import org.jspecify.annotations.NonNull;
 import org.restheart.exchange.ServiceRequest;
 import org.restheart.exchange.ServiceResponse;
 import org.restheart.plugins.Inject;
@@ -68,7 +67,7 @@ public class HtmlErrorResponseInterceptor implements WildcardInterceptor {
      * @return true if the response is an error and the request accepts HTML, false otherwise
      */
     @Override
-    public boolean resolve(final ServiceRequest<?> request, final @NonNull ServiceResponse<?> response) {
+    public boolean resolve(final ServiceRequest<?> request, final ServiceResponse<?> response) {
         return response.isInError() && acceptsHtml(request.getHeaders());
     }
 

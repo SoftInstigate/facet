@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.facet.html.internal.HtmlResponseHelper;
 import org.facet.templates.TemplateProcessor;
-import org.jspecify.annotations.NonNull;
 import org.restheart.exchange.JsonRequest;
 import org.restheart.exchange.JsonResponse;
 import org.restheart.plugins.Inject;
@@ -112,7 +111,7 @@ public class LoginService implements JsonService {
      * @param response the response
      */
     @Override
-    public void handle(final @NonNull JsonRequest request, final JsonResponse response) throws Exception {
+    public void handle(final JsonRequest request, final JsonResponse response) throws Exception {
         switch (request.getMethod()) {
             case GET -> handleGetLogin(request, response);
             case OPTIONS -> handleOptions(request);
@@ -167,6 +166,7 @@ public class LoginService implements JsonService {
             interceptorConfig.put("login-uri", loginUri);
 
             final var interceptor = new HtmlAuthRedirectInterceptor(interceptorConfig);
+            @SuppressWarnings("null")
             final PluginRecord<Interceptor<?, ?>> pr = new PluginRecord<>(
                     "html-auth-redirect-interceptor",
                     "Redirects browser requests to login page on authentication failure",

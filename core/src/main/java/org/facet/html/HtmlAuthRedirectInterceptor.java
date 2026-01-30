@@ -5,7 +5,6 @@ import static org.facet.html.internal.HtmlResponseHelper.acceptsHtml;
 import java.util.List;
 import java.util.Map;
 
-import org.jspecify.annotations.NonNull;
 import org.restheart.exchange.ServiceRequest;
 import org.restheart.exchange.ServiceResponse;
 import org.restheart.plugins.Inject;
@@ -115,7 +114,7 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
     }
 
     @Override
-    public void handle(final @NonNull ServiceRequest<?> request, final ServiceResponse<?> response) throws Exception {
+    public void handle(final ServiceRequest<?> request, final ServiceResponse<?> response) throws Exception {
         final String path = request.getPath();
 
         // Check if path should be excluded from redirection
@@ -144,7 +143,7 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
     }
 
     @Override
-    public boolean resolve(final @NonNull ServiceRequest<?> request, final ServiceResponse<?> response) {
+    public boolean resolve(final ServiceRequest<?> request, final ServiceResponse<?> response) {
         // Only intercept browser requests (those accepting HTML)
         return acceptsHtml(request.getHeaders());
     }

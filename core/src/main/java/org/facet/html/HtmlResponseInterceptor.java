@@ -17,7 +17,6 @@ import org.facet.templates.PathBasedTemplateResolver;
 import org.facet.templates.TemplateProcessingException;
 import org.facet.templates.TemplateProcessor;
 import org.facet.templates.TemplateResolver;
-import org.jspecify.annotations.NonNull;
 import org.restheart.exchange.MongoRequest;
 import org.restheart.exchange.ServiceRequest;
 import org.restheart.exchange.ServiceResponse;
@@ -212,7 +211,7 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
      * @return true if response should be transformed to HTML
      */
     @Override
-    public boolean resolve(final @NonNull ServiceRequest<?> request, final ServiceResponse<?> response) {
+    public boolean resolve(final ServiceRequest<?> request, final ServiceResponse<?> response) {
         // Only intercept when request accepts HTML
         if (!acceptsHtml(request.getHeaders())) {
             return false;
@@ -266,7 +265,7 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
      * @param response the service response
      */
     @Override
-    public void handle(final ServiceRequest<?> request, final @NonNull ServiceResponse<?> response) {
+    public void handle(final ServiceRequest<?> request, final ServiceResponse<?> response) {
         final int statusCode = response.getStatusCode();
 
         if (request instanceof final MongoRequest mongoRequest) {
