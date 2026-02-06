@@ -20,8 +20,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./core
-          file: ./core/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: |
             softinstigate/facet:${{ github.event.release.tag_name }}
