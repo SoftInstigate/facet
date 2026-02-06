@@ -9,11 +9,11 @@ This directory contains runnable examples demonstrating Facet's features. Each e
 ### Prerequisites
 
 - Docker and Docker Compose
-- Java 25+ and Maven (to build Facet)
+- Java 25+ and Maven (only if building a local image)
 
 ### Running Any Example
 
-1. **Build Facet core plugin** (from repository root):
+1. **Optional: build Facet core plugin** (only if you want a local image):
    ```bash
    cd /path/to/facet
    mvn package -DskipTests
@@ -22,10 +22,16 @@ This directory contains runnable examples demonstrating Facet's features. Each e
 2. **Navigate to an example and start it**:
    ```bash
    cd examples/product-catalog
-   docker-compose up --build
+   docker compose up
    ```
 
-   The `--build` flag builds the Facet Docker image with the plugin included. On first run, this may take a minute.
+   By default, each example's docker-compose file builds a local image. To use the published image instead, replace the `build:` section with:
+
+   ```yaml
+   image: softinstigate/facet:latest
+   ```
+
+   Then run `docker compose up` (no `--build`).
 
 3. **Access the application** (check example README for specific URL)
 
@@ -72,7 +78,7 @@ example-name/
         └── component.html
 ```
 
-Each example can be run independently from its own directory with simple `docker-compose up` commands.
+Each example can be run independently from its own directory with simple `docker compose up` commands. By default, examples build a local image; you can switch to the published image by setting `image: softinstigate/facet:latest` in docker-compose.
 
 ## Docker Setup
 
@@ -85,13 +91,13 @@ Builds a custom Facet image based on `softinstigate/restheart:9` with:
 - **Plugin dependencies** from `../../core/target/lib/*.jar`
 - Development-friendly base configuration
 
-The Dockerfile references the built artifacts from the repository root, allowing each example to package the latest Facet plugin.
+The Dockerfile references the built artifacts from the repository root, allowing each example to package the latest Facet plugin. If you want to use the published image instead, you can skip the Dockerfile and set `image: softinstigate/facet:latest` in docker-compose.
 
 ### docker-compose.yml
 
 Defines a multi-container setup with:
 - **MongoDB 8.0** with data persistence and sample data initialization
-- **Facet/RESTHeart** built from the local Dockerfile
+- **Facet/RESTHeart** built from the local Dockerfile (or the published image if you replace the `build:` section)
 - Volume mounts for configuration, templates, and static assets (enabling hot-reload)
 - Healthchecks for service readiness
 - Networking between containers
@@ -213,8 +219,10 @@ To create a new example:
 
 5. **Run it**:
    ```bash
-   docker-compose up --build
+   docker compose up
    ```
+
+   Use `docker compose up --build` if you are building a local image.
 
 The Dockerfile and docker-compose.yml from product-catalog will work for most examples with minimal changes.
 
@@ -334,8 +342,8 @@ To reset MongoDB data to initial state:
 
 ```bash
 # From the example directory
-docker-compose down -v
-docker-compose up
+docker compose down -v
+docker compose up
 ```
 
 This removes the data volume and re-runs `init-data.js`.
@@ -347,7 +355,7 @@ Have an example idea? Contributions welcome!
 1. Create example following the structure above
 2. Include comprehensive README
 3. Add sample data in `init-data.js`
-4. Test with `docker-compose up`
+4. Test with `docker compose up`
 5. Submit PR with example added to this README
 
 Good example topics:

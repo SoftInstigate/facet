@@ -35,12 +35,13 @@ This guide walks you through a complete, working product catalog application to 
 git clone https://github.com/SoftInstigate/facet.git
 cd facet
 
-# Build the plugin
-mvn package -DskipTests
-
 # Start everything with Docker Compose
 cd examples/product-catalog
-docker-compose up
+docker compose up
+
+# If you want a local image (for plugin changes)
+# mvn package -DskipTests
+# docker compose up --build
 ```
 
 **Wait for services to start** (few seconds).

@@ -40,11 +40,17 @@ Try the working example:
 ```bash
 git clone https://github.com/SoftInstigate/facet.git
 cd facet
-mvn package -DskipTests
 
+# Option A: use the published image
 cd examples/product-catalog
-docker-compose up
+docker compose up
+
+# Option B: build locally (for plugin changes)
+# mvn package -DskipTests
+# docker compose up --build
 ```
+
+Note: example docker-compose files build a local image by default. To use the published image, replace the `build:` section with `image: softinstigate/facet:latest`.
 
 **Open:** http://localhost:8080/shop/products
 
@@ -214,15 +220,18 @@ _Compatibility depends on MongoDB wire protocol implementation._
 
 **Try it yourself (quickstart):**
 ```bash
-# Build Facet core artifacts (required for the Docker image)
-mvn -pl core -am -DskipTests package
-
 # Start the quickstart stack (MongoDB + Facet)
-docker compose up --build
+docker compose up
+
+# If you want to build a local image instead:
+# mvn -pl core -am -DskipTests package
+# docker compose up --build
 
 # Visit in browser (login required)
 open http://localhost:8080/
 ```
+
+Note: the root docker-compose.yml builds a local image by default. To use the published image, replace the `build:` section with `image: softinstigate/facet:latest`.
 
 Login with **admin / secret**, then visit **/mydb/products** to see the seeded data rendered by the default template.
 

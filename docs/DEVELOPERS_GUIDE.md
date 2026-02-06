@@ -50,11 +50,14 @@ Facet is distributed through **GitHub Releases** (binary artifacts) and **JitPac
 
 ### Quickstart (Docker)
 
-Run the minimal quickstart from the repo root:
+Run the minimal quickstart from the repo root. The default Docker Compose uses the published image; build locally only if you are changing the plugin.
 
 ```bash
-mvn -pl core -am -DskipTests package
-docker compose up --build
+docker compose up
+
+# Local image (for plugin changes)
+# mvn -pl core -am -DskipTests package
+# docker compose up --build
 ```
 
 Open http://localhost:8080/, log in with **admin / secret**, then visit **/mydb/products** to see the seeded data rendered by the default template.
@@ -73,6 +76,15 @@ Each GitHub release should include:
 - `lib/` dependencies (the `core/target/lib` output)
 
 These artifacts are used by the Docker build in [core/Dockerfile](../core/Dockerfile).
+
+### Docker Hub (Published Image)
+
+Facet is published to Docker Hub as:
+
+- `softinstigate/facet:latest`
+- `softinstigate/facet:<tag>`
+
+Use the published image for quickstarts, and build locally only when testing plugin changes.
 
 ### Release Checklist (Tag-Only)
 

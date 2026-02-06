@@ -46,23 +46,29 @@ This architectural approach provides:
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Facet core plugin built: `mvn package` from repository root
+- Java 25+ and Maven (only if building a local image)
 
 ### Running the Example
 
-1. **Build the Facet plugin** (from repository root):
-   ```bash
-   cd /path/to/facet
-   mvn package -DskipTests
-   ```
+1. **Optional: build the Facet plugin** (only if you want a local image):
+  ```bash
+  cd /path/to/facet
+  mvn package -DskipTests
+  ```
 
 2. **Start the example** (from the product-catalog directory):
    ```bash
    cd examples/product-catalog
-   docker-compose up --build
+  docker compose up
    ```
 
-   The `--build` flag ensures the Facet Docker image is built with the plugin included.
+  By default, the docker-compose file builds a local image. To use the published image instead, replace the `build:` section with:
+
+  ```yaml
+  image: softinstigate/facet:latest
+  ```
+
+  Then run `docker compose up` (no `--build`).
 
 3. **Wait for services to start** (watch logs for "RESTHeart started" message):
    ```bash
