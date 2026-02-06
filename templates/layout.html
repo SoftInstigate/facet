@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Facet Quickstart{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
+
+    <style>
+        :root {
+            --pico-form-element-spacing-vertical: 0.35rem;
+            --pico-form-element-spacing-horizontal: 0.75rem;
+            --pico-font-size: 1rem;
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <nav class="container">
+        <ul>
+            <li><strong>Facet Quickstart</strong></li>
+        </ul>
+        <ul>
+            <li><a href="/">Home</a></li>
+            {% if username %}
+            <li>{{ username }}{% if roles is not empty %} <mark>{{ roles }}</mark>{% endif %}</li>
+            <li>
+                <button type="button" class="secondary"
+                    onclick="fetch('/logout', { method: 'POST', credentials: 'include' }).then(() => window.location.href = '/login')">Logout</button>
+            </li>
+            {% else %}
+            <li>
+                <form action="/login" method="get" style="display:inline;">
+                    <button type="submit" class="secondary">Login</button>
+                </form>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer class="container">
+        <small>
+            <strong>Facet</strong> quickstart · <a href="https://github.com/SoftInstigate/facet">GitHub</a>
+        </small>
+    </footer>
+
+    {% block script %}{% endblock %}
+</body>
+
+</html>

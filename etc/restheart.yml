@@ -1,0 +1,145 @@
+# Minimal Facet quickstart configuration
+
+/core:
+  name: facet-quickstart
+
+/ping:
+  msg: Facet Quickstart
+
+/http-listener:
+  host: 0.0.0.0
+  port: 8080
+
+/logging:
+  log-level: info
+  packages: [org.restheart, org.facet]
+  full-stacktrace: true
+  ansi-console: true
+  requests-log-mode: 1
+
+/mclient:
+  connection-string: "mongodb://mongodb"
+
+/mongo/mongo-mounts:
+  - what: "*"
+    where: /
+
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - roles: ['$unauthenticated']
+      predicate: >
+        path('/favicon.ico') or path-prefix('/apple-touch-icon')
+        or path('/robots.txt') or path-prefix('/static')
+      priority: 999
+      mongo:
+        allowManagementRequests: false
+        allowBulkPatch: false
+        allowBulkDelete: false
+        allowWriteMode: false
+    - role: admin
+      predicate: path-prefix[path=/]
+      priority: 0
+      mongo:
+        readFilter: null
+        writeFilter: null
+    - role: viewer
+      predicate: path-prefix[path=/]
+      priority: 1
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'
+
+/graphql:
+  enabled: false
+
+/bruteForceAttackGuard:
+  enabled: false
+
+/rndTokenManager:
+  enabled: false
+
+/tokenBasicAuthMechanism:
+  enabled: false
+
+/jwtTokenManager:
+  enabled: true
+  ttl: 15
+  srv-uri: /token
+
+/jwtConfigProvider:
+  key: change-me
+  algorithm: HS256
+  base64Encoded: false
+  issuer: facet-quickstart
+
+/jwtAuthenticationMechanism:
+  enabled: true
+  base64Encoded: false
+  usernameClaim: sub
+  rolesClaim: roles
+  fixedRoles: []
+
+/authCookieSetter:
+  enabled: true
+  name: rh_auth
+  domain: localhost
+  path: /
+  secure: false
+  http-only: true
+  same-site: true
+  same-site-mode: lax
+  ttl: 15
+  allow-legacy: true
+
+/authCookieHandler:
+  enabled: true
+
+/authCookieRemover:
+  enabled: true
+  secure: false
+  uri: /logout
+
+/pebble-template-processor:
+  enabled: true
+  use-file-loader: true
+  cache-active: false
+  templates-path: /opt/restheart/templates
+
+/html-response-interceptor:
+  enabled: true
+  response-caching: false
+  max-age: 5
+
+/login-service:
+  enabled: true
+  uri: /login
+  redirect-param: redirect
+  default-redirect: /
+  roles-endpoint: /roles
+
+/html-auth-redirect-interceptor:
+  enabled: true
+  login-uri: /login
+
+/mongoRealmAuthenticator:
+  enabled: false
+
+/mongoAclAuthorizer:
+  enabled: false
+
+/basicAuthMechanism:
+  enabled: true
+  authenticator: fileRealmAuthenticator
+
+/fileRealmAuthenticator:
+  enabled: true
+  conf-file: /opt/restheart/etc/users.yml
+
+/static-resources:
+  - what: /opt/restheart/static/favicon.ico
+    where: /favicon.ico
+    embedded: false
+  - what: /opt/restheart/static
+    where: /static
+    embedded: false

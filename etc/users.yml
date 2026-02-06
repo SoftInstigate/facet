@@ -1,0 +1,13 @@
+# Default users for Facet quickstart (development only)
+# Passwords are plain text.
+
+users:
+  - userid: admin
+    password: secret
+    roles:
+      - admin
+
+  - userid: viewer
+    password: viewer
+    roles:
+      - viewer

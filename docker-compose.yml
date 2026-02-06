@@ -1,0 +1,55 @@
+# Minimal Facet quickstart
+
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: facet-mongo
+    volumes:
+      - mongo-data:/data/db
+      - ./etc/init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
+    networks:
+      - facet-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  facet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: facet-quickstart:latest
+    container_name: facet
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      RHO: >
+        /mclient/connection-string->"mongodb://mongodb";
+        /pebble-template-processor/enabled->true;
+        /http-listener/host->"0.0.0.0";
+    volumes:
+      - ./etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro
+      - ./etc/users.yml:/opt/restheart/etc/users.yml:ro
+      - ./templates:/opt/restheart/templates:ro
+      - ./static:/opt/restheart/static:ro
+    networks:
+      - facet-network
+    healthcheck:
+      test: curl -f http://localhost:8080/ping || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongo-data:
+    name: facet-mongo-data
+
+networks:
+  facet-network:
+    name: facet-network
+    driver: bridge

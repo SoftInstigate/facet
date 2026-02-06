@@ -224,6 +224,16 @@ echo '<h1>{{ item.data.name }}</h1>' > templates/mydb/products/view.html
 open http://localhost:8080/mydb/products
 ```
 
+**Run the quickstart image directly (standalone):**
+```bash
+docker run --rm -p 8080:8080 \
+  -v "$PWD/etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro" \
+  -v "$PWD/etc/users.yml:/opt/restheart/etc/users.yml:ro" \
+  -v "$PWD/templates:/opt/restheart/templates:ro" \
+  -v "$PWD/static:/opt/restheart/static:ro" \
+  softinstigate/facet:latest -o /opt/restheart/etc/restheart.yml
+```
+
 ### Install via Maven / Gradle (JitPack)
 
 Facet publishes **release tags only** to JitPack. Use the raw tag name (no `v` prefix) as the version.

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login — Facet Quickstart</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        :root {
+            --pico-form-element-spacing-vertical: 0.35rem;
+            --pico-form-element-spacing-horizontal: 0.75rem;
+            --pico-font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <article style="max-width: 420px; margin: 4rem auto;">
+            <header>
+                <h1>Login</h1>
+                <p>Sign in to access your databases and pages.</p>
+            </header>
+
+            <form id="loginForm">
+                <label for="username">
+                    Username
+                    <input type="text" id="username" name="username" required autofocus value="admin">
+                </label>
+
+                <label for="password">
+                    Password
+                    <input type="password" id="password" name="password" required value="secret">
+                </label>
+
+                <button type="submit">Sign In</button>
+            </form>
+
+            <script>
+                const redirectTo = '{{ redirect }}' === '/' ? '/' : '{{ redirect }}';
+
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const credentials = btoa(`${username.trim()}:${password.trim()}`);
+
+                        const response = await fetch('/token/cookie', {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Basic ${credentials}`,
+                                "No-Auth-Challenge": "true",
+                                "Content-Type": "application/json"
+                            },
+                            credentials: "include",
+                            body: JSON.stringify({})
+                        });
+
+                        if (response.ok) {
+                            globalThis.location.href = redirectTo;
+                        } else {
+                            alert('Invalid username or password');
+                        }
+                    } catch (error) {
+                        console.error("Login error:", error);
+                        alert('Login failed: ' + error.message);
+                    }
+                });
+            </script>
+
+            <footer>
+                <small>
+                    <strong>Default credentials:</strong> admin / secret
+                </small>
+            </footer>
+        </article>
+    </main>
+</body>
+
+</html>

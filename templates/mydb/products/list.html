@@ -1,0 +1,30 @@
+{% extends "layout" %}
+
+{% block title %}Products — Facet Quickstart{% endblock %}
+
+{% block main %}
+<h1>Products</h1>
+
+{% if items is empty %}
+  <p>No products found.</p>
+{% else %}
+  <div class="grid">
+    {% for product in items %}
+      <article>
+        <header>
+          <strong>{{ product.data.name }}</strong>
+        </header>
+        <p>Category: {{ product.data.category }}</p>
+        <p>Price: ${{ product.data.price }}</p>
+      </article>
+    {% endfor %}
+  </div>
+
+  <details>
+    <summary>Raw collection JSON</summary>
+    <pre>{{ items | toJson }}</pre>
+  </details>
+{% endif %}
+
+<p><a href="/">Back to home</a></p>
+{% endblock %}

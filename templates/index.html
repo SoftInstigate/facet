@@ -1,0 +1,23 @@
+{% extends "layout" %}
+
+{% block title %}Welcome — Facet Quickstart{% endblock %}
+
+{% block main %}
+<h1>Welcome to Facet</h1>
+
+<p>This is the minimal quickstart instance. Add templates under <code>templates/</code> to render HTML for your API paths.</p>
+
+<section>
+  <h2>Next steps</h2>
+  <ul>
+    <li><a href="/login">Login</a> (default credentials are in <code>users.yml</code>)</li>
+    <li><a href="/mydb/products">View sample products</a> (seeded on startup)</li>
+    <li>Create templates for your database paths (e.g. <code>templates/mydb/products/list.html</code>)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Why this page?</h2>
+  <p>It replaces the raw JSON list of databases at <code>/</code> with a friendly HTML page.</p>
+</section>
+{% endblock %}
