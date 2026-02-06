@@ -288,7 +288,7 @@ dependencies {
 
 **Release binaries:** Download `facet-core.jar` and dependencies from [GitHub Releases](https://github.com/SoftInstigate/facet/releases).
 
-**Docker Hub:** A prebuilt image is available at `softinstigate/facet` (tags match release versions).
+**Docker Hub:** A prebuilt image is available at [softinstigate/facet](https://hub.docker.com/r/softinstigate/facet) (tags match release versions).
 
 ## Contributing
 
