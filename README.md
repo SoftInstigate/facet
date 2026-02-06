@@ -257,6 +257,8 @@ dependencies {
 
 **Release binaries:** Download `facet-core.jar` and dependencies from [GitHub Releases](https://github.com/SoftInstigate/facet/releases).
 
+**Docker Hub:** A prebuilt image is available at `softinstigate/facet` (tags match release versions).
+
 ## Project Status
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
