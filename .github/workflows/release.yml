@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build core artifacts
-        run: mvn -B -pl core -am -DskipTests package
+        run: mvn -B package
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
