@@ -63,6 +63,15 @@ Each GitHub release should include:
 
 These artifacts are used by the Docker build in [core/Dockerfile](../core/Dockerfile).
 
+### Release Checklist (Tag-Only)
+
+1. Update `pom.xml` version (drop `-SNAPSHOT`).
+2. Update this guide’s `RELEASE_VERSION` placeholder.
+3. Commit changes and tag with the **raw Maven version** (e.g., `0.1.0` or `1.0.0`).
+4. Push the tag to GitHub to trigger the release workflow.
+5. Verify GitHub Release assets: `facet-core.jar` and `lib/`.
+6. Verify Docker image tags on Docker Hub: `softinstigate/facet:<tag>` and `latest`.
+
 ## Understanding the SSR Framework
 
 ### How It Works
