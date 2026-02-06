@@ -206,21 +206,27 @@ _Compatibility depends on MongoDB wire protocol implementation._
 2. **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Complete reference
 3. **[Template Variables](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - What's available in templates
 
-**Try it yourself:**
+**Try it yourself (quickstart):**
 ```bash
-# Start with MongoDB
-docker-compose up -d
+# Build Facet core artifacts (required for the Docker image)
+mvn -pl core -am -DskipTests package
 
-# Add data
+# Start the quickstart stack (MongoDB + Facet)
+docker compose up --build
+
+# Visit in browser (login required)
+open http://localhost:8080/
+```
+
+Login with **admin / secret**, then visit **/mydb/products** to see the seeded data rendered by the default template.
+
+Add a product via curl and refresh the HTML list:
+```bash
 curl -X POST http://localhost:8080/mydb/products \
+  -u admin:secret \
   -H "Content-Type: application/json" \
-  -d '{"name":"Laptop","price":999}'
+  -d '{"name":"Desk Lamp","price":49,"category":"Home"}'
 
-# Create template
-mkdir -p templates/mydb/products
-echo '<h1>{{ item.data.name }}</h1>' > templates/mydb/products/view.html
-
-# Visit in browser
 open http://localhost:8080/mydb/products
 ```
 

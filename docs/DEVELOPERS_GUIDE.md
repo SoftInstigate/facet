@@ -48,6 +48,17 @@ For advanced RESTHeart features (WebSocket, Change Streams, GridFS, custom auth,
 
 Facet is distributed through **GitHub Releases** (binary artifacts) and **JitPack** (Maven coordinates). We publish **release tags only** to JitPack.
 
+### Quickstart (Docker)
+
+Run the minimal quickstart from the repo root:
+
+```bash
+mvn -pl core -am -DskipTests package
+docker compose up --build
+```
+
+Open http://localhost:8080/, log in with **admin / secret**, then visit **/mydb/products** to see the seeded data rendered by the default template.
+
 ### JitPack (Maven)
 
 - **Release tags only**: Tag releases with raw Maven versions (no `v` prefix). Example: `0.1.0` or `1.0.0`.
