@@ -2,6 +2,12 @@
 
 Turn your API into HTML. No code required.
 
+
+[![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
+[![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
+[![JitPack](https://jitpack.io/v/SoftInstigate/facet.svg)](https://jitpack.io/#SoftInstigate/facet)
+
+
 <img src="docs/decorate.png" alt="decorate API" width="98%" height="auto" />
 
 ## What is Facet?
@@ -274,14 +280,6 @@ dependencies {
 **Release binaries:** Download `facet-core.jar` and dependencies from [GitHub Releases](https://github.com/SoftInstigate/facet/releases).
 
 **Docker Hub:** A prebuilt image is available at `softinstigate/facet` (tags match release versions).
-
-## Project Status
-
-[![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
-[![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
-[![JitPack](https://jitpack.io/v/SoftInstigate/facet.svg)](https://jitpack.io/#SoftInstigate/facet)
-
-⚠️ **Pre-1.0 Status:** API may change. [Watch releases](https://github.com/SoftInstigate/facet/releases) for updates.
 
 ## Contributing
 
