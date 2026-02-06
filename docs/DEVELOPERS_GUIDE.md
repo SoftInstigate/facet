@@ -1,7 +1,9 @@
 # Facet - Developer's Guide
 
-**Version:** 1.0.0-SNAPSHOT
+**Version:** RELEASE_VERSION
 **Last Updated:** 2026-01-17
+
+**Note:** `RELEASE_VERSION` is a textual placeholder. Replace it with the raw tag (for example, `0.1.0` or `1.0.0`) when cutting a release.
 
 This guide provides a complete reference for Facet's features and capabilities. For a high-level overview, see the [README](../README.md).
 
@@ -24,22 +26,42 @@ For advanced RESTHeart features (WebSocket, Change Streams, GridFS, custom auth,
 
 ## Table of Contents
 
-1. [Understanding the SSR Framework](#understanding-the-ssr-framework)
-2. [Template Structure & Conventions](#template-structure--conventions)
-3. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
-4. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
-5. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
-6. [Tutorial: Selective SSR](#tutorial-selective-ssr)
-7. [Template Context Variables](#template-context-variables)
-8. [Working with HTMX](#working-with-htmx)
+1. [Distribution & Releases](#distribution--releases)
+2. [Understanding the SSR Framework](#understanding-the-ssr-framework)
+3. [Template Structure & Conventions](#template-structure--conventions)
+4. [Tutorial: Creating Your First Application](#tutorial-creating-your-first-application)
+5. [Tutorial: Building Custom SSR Applications](#tutorial-building-custom-ssr-applications)
+6. [Tutorial: Using Different Layouts](#tutorial-using-different-layouts)
+7. [Tutorial: Selective SSR](#tutorial-selective-ssr)
+8. [Template Context Variables](#template-context-variables)
+9. [Working with HTMX](#working-with-htmx)
    - [HtmxResponseHelper (Server-Side Control)](#htmxresponsehelper-server-side-control)
    - [Handling Server-Triggered Events (Client-Side)](#handling-server-triggered-events-client-side)
    - [Best Practices](#best-practices)
-9. [Advanced Patterns](#advanced-patterns)
-10. [Configuration Reference](#configuration-reference)
-11. [Troubleshooting](#troubleshooting)
+10. [Advanced Patterns](#advanced-patterns)
+11. [Configuration Reference](#configuration-reference)
+12. [Troubleshooting](#troubleshooting)
 
 ---
+
+## Distribution & Releases
+
+Facet is distributed through **GitHub Releases** (binary artifacts) and **JitPack** (Maven coordinates). We publish **release tags only** to JitPack.
+
+### JitPack (Maven)
+
+- **Release tags only**: Tag releases with raw Maven versions (no `v` prefix). Example: `0.1.0` or `1.0.0`.
+- **Coordinates**: `com.github.SoftInstigate:facet-core:RELEASE_VERSION`
+- **Repository**: `https://jitpack.io`
+- **JDK requirement**: JitPack builds use Java 25 (see [jitpack.yml](../jitpack.yml)).
+
+### GitHub Releases (Binary Artifacts)
+
+Each GitHub release should include:
+- `facet-core.jar`
+- `lib/` dependencies (the `core/target/lib` output)
+
+These artifacts are used by the Docker build in [core/Dockerfile](../core/Dockerfile).
 
 ## Understanding the SSR Framework
 

@@ -224,10 +224,44 @@ echo '<h1>{{ item.data.name }}</h1>' > templates/mydb/products/view.html
 open http://localhost:8080/mydb/products
 ```
 
+### Install via Maven / Gradle (JitPack)
+
+Facet publishes **release tags only** to JitPack. Use the raw tag name (no `v` prefix) as the version.
+
+**Maven:**
+```xml
+<repositories>
+  <repository>
+    <id>jitpack</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.github.SoftInstigate</groupId>
+  <artifactId>facet-core</artifactId>
+  <version>RELEASE_VERSION</version>
+</dependency>
+```
+
+**Gradle (Kotlin DSL):**
+```kotlin
+repositories {
+  maven("https://jitpack.io")
+}
+
+dependencies {
+  implementation("com.github.SoftInstigate:facet-core:RELEASE_VERSION")
+}
+```
+
+**Release binaries:** Download `facet-core.jar` and dependencies from [GitHub Releases](https://github.com/SoftInstigate/facet/releases).
+
 ## Project Status
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
 [![GitHub releases](https://img.shields.io/github/v/release/SoftInstigate/facet?include_prereleases&label=latest%20release)](https://github.com/SoftInstigate/facet/releases)
+[![JitPack](https://jitpack.io/v/SoftInstigate/facet.svg)](https://jitpack.io/#SoftInstigate/facet)
 
 ⚠️ **Pre-1.0 Status:** API may change. [Watch releases](https://github.com/SoftInstigate/facet/releases) for updates.
 
