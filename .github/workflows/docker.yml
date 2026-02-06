@@ -1,6 +1,12 @@
 name: Publish Docker Image
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release"
+        required: true
+        type: string
   release:
     types: [published]
 
@@ -24,5 +30,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            softinstigate/facet:${{ github.event.release.tag_name }}
+            softinstigate/facet:${{ github.event.release.tag_name || inputs.version }}
             softinstigate/facet:latest
