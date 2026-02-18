@@ -20,9 +20,11 @@ This guide walks you through a complete, working product catalog application to 
 5. [Level 4: MongoDB Query Parameters](#5-level-4-mongodb-query-parameters)
 6. [Level 5: Pagination](#6-level-5-pagination)
 7. [Level 6: HTMX Partial Updates](#7-level-6-htmx-partial-updates)
-8. [Level 7: Authentication and JWT Cookies](#8-level-7-authentication-and-jwt-cookies)
+8. [Level 7: Authentication and Authorization](#8-level-7-authentication-and-authorization)
 9. [Level 8: Static Assets](#9-level-8-static-assets)
-10. [Production Considerations](#10-production-considerations)
+10. [Level 9: CRUD with HTMX Fragments](#10-level-9-crud-with-htmx-fragments)
+11. [Level 10: JavaScript Plugins](#11-level-10-javascript-plugins)
+12. [Production Considerations](#12-production-considerations)
 
 ---
 
@@ -628,7 +630,7 @@ And **lines 30-35** in the product template for images:
 
 ---
 
-## 9. Level 9: CRUD with HTMX Fragments
+## 10. Level 9: CRUD with HTMX Fragments
 
 Learn how the product catalog implements full CRUD functionality using HTMX fragments.
 
@@ -898,7 +900,164 @@ This pattern works for any resource:
 
 ---
 
-## 10. Production Considerations
+## 11. Level 10: JavaScript Plugins
+
+### Beyond Templates: Server-Side Logic Without Java
+
+So far every feature has used MongoDB directly through RESTHeart's built-in CRUD endpoints. But sometimes you need custom aggregation, computed fields, or data from multiple collections. For that, RESTHeart supports **server-side plugins** written in JavaScript — no Java required.
+
+**The key advantage over Java plugins: hot-reload.** Edit a `.mjs` file, make the next request, and the new code runs immediately. No `mvn package`, no Docker restart — exactly like editing a Pebble template.
+
+### Explore the Product Statistics Plugin
+
+The product catalog ships with a working JavaScript plugin: `product-stats`. It queries the `shop.products` collection and computes aggregated inventory statistics.
+
+**Plugin files:**
+
+| File | Purpose |
+|------|---------|
+| [plugins/product-stats/package.json](../examples/product-catalog/plugins/product-stats/package.json) | Declares the plugin to RESTHeart |
+| [plugins/product-stats/product-stats.mjs](../examples/product-catalog/plugins/product-stats/product-stats.mjs) | The service logic |
+| [templates/shop/stats/index.html](../examples/product-catalog/templates/shop/stats/index.html) | HTML dashboard template |
+
+**Visit the stats page:** http://localhost:8080/shop/stats
+
+You should see an HTML dashboard with stat cards (total products, in-stock count, total inventory value, average price) and a category breakdown table.
+
+### How the Plugin Works
+
+Open [plugins/product-stats/product-stats.mjs](../examples/product-catalog/plugins/product-stats/product-stats.mjs):
+
+**The plugin declaration:**
+```javascript
+export const options = {
+    name: "productStatsService",
+    description: "Aggregated statistics for the product catalog",
+    uri: "/shop/stats",
+    secured: true,
+    matchPolicy: "EXACT"
+};
+```
+
+This registers the service at the `/shop/stats` URL.
+
+**The handle function:**
+```javascript
+const BsonDocument = Java.type("org.bson.BsonDocument");
+
+export function handle(request, response) {
+    const db = mclient.getDatabase("shop");
+    const coll = db.getCollection("products", BsonDocument.class);
+
+    let total = 0, inStock = 0, totalValue = 0;
+
+    coll.find().forEach(doc => {
+        total++;
+        const price = doc.getNumber("price").doubleValue();
+        const stock = doc.getNumber("stock").intValue();
+        if (stock > 0) inStock++;
+        totalValue += price * stock;
+    });
+
+    response.setContent(JSON.stringify({ total, inStock, totalValue, ... }));
+    response.setContentTypeAsJson();
+}
+```
+
+**Key concepts:**
+- `Java.type("org.bson.BsonDocument")` — GraalVM polyglot interop: access Java classes from JavaScript
+- `mclient` — global MongoDB Java driver client (injected by RESTHeart)
+- `LOGGER` — global logger (use `LOGGER.info("message")` for debugging)
+- BSON accessor methods: `.getString("key").getValue()`, `.getNumber("key").doubleValue()`, `.containsKey("key")`
+
+### How Facet Renders the Plugin Output
+
+The plugin returns JSON. Facet's rendering pipeline intercepts any service response — not just MongoDB — and renders HTML using the matching template.
+
+For `/shop/stats`:
+
+```
+1. templates/shop/stats/index.html   ✅ FOUND
+```
+
+The template receives every top-level key from the JSON response as a template variable. So `{ "total": 10, "inStock": 8 }` becomes `{{ total }}` and `{{ inStock }}` in the template.
+
+### Verify the Dual Interface
+
+Same endpoint, different `Accept` header:
+
+```bash
+# HTML dashboard (browser)
+curl -u admin:secret http://localhost:8080/shop/stats -H "Accept: text/html"
+
+# Raw JSON (API client)
+curl -u admin:secret http://localhost:8080/shop/stats -H "Accept: application/json"
+```
+
+The JSON and HTML responses show the same numbers — the template just decorates the data.
+
+### Try It Yourself: Hot-Reload
+
+1. Open [plugins/product-stats/product-stats.mjs](../examples/product-catalog/plugins/product-stats/product-stats.mjs)
+
+2. Find where the stats object is built and add a new field:
+   ```javascript
+   const stats = {
+       total,
+       inStock,
+       // ... existing fields
+       pluginVersion: "tutorial-test"   // ← add this line
+   };
+   ```
+
+3. **Refresh http://localhost:8080/shop/stats** (no restart needed)
+
+4. Check the raw JSON at http://localhost:8080/shop/stats with `Accept: application/json` — `pluginVersion` now appears
+
+5. Revert the change
+
+**No `mvn package`. No `docker compose restart`. Just save and refresh.**
+
+### The Package.json Manifest
+
+Open [plugins/product-stats/package.json](../examples/product-catalog/plugins/product-stats/package.json):
+
+```json
+{
+  "name": "product-stats",
+  "version": "1.0.0",
+  "rh:services": ["product-stats.mjs"]
+}
+```
+
+- `rh:services` — array of `.mjs` files to load as RESTHeart services
+- `rh:interceptors` — (not used here) array of `.mjs` interceptor files
+
+RESTHeart scans any directory under `/opt/restheart/plugins/` that contains a `package.json` with these keys.
+
+### How the Plugin Is Mounted
+
+Open [docker-compose.yml](../examples/product-catalog/docker-compose.yml) and find the `facet` service volumes:
+
+```yaml
+volumes:
+  - ./templates:/opt/restheart/templates:ro
+  - ./plugins/product-stats:/opt/restheart/plugins/product-stats:ro
+```
+
+Each plugin folder gets its own volume mount. Read-only (`:ro`) is fine because hot-reload reads the file on each request via the host bind mount.
+
+### Key Files
+
+- [plugins/product-stats/product-stats.mjs](../examples/product-catalog/plugins/product-stats/product-stats.mjs) — plugin logic
+- [plugins/product-stats/package.json](../examples/product-catalog/plugins/product-stats/package.json) — plugin manifest
+- [templates/shop/stats/index.html](../examples/product-catalog/templates/shop/stats/index.html) — HTML dashboard
+
+For a full guide on writing your own JavaScript plugins, see [DEVELOPERS_GUIDE.md — JavaScript Plugins](DEVELOPERS_GUIDE.md#javascript-plugins).
+
+---
+
+## 12. Production Considerations
 
 ### What Changes for Production?
 
@@ -971,6 +1130,7 @@ Through this walkthrough, you explored:
 5. **HTMX Fragments** - Partial updates without JavaScript
 6. **Static Assets** - CSS, JS, images served alongside templates
 7. **Dual Interface** - Same endpoint serves HTML (browsers) and JSON (APIs)
+8. **JavaScript Plugins** - Custom server-side logic with hot-reload, no recompile
 
 ## Next Steps
 
@@ -983,6 +1143,7 @@ Try these modifications to deepen your understanding:
 3. **Add filtering UI** - Create category filter buttons using HTMX
 4. **Build a search bar** - Use MongoDB text search with `$text` operator
 5. **Customize styling** - Modify [static/custom.css](../examples/product-catalog/static/custom.css)
+6. **Extend the JS plugin** - Add a new computed field to [product-stats.mjs](../examples/product-catalog/plugins/product-stats/product-stats.mjs) and display it in the stats template (no restart needed)
 
 ### Dive Deeper
 
