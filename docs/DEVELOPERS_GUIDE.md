@@ -39,8 +39,9 @@ For advanced RESTHeart features (WebSocket, Change Streams, GridFS, custom auth,
    - [Handling Server-Triggered Events (Client-Side)](#handling-server-triggered-events-client-side)
    - [Best Practices](#best-practices)
 10. [Advanced Patterns](#advanced-patterns)
-11. [Configuration Reference](#configuration-reference)
-12. [Troubleshooting](#troubleshooting)
+11. [JavaScript Plugins](#javascript-plugins)
+12. [Configuration Reference](#configuration-reference)
+13. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -2084,6 +2085,218 @@ mongo-mounts:
 <!-- Standard data view -->
 {% endblock %}
 ```
+
+---
+
+## JavaScript Plugins
+
+RESTHeart runs on GraalVM, which makes it possible to write plugins in JavaScript (or TypeScript) instead of Java. This is a first-class feature with one decisive advantage: **no compilation step**. JavaScript plugins are hot-reloaded exactly like Pebble templates—save the file and the next request picks up the change immediately.
+
+### Why JavaScript Plugins?
+
+| | Java Plugin | JavaScript Plugin |
+|---|---|---|
+| Language | Java 25 | JavaScript / TypeScript |
+| Compilation required | `mvn package` + restart | **None** |
+| Hot reload | No | **Yes** |
+| MongoDB access | `@Inject("mclient")` | `mclient` global |
+| Performance | Highest | Excellent (GraalVM JIT) |
+
+**Use JavaScript plugins when:**
+- You want to prototype or iterate quickly
+- Your team knows JavaScript better than Java
+- You want the same developer experience as editing templates (save → reload)
+
+**Use Java plugins when:**
+- You need maximum performance or complex type safety
+- You want to leverage the full Java ecosystem (e.g., specific libraries)
+
+### How JavaScript Plugins Work with Facet
+
+JavaScript services return JSON—and Facet renders them as HTML when the client sends `Accept: text/html`. This is the same mechanism used for MongoDB endpoints:
+
+```
+GET /shop/stats
+Accept: text/html
+
+1. productStatsService handles the request → returns JSON
+2. HtmlResponseInterceptor intercepts the response (WildcardInterceptor)
+3. JsonHtmlResponseHandler parses JSON, merges all top-level fields into template context
+4. PathBasedTemplateResolver finds templates/shop/stats/index.html
+5. Pebble renders HTML with all JSON fields available as template variables
+```
+
+The same endpoint returns raw JSON for API clients (`Accept: application/json`). No configuration needed — content negotiation is automatic.
+
+### Writing a Service Plugin
+
+A minimal service requires two exports in a `.mjs` file:
+
+```javascript
+export const options = {
+    name: "myService",          // Unique plugin name (used in logs and config)
+    description: "My service",
+    uri: "/my/endpoint",        // Endpoint path
+    secured: true,              // Require authentication (default: false)
+    matchPolicy: "EXACT"        // EXACT or PREFIX (default: PREFIX)
+};
+
+export function handle(request, response) {
+    // ... compute something ...
+    response.setContent(JSON.stringify({ result: 42 }));
+    response.setContentTypeAsJson();
+}
+```
+
+For error responses use `response.setInError(statusCode, "message")`.
+
+### Using the MongoDB Client
+
+The MongoDB Java driver is available as the `mclient` global via GraalVM interop:
+
+```javascript
+const BsonDocument = Java.type("org.bson.BsonDocument");
+
+export function handle(request, response) {
+    const db   = mclient.getDatabase("mydb");
+    const coll = db.getCollection("mycollection", BsonDocument.class);
+
+    const it = coll.find().iterator();
+    const results = [];
+
+    while (it.hasNext()) {
+        const doc = it.next();
+        // Check for existence before reading to avoid exceptions
+        const name  = doc.containsKey("name")  ? doc.getString("name").getValue()    : "";
+        const price = doc.containsKey("price") ? doc.getNumber("price").doubleValue() : 0;
+        results.push({ name, price });
+    }
+
+    response.setContent(JSON.stringify(results));
+    response.setContentTypeAsJson();
+}
+```
+
+**Common BSON accessor methods:**
+
+| BSON type | Method | Returns |
+|---|---|---|
+| String | `doc.getString("key").getValue()` | `String` |
+| Number (int or double) | `doc.getNumber("key").doubleValue()` | `double` |
+| Integer | `doc.getNumber("key").intValue()` | `int` |
+| Boolean | `doc.getBoolean("key").getValue()` | `boolean` |
+| Key existence check | `doc.containsKey("key")` | `boolean` |
+
+Use the `LOGGER` global for structured logging: `LOGGER.info("result {}", value)`.
+
+### Deploying a JavaScript Plugin
+
+#### 1. Create the plugin directory
+
+```
+examples/my-app/
+└── plugins/
+    └── my-plugin/
+        ├── package.json       # declares the plugin to RESTHeart
+        └── my-service.mjs     # the service code
+```
+
+#### 2. `package.json`
+
+```json
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "My custom service",
+  "rh:services": ["my-service.mjs"],
+  "rh:interceptors": []
+}
+```
+
+List service files in `rh:services` and interceptor files in `rh:interceptors`. Files not listed are ignored.
+
+#### 3. Mount in `docker-compose.yml`
+
+```yaml
+volumes:
+  - ./plugins/my-plugin:/opt/restheart/plugins/my-plugin:ro
+```
+
+Mount each plugin folder **individually** — this way the existing JAR plugins already in `/opt/restheart/plugins/` are not affected.
+
+#### 4. Set permissions in `restheart.yml`
+
+If `secured: true` in `options`, the authenticated user's role must have a matching ACL rule. The product catalog's existing rules (`path-prefix[path=/]`) already cover any new endpoint:
+
+```yaml
+/fileAclAuthorizer:
+  permissions:
+    - role: viewer
+      predicate: path-prefix[path=/]   # covers /my/endpoint too
+```
+
+#### 5. Hot reload
+
+Unlike JAR plugins, JavaScript plugins are picked up **without a container restart**. Edit the `.mjs` file and the next request uses the updated code — identical to editing a Pebble template.
+
+### Rendering JavaScript Service Output as HTML
+
+Facet's `HtmlResponseInterceptor` intercepts responses from **any** service (not just MongoDB). For JavaScript service responses, `JsonHtmlResponseHandler` parses the JSON body and merges every top-level field as a Pebble template variable:
+
+```javascript
+// Plugin returns:
+response.setContent(JSON.stringify({
+    total: 10,
+    avgPrice: 309.49,
+    categories: [{ name: "Electronics", count: 6 }]
+}));
+```
+
+```html
+{# Template receives: total, avgPrice, categories directly as variables #}
+<p>{{ total | numberformat("0") }} products</p>
+<p>Average price: ${{ avgPrice | numberformat("#,##0.00") }}</p>
+{% for cat in categories %}
+    <li>{{ cat.name }}: {{ cat.count | numberformat("0") }}</li>
+{% endfor %}
+```
+
+Template resolution for non-MongoDB services uses `index.html` only (not `list.html`/`view.html`):
+
+```
+GET /shop/stats
+
+1. templates/shop/stats/index.html      ← place your template here
+2. templates/shop/index.html            (parent fallback)
+3. templates/index.html                 (root fallback)
+```
+
+### Working Example: Product Statistics
+
+The product catalog example includes a complete JavaScript plugin demonstrating all these patterns:
+
+| File | Purpose |
+|---|---|
+| [`plugins/product-stats/product-stats.mjs`](../examples/product-catalog/plugins/product-stats/product-stats.mjs) | JS service — queries MongoDB, returns stats JSON |
+| [`plugins/product-stats/package.json`](../examples/product-catalog/plugins/product-stats/package.json) | Plugin manifest |
+| [`templates/shop/stats/index.html`](../examples/product-catalog/templates/shop/stats/index.html) | Facet template — renders stats as HTML dashboard |
+
+The plugin iterates the `shop.products` collection and computes: total/in-stock/out-of-stock counts, average/min/max price, total inventory value, per-category breakdown, and low-stock alerts.
+
+```bash
+# JSON response (API client)
+curl -u admin:secret http://localhost:8080/shop/stats
+
+# HTML response (browser / Facet template)
+curl -u admin:secret -H "Accept: text/html" http://localhost:8080/shop/stats
+```
+
+The HTML page includes a collapsible "How this page works" section showing the raw JSON and explaining the plugin → Facet rendering pipeline.
+
+### Further Reading
+
+- [RESTHeart JavaScript Plugins](https://restheart.org/docs/framework/javascript-plugins) — complete reference: TypeScript support, interceptor plugins, npm modules, advanced GraalVM interop
+- [RESTHeart Plugin Deployment](https://restheart.org/docs/plugins/deploy)
 
 ---
 

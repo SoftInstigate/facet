@@ -12,6 +12,47 @@ A complete example demonstrating Facet's core features through a product catalog
 - **Authentication** - Role-based access control (admin vs viewer)
 - **CRUD operations** - Full create, read, update, delete using HTMX fragments (see below)
 - **Template inheritance** - Shared layout and reusable fragments
+- **JavaScript plugin** - RESTHeart service written in JavaScript (no Java, hot-reload)
+
+## JavaScript Plugin: Product Statistics
+
+The example includes a RESTHeart JavaScript plugin that demonstrates writing server-side logic without Java. The plugin lives in `plugins/product-stats/` and is picked up automatically by RESTHeart at startup—no compilation needed.
+
+### What It Does
+
+`plugins/product-stats/product-stats.mjs` is a RESTHeart service registered at `/shop/stats`. It uses the MongoDB Java driver (available as the `mclient` global via GraalVM interop) to iterate `shop.products` and compute:
+
+- Total / in-stock / out-of-stock product counts
+- Average, minimum, and maximum price
+- Total inventory value (price × stock across all products)
+- Per-category breakdown sorted by product count
+- Low-stock alerts (products with ≤ 5 units remaining)
+
+### Endpoints
+
+```bash
+# JSON response — plain API call
+curl -u admin:secret http://localhost:8080/shop/stats
+
+# HTML response — Facet renders templates/shop/stats/index.html
+curl -u admin:secret -H "Accept: text/html" http://localhost:8080/shop/stats
+```
+
+The HTML dashboard is accessible from the **Stats** link in the navigation bar.
+
+### Hot Reload
+
+Edit `plugins/product-stats/product-stats.mjs` while the stack is running. The next request automatically uses the updated code — no container restart required, exactly like Pebble templates.
+
+### Files
+
+| File | Description |
+|---|---|
+| [`plugins/product-stats/product-stats.mjs`](plugins/product-stats/product-stats.mjs) | The JavaScript service |
+| [`plugins/product-stats/package.json`](plugins/product-stats/package.json) | Declares the plugin to RESTHeart |
+| [`templates/shop/stats/index.html`](templates/shop/stats/index.html) | Facet template for the HTML dashboard |
+
+For a full guide on writing and deploying JavaScript plugins, see the [Developer's Guide — JavaScript Plugins](../../docs/DEVELOPERS_GUIDE.md#javascript-plugins).
 
 ## CRUD Operations
 
@@ -114,9 +155,11 @@ All products include:
 templates/
 ├── layout.html                      # Base layout with navigation
 ├── shop/
-│   └── products/
-│       ├── list.html               # Product list page (collection view)
-│       └── view.html               # Product detail page (document view)
+│   ├── products/
+│   │   ├── list.html               # Product list page (collection view)
+│   │   └── view.html               # Product detail page (document view)
+│   └── stats/
+│       └── index.html              # Stats dashboard (rendered from JS plugin output)
 └── _fragments/
     └── product-list.html           # Reusable product list (for HTMX)
 ```
@@ -127,6 +170,7 @@ templates/
 - [users.yml](users.yml) - File-based user credentials and role assignments
 - [init-data.js](init-data.js) - MongoDB initialization script with sample products
 - [static/](static/) - Static assets (favicon, images, CSS, JS)
+- [plugins/product-stats/](plugins/product-stats/) - JavaScript plugin (product statistics service)
 - [Dockerfile](Dockerfile) - Docker image with Facet plugin pre-installed
 - [docker-compose.yml](docker-compose.yml) - Multi-container setup (RESTHeart + MongoDB)
 
@@ -262,6 +306,9 @@ curl -u admin:secret "http://localhost:8080/shop/products?filter=%7B%22category%
 curl -u admin:secret -X POST http://localhost:8080/shop/products \
   -H "Content-Type: application/json" \
   -d '{"name":"New Product","price":99.99,"category":"Test","stock":10}'
+
+# Inventory stats (JavaScript plugin — returns computed aggregates)
+curl -u admin:secret http://localhost:8080/shop/stats
 ```
 
 ### Stopping the Example

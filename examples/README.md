@@ -48,6 +48,7 @@ A complete e-commerce product catalog demonstrating:
 - Authentication and role-based access control
 - Full CRUD operations (admin only)
 - Template inheritance and fragments
+- **JavaScript plugin** — RESTHeart service in JavaScript with hot-reload (no rebuild needed)
 
 **Start here** if you're new to Facet!
 
@@ -70,6 +71,10 @@ example-name/
 ├── static/                # Static assets (favicon, images, CSS, JS)
 │   ├── favicon.ico        # Prevents browser 401 auth popup
 │   └── ...
+├── plugins/               # JavaScript plugins (hot-reload, no rebuild needed)
+│   └── my-plugin/
+│       ├── package.json   # Declares services/interceptors to RESTHeart
+│       └── my-service.mjs # JavaScript service or interceptor
 └── templates/             # Facet templates
     ├── layout.html        # Base layout (optional)
     ├── resource/          # Resource-specific templates
@@ -118,13 +123,20 @@ This self-contained approach makes it easy to:
 
 ## Development Workflow
 
-### Hot Reload Templates
+### Hot Reload Templates and JavaScript Plugins
 
-Templates are loaded from the filesystem with caching disabled for development:
+Both Pebble templates and JavaScript plugins are hot-reloaded — no container restart needed:
 
-1. Edit any template file
+**Templates:**
+1. Edit any file under `templates/`
 2. Refresh your browser
-3. See changes immediately - no restart needed!
+3. See changes immediately
+
+**JavaScript plugins:**
+1. Edit any `.mjs` file under `plugins/`
+2. The next HTTP request picks up the new code automatically
+
+This is one of the key advantages of JavaScript plugins over Java plugins — Java plugins require recompilation (`mvn package`) and a container restart.
 
 ### Viewing Logs
 
