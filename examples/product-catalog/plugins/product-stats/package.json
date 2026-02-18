@@ -1,0 +1,6 @@
+{
+  "name": "product-stats",
+  "version": "1.0.0",
+  "description": "Product statistics service for the Facet product catalog example",
+  "rh:services": ["product-stats.mjs"]
+}

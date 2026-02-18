@@ -24,6 +24,7 @@ services:
       context: ../..
       dockerfile: examples/product-catalog/Dockerfile
     image: facet-product-catalog:latest
+    pull_policy: build
     container_name: facet-product-catalog
     depends_on:
       mongodb:
@@ -44,6 +45,8 @@ services:
       - ./templates:/opt/restheart/templates:ro
       # Mount product catalog static assets (CSS, images, etc.)
       - ./static:/opt/restheart/static:ro
+      # Mount JavaScript plugins (hot-reload supported on GraalVM)
+      - ./plugins/product-stats:/opt/restheart/plugins/product-stats:ro
     networks:
       - facet-network
     healthcheck:

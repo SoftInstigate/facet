@@ -1,0 +1,154 @@
+{% extends "layout" %}
+
+{% block title %}Inventory Stats - Product Catalog{% endblock %}
+
+{% block head %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .stat-card {
+        padding: 1.25rem 1rem;
+        text-align: center;
+        margin: 0;
+    }
+
+    .stat-card .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        line-height: 1.1;
+        margin: 0.25rem 0 0.5rem;
+        white-space: nowrap;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.85rem;
+        color: var(--pico-muted-color);
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .stat-value.warning { color: var(--pico-color-amber-500, #f59e0b); }
+    .stat-value.success { color: var(--pico-color-green-500, #22c55e); }
+    .stat-value.danger  { color: var(--pico-color-red-500,   #ef4444); }
+</style>
+{% endblock %}
+
+{% block main %}
+<hgroup>
+    <h1>Inventory Stats</h1>
+    <p>Computed by a <strong>RESTHeart JavaScript plugin</strong> — same endpoint returns JSON for API clients, HTML for browsers.</p>
+</hgroup>
+
+<!-- Summary stat cards -->
+<div class="stats-grid">
+    <article class="stat-card">
+        <p class="stat-value">{{ total | numberformat("0") }}</p>
+        <p class="stat-label">Total Products</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value success">{{ inStock | numberformat("0") }}</p>
+        <p class="stat-label">In Stock</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value{{ outOfStock > 0 ? ' danger' : '' }}">{{ outOfStock | numberformat("0") }}</p>
+        <p class="stat-label">Out of Stock</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value">${{ avgPrice | numberformat("#,##0.00") }}</p>
+        <p class="stat-label">Avg Price</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value">${{ minPrice | numberformat("#,##0.00") }}</p>
+        <p class="stat-label">Lowest Price</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value">${{ maxPrice | numberformat("#,##0.00") }}</p>
+        <p class="stat-label">Highest Price</p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-value">${{ totalValue | numberformat("#,##0.00") }}</p>
+        <p class="stat-label">Inventory Value</p>
+    </article>
+</div>
+
+<!-- Category breakdown -->
+<h2>By Category</h2>
+<figure>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th style="text-align:right">Products</th>
+                <th style="text-align:right">Inventory Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in categories %}
+            <tr>
+                <td><mark>{{ cat.name }}</mark></td>
+                <td style="text-align:right">{{ cat.count | numberformat("0") }}</td>
+                <td style="text-align:right">${{ cat.totalValue | numberformat("#,##0.00") }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No products found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</figure>
+
+<!-- Low stock alerts -->
+{% if lowStock is not empty %}
+<h2>Low Stock Alert <mark>{{ lowStock | length }}</mark></h2>
+<p>The following products have 5 or fewer units remaining:</p>
+<figure>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th style="text-align:right">Units Left</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in lowStock %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td style="text-align:right"><strong>{{ item.stock | numberformat("0") }}</strong></td>
+                <td><a href="/shop/products?filter={{ '{"name":"' ~ item.name ~ '"}' }}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</figure>
+{% endif %}
+
+<!-- How it works -->
+<details>
+    <summary>How this page works</summary>
+    <p>
+        This page is served by a <strong>RESTHeart JavaScript plugin</strong>
+        (<code>plugins/product-stats/product-stats.mjs</code>) running on GraalVM.
+        The plugin uses the MongoDB Java driver via GraalVM interop to iterate over
+        the <code>shop.products</code> collection and compute the statistics above.
+    </p>
+    <p>
+        The plugin returns plain JSON. Facet's <code>html-response-interceptor</code>
+        detects the <code>Accept: text/html</code> header and renders this template
+        (<code>templates/shop/stats/index.html</code>) using the JSON fields as template variables.
+        API clients that send <code>Accept: application/json</code> receive the raw JSON instead.
+    </p>
+    <pre><code>{{ data }}</code></pre>
+</details>
+{% endblock %}
