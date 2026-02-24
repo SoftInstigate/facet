@@ -302,4 +302,10 @@ Apache License 2.0 - Free for commercial use.
 
 ---
 
-**Made by [SoftInstigate](https://softinstigate.com)** - Creators of [RESTHeart](https://restheart.org)
+_Built with ❤️ by [SoftInstigate](https://www.softinstigate.com)_
+
+---
+
+<div align="center">
+<img src="docs/made-in-eu-logo.svg" alt="Made in EU" width="180px" />
+</div>
