@@ -12,7 +12,9 @@ Turn your API into HTML. No code required.
 
 ## What is Facet?
 
-Facet transforms REST APIs into web interfaces using simple HTML templates. You already have the API—just add templates where you want HTML.
+Facet is a SSR Java Web Framework that transforms REST APIs into web interfaces using simple HTML templates. You already have the API, just add templates where you want HTML.
+
+> Facet brings together the best of two worlds: the production-grade reliability and performance of Java with the rapid development experience of PHP or Python frameworks. Build data-driven web applications that are fast, SEO-friendly, and maintainable, without the complexity of traditional Java frameworks or the operational challenges of scripting languages.
 
 **The core idea:** Your API structure is your site structure.
 ```
@@ -32,7 +34,7 @@ Result:
 └── /shop/products/123 → HTML for browsers, JSON for APIs
 ```
 
-No routing files. No controllers. No duplicate logic. Just drop templates where your data lives.
+No routing files, no controllers and no duplicate logic. Just drop templates where your data lives.
 
 ## See It in Action
 
