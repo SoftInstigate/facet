@@ -1,6 +1,8 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-Turn your API into HTML. No code required.
+## Transform REST APIs into server-rendered HTML using convention-based templates.
+
+No backend code required.
 
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
@@ -10,11 +12,23 @@ Turn your API into HTML. No code required.
 
 <img src="docs/decorate.png" alt="decorate API" width="98%" height="auto" />
 
+If you are building a web interface on top of a REST API and want to avoid maintaining a separate JavaScript project, Facet is worth a look. You create template files that mirror your API structure. That is the entire workflow.
+
+- **Zero Backend Code:** Ship features without writing controllers or services. Templates plus data equals HTML, end to end.
+
+- **Non-breaking:** SSR is opt-in per resource. Endpoints without a template keep returning JSON unchanged. Your existing API is never affected by adding Facet.
+
+- **Hybrid by Default:** The same endpoint serves JSON to API clients and HTML to browsers via content negotiation. One codebase, not two.
+
+- **Convention-Based:** Drop a template where the path matches the resource and you are done. No routing files, no configuration.
+
+- **Progressive Enhancement:** Start with server-side rendering, add HTMX for interactivity where needed. SEO-friendly by default.
+
 ## What is Facet?
 
-Facet is a SSR Java Web Framework that transforms REST APIs into web interfaces using simple HTML templates. You already have the API, just add templates where you want HTML.
+Building a web UI on top of a REST API usually means choosing between a JavaScript frontend project or a Java template engine that requires controllers. Facet is a third option.
 
-> Facet brings together the best of two worlds: the production-grade reliability and performance of Java with the rapid development experience of PHP or Python frameworks. Build data-driven web applications that are fast, SEO-friendly, and maintainable, without the complexity of traditional Java frameworks or the operational challenges of scripting languages.
+Facet is a SSR Java Web Framework that transforms REST APIs into web interfaces using simple HTML templates. You already have the API, just add templates where you want HTML.
 
 **The core idea:** Your API structure is your site structure.
 ```
