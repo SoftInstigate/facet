@@ -42,6 +42,10 @@ public class TemplateContextBuilder {
                 context.put("roles", request.getAuthenticatedAccount().getRoles());
             }
         }
+
+        // Add HTTP method so templates can conditionally render post-mutation feedback
+        context.put("requestMethod", request.getMethod().toString());
+
         return this;
     }
 

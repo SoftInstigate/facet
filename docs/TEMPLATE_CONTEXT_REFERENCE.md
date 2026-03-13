@@ -59,6 +59,16 @@ These variables are **conditionally set** based on whether a user is authenticat
 | `isAuthenticated` | Boolean | Whether user is authenticated | Always |
 | `username` | String | Authenticated user's principal name | If authenticated |
 | `roles` | Set&lt;String&gt; | User's role names | If authenticated |
+| `requestMethod` | String | HTTP method of the current request | Always |
+
+**`requestMethod` values:** `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`, `OTHER`
+
+Use `requestMethod` to show post-mutation feedback in templates:
+```html
+{% if requestMethod == "POST" %}
+  <div class="alert success">Created successfully!</div>
+{% endif %}
+```
 
 ### Set By
 [TemplateContextBuilder.withAuthenticatedUser()](../core/src/main/java/org/facet/templates/TemplateContextBuilder.java)
