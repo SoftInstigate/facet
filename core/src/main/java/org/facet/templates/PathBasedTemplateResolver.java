@@ -324,6 +324,40 @@ public class PathBasedTemplateResolver implements TemplateResolver {
     }
 
     /**
+     * Resolves an error template for the given HTTP status code.
+     *
+     * <p>
+     * Lookup order:
+     * <ol>
+     * <li>{@code templates/errors/{statusCode}.html} — status-specific template</li>
+     * <li>{@code templates/error.html} — generic fallback</li>
+     * </ol>
+     *
+     * @param templateProcessor the template processor to check for template existence
+     * @param statusCode the HTTP status code (e.g., 404, 500)
+     * @return the resolved template name if found, empty Optional otherwise
+     */
+    public Optional<String> resolveError(final TemplateProcessor templateProcessor, final int statusCode) {
+        // 1. Try status-specific template first
+        final String statusTemplate = "errors/" + statusCode;
+        final var specific = tryTemplate(templateProcessor, statusTemplate);
+        if (specific.isPresent()) {
+            LOGGER.debug("Resolved status-specific error template: {}", specific.get());
+            return specific;
+        }
+
+        // 2. Fall back to generic error template
+        final var generic = tryTemplate(templateProcessor, "error");
+        if (generic.isPresent()) {
+            LOGGER.debug("Resolved generic error template for status {}", statusCode);
+            return generic;
+        }
+
+        LOGGER.debug("No error template found for status {}", statusCode);
+        return Optional.empty();
+    }
+
+    /**
      * Normalizes a request path by removing leading and trailing slashes.
      *
      * @param path the request path to normalize (e.g., "/mydb/mycoll/")

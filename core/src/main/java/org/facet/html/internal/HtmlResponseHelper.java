@@ -2,6 +2,7 @@ package org.facet.html.internal;
 
 import java.util.Map;
 
+import org.facet.templates.PathBasedTemplateResolver;
 import org.facet.templates.TemplateContextBuilder;
 import org.facet.templates.TemplateProcessingException;
 import org.facet.templates.TemplateProcessor;
@@ -121,8 +122,12 @@ public class HtmlResponseHelper {
                                 .with("username", username)
                                 .build();
 
-                // Render error template
-                final String html = templateProcessor.process("error", context);
+                // Resolve error template: status-specific first, then generic
+                final var resolver = new PathBasedTemplateResolver();
+                final String templateName = resolver
+                        .resolveError(templateProcessor, response.getStatusCode())
+                        .orElse("error");
+                final String html = templateProcessor.process(templateName, context);
                 exchange.getResponseSender().send(html);
 
             } catch (final TemplateProcessingException e) {
