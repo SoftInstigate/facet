@@ -1,9 +1,7 @@
 # Facet - Developer's Guide
 
-**Version:** RELEASE_VERSION
-**Last Updated:** 2026-01-17
-
-**Note:** `RELEASE_VERSION` is a textual placeholder. Replace it with the raw tag (for example, `0.1.0` or `1.0.0`) when cutting a release.
+**Version:** 1.0.0
+**Last Updated:** 2026-03-13
 
 This guide provides a complete reference for Facet's features and capabilities. For a high-level overview, see the [README](../README.md).
 
@@ -38,10 +36,11 @@ For advanced RESTHeart features (WebSocket, Change Streams, GridFS, custom auth,
    - [HtmxResponseHelper (Server-Side Control)](#htmxresponsehelper-server-side-control)
    - [Handling Server-Triggered Events (Client-Side)](#handling-server-triggered-events-client-side)
    - [Best Practices](#best-practices)
-10. [Advanced Patterns](#advanced-patterns)
-11. [JavaScript Plugins](#javascript-plugins)
-12. [Configuration Reference](#configuration-reference)
-13. [Troubleshooting](#troubleshooting)
+10. [Handling Mutations](#handling-mutations)
+11. [Advanced Patterns](#advanced-patterns)
+12. [JavaScript Plugins](#javascript-plugins)
+13. [Configuration Reference](#configuration-reference)
+14. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -1932,6 +1931,109 @@ With path-based resolution, there's never ambiguity:
 
 <div id="details">Select a user</div>
 ```
+
+---
+
+## Handling Mutations
+
+When users submit forms or trigger create/update/delete actions, the server receives a POST, PATCH, or DELETE request. This section covers the three main patterns for responding to mutations in Facet.
+
+---
+
+### Pattern 1: HTMX Fragment Swap (Recommended)
+
+The most seamless pattern for SPAs: after a mutation, return only the affected HTML fragment. The rest of the page remains intact, and no full reload is needed.
+
+**How it works:**
+
+1. User submits a form via HTMX (`hx-post`, `hx-patch`, `hx-delete`)
+2. RESTHeart processes the write
+3. Facet intercepts the response and renders a fragment (e.g., the updated list row or a success banner)
+4. HTMX swaps the fragment into the target element
+
+**Template: `templates/shop/products/_fragments/product-row.html`**
+
+```html
+{% if requestMethod == "POST" %}
+  <tr id="product-{{ items[0]._id.value }}">
+    <td>{{ items[0].data.name }}</td>
+    <td>{{ items[0].data.price }}</td>
+    <td><span class="badge success">Created</span></td>
+  </tr>
+{% else %}
+  <tr id="product-{{ items[0]._id.value }}">
+    <td>{{ items[0].data.name }}</td>
+    <td>{{ items[0].data.price }}</td>
+  </tr>
+{% endif %}
+```
+
+**Form HTML using HTMX:**
+
+```html
+<form hx-post="/shop/products"
+      hx-target="#product-list tbody"
+      hx-swap="afterbegin">
+  <label>Name <input name="name" required></label>
+  <label>Price <input name="price" type="number" step="0.01" required></label>
+  <button type="submit">Add Product</button>
+</form>
+```
+
+The `requestMethod` context variable (available in all templates since Facet 1.0) lets your template render different content depending on whether the page was reached via GET (normal view) or POST (after a write).
+
+---
+
+### Pattern 2: Post-Redirect-Get (PRG)
+
+For non-HTMX forms or when you need the browser address bar to update, use the classic Post-Redirect-Get pattern. RESTHeart can return a `201 Created` with a `Location` header, and the browser follows it automatically.
+
+This pattern works naturally when:
+- RESTHeart returns `201 Created` on POST and the browser follows the `Location` header
+- A custom JavaScript interceptor plugin issues an HTTP `302` redirect after the write
+
+After the redirect, the browser makes a GET to the new resource URL, which Facet renders normally. This is the safest pattern for avoiding duplicate form submissions on page refresh.
+
+---
+
+### Pattern 3: Inline Response with `requestMethod`
+
+Sometimes you want to render the same page template for both GET (display) and POST (confirmation). Use the `requestMethod` variable to conditionally show a success message:
+
+**Template: `templates/shop/products/view.html`**
+
+```html
+{% if requestMethod == "POST" %}
+  <div class="alert success" role="alert">
+    Product created successfully!
+  </div>
+{% elseif requestMethod == "PATCH" %}
+  <div class="alert info" role="alert">
+    Product updated.
+  </div>
+{% endif %}
+
+<article>
+  <h1>{{ items[0].data.name }}</h1>
+  <p>Price: {{ items[0].data.price }}</p>
+</article>
+```
+
+**Available `requestMethod` values:** `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`, `OTHER`
+
+> **Note:** If the user refreshes the page after a POST, the browser may show a "Confirm Form Resubmission" dialog. Use PRG or HTMX patterns to avoid this.
+
+---
+
+### Choosing the Right Pattern
+
+| Scenario | Recommended Pattern |
+|---|---|
+| SPA / HTMX-powered page | HTMX Fragment Swap |
+| Multi-page app, SEO URLs | Post-Redirect-Get |
+| Simple admin forms | Inline response with `requestMethod` |
+| File uploads | Post-Redirect-Get |
+| Real-time updates | HTMX Fragment Swap + `HX-Trigger` event |
 
 ---
 
