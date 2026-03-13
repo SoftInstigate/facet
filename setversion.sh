@@ -140,14 +140,15 @@ elif [ "$cmp" = "0" ]; then
   fi
 fi
 
-  # Branch check: require branch like '<major>.x' (e.g. 8.x) unless --force
+  # Branch check: allow master, release/*, or '<major>.x' (e.g. 1.x) unless --force
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
   MAJOR="${NEW_PARTS[0]}"
-  EXPECTED_BRANCH="${MAJOR}.x"
-  if [ -n "$CURRENT_BRANCH" ] && [ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ] && [ "$FORCE" != "true" ]; then
-    echo "Error: Releasing version $VERSION requires being on branch '$EXPECTED_BRANCH' but current branch is '$CURRENT_BRANCH'." >&2
-    echo "If you really want to proceed from this branch, pass --force." >&2
-    exit 1
+  if [ -n "$CURRENT_BRANCH" ] && [ "$FORCE" != "true" ]; then
+    if [[ "$CURRENT_BRANCH" != "master" && "$CURRENT_BRANCH" != release/* && "$CURRENT_BRANCH" != "${MAJOR}.x" ]]; then
+      echo "Error: Releasing version $VERSION requires being on 'master', a 'release/*' branch, or '${MAJOR}.x', but current branch is '$CURRENT_BRANCH'." >&2
+      echo "If you really want to proceed from this branch, pass --force." >&2
+      exit 1
+    fi
   fi
 
 # Ensure git is configured
