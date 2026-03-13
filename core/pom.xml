@@ -16,6 +16,10 @@
     <name>Facet Core</name>
     <description>Core SSR framework</description>
 
+    <properties>
+        <bytebuddy.version>1.18.7-jdk5</bytebuddy.version>
+    </properties>
+
     <repositories>
         <repository>
             <name>Central Portal Snapshots</name>
@@ -62,13 +66,13 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.18.7-jdk5</version>
+            <version>${bytebuddy.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-agent</artifactId>
-            <version>1.18.7-jdk5</version>
+            <version>${bytebuddy.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
