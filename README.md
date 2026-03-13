@@ -287,7 +287,7 @@ Facet publishes **release tags only** to JitPack. Use the raw tag name (no `v` p
 <dependency>
   <groupId>com.github.SoftInstigate</groupId>
   <artifactId>facet-core</artifactId>
-  <version>RELEASE_VERSION</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -298,7 +298,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.SoftInstigate:facet-core:RELEASE_VERSION")
+  implementation("com.github.SoftInstigate:facet-core:1.0.0")
 }
 ```
 
