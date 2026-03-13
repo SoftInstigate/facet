@@ -65,7 +65,7 @@ Open http://localhost:8080/, log in with **admin / secret**, then visit **/mydb/
 ### JitPack (Maven)
 
 - **Release tags only**: Tag releases with raw Maven versions (no `v` prefix). Example: `0.1.0` or `1.0.0`.
-- **Coordinates**: `com.github.SoftInstigate:facet-core:RELEASE_VERSION`
+- **Coordinates**: `com.github.SoftInstigate:facet-core:1.0.0`
 - **Repository**: `https://jitpack.io`
 - **JDK requirement**: JitPack builds use Java 25 (see [jitpack.yml](../jitpack.yml)).
 
@@ -89,7 +89,7 @@ Use the published image for quickstarts, and build locally only when testing plu
 ### Release Checklist (Tag-Only)
 
 1. Update `pom.xml` version (drop `-SNAPSHOT`).
-2. Update this guide’s `RELEASE_VERSION` placeholder.
+2. Update this guide’s JitPack coordinates with the new version.
 3. Commit changes and tag with the **raw Maven version** (e.g., `0.1.0` or `1.0.0`).
 4. Push the tag to GitHub to trigger the release workflow.
 5. Verify GitHub Release assets: `facet-core.jar` and `lib/`.

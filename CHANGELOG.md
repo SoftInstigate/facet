@@ -27,8 +27,8 @@ First stable release. The core API and template conventions are now considered s
   with a 5-second TTL using a `ConcurrentHashMap<String, CacheEntry>`. Eliminates one or more
   extra MongoDB round-trips per rendered page. Cache hits are logged at DEBUG level.
 
-- **JUnit 5 test suite** — Added `junit-jupiter` 5.11.4 and `mockito-core` 5.16.1 (with
-  `byte-buddy` 1.17.5 for Java 25 support). New test classes:
+- **JUnit 5 test suite** — Added `junit-jupiter` 5.14.3 and `mockito-core` 5.23.0 (with
+  `byte-buddy` 1.18.7-jdk5 for Java 25 support). New test classes:
   - `PathBasedTemplateResolverTest` — 29 tests covering collection, document, fragment, and error
     template resolution, including all hierarchical fallback branches.
   - `HtmxRequestDetectorTest` — 14 tests covering HTMX header parsing and `isTargeting()`.
