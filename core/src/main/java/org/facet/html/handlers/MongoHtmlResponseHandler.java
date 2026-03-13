@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -45,6 +46,21 @@ import com.mongodb.client.MongoClient;
 public class MongoHtmlResponseHandler implements HtmlResponseHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoHtmlResponseHandler.class);
+
+    /** Default TTL for count cache entries in milliseconds (5 seconds). */
+    private static final long COUNT_CACHE_TTL_MS = 5_000L;
+
+    /**
+     * Simple immutable cache entry holding a count value and expiry timestamp.
+     */
+    private record CacheEntry(long count, long expiresAt) {
+        boolean isExpired() {
+            return System.currentTimeMillis() > expiresAt;
+        }
+    }
+
+    /** Thread-safe TTL cache: key → (count, expiry). */
+    private final ConcurrentHashMap<String, CacheEntry> countCache = new ConcurrentHashMap<>();
 
     private final MongoClient mongoClient;
     private final TemplateProcessor templateProcessor;
@@ -429,21 +445,44 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     }
 
     /**
-     * Estimates the total number of documents in the collection.
+     * Returns a cached count value, computing it if absent or expired.
+     *
+     * @param cacheKey  unique cache key for this count query
+     * @param supplier  lambda that performs the actual MongoDB count
+     * @return cached or freshly-computed count
      */
-    private long estimatedDocumentCount(final MongoRequest request) {
-        return mongoClient.getDatabase(request.getDBName())
-                .getCollection(request.getCollectionName())
-                .estimatedDocumentCount();
+    private long cachedCount(final String cacheKey, final java.util.function.LongSupplier supplier) {
+        final CacheEntry entry = countCache.get(cacheKey);
+        if (entry != null && !entry.isExpired()) {
+            LOGGER.debug("Count cache HIT for key '{}'", cacheKey);
+            return entry.count();
+        }
+        final long count = supplier.getAsLong();
+        countCache.put(cacheKey, new CacheEntry(count, System.currentTimeMillis() + COUNT_CACHE_TTL_MS));
+        LOGGER.debug("Count cache MISS for key '{}', computed {}", cacheKey, count);
+        return count;
     }
 
     /**
-     * Counts documents matching the filter.
+     * Estimates the total number of documents in the collection (cached).
+     */
+    private long estimatedDocumentCount(final MongoRequest request) {
+        final String key = request.getDBName() + "/" + request.getCollectionName() + "/__estimated__";
+        return cachedCount(key, () ->
+                mongoClient.getDatabase(request.getDBName())
+                        .getCollection(request.getCollectionName())
+                        .estimatedDocumentCount());
+    }
+
+    /**
+     * Counts documents matching the filter (cached).
      */
     private long countDocumentsWithFilter(final MongoRequest request, final BsonDocument filter) {
-        return mongoClient.getDatabase(request.getDBName())
-                .getCollection(request.getCollectionName())
-                .countDocuments(filter);
+        final String key = request.getDBName() + "/" + request.getCollectionName() + "/" + filter.hashCode();
+        return cachedCount(key, () ->
+                mongoClient.getDatabase(request.getDBName())
+                        .getCollection(request.getCollectionName())
+                        .countDocuments(filter));
     }
 
     /**
@@ -477,15 +516,16 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     }
 
     /**
-     * Counts the total number of databases, excluding system databases.
+     * Counts the total number of databases, excluding system databases (cached).
      * RESTHeart filters out system databases (admin, config, local) from listings.
      */
     private long countDatabases() {
-        return mongoClient.listDatabaseNames()
-                .into(new ArrayList<>())
-                .stream()
-                .filter(name -> !isSystemDatabase(name))
-                .count();
+        return cachedCount("/__databases__", () ->
+                mongoClient.listDatabaseNames()
+                        .into(new ArrayList<>())
+                        .stream()
+                        .filter(name -> !isSystemDatabase(name))
+                        .count());
     }
 
     /**
@@ -496,19 +536,21 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     }
 
     /**
-     * Counts the total number of collections in the specified database, excluding system collections.
+     * Counts the total number of collections in the specified database, excluding system collections (cached).
      * RESTHeart filters out system collections (those starting with "system.") from listings.
      */
     private long countCollections(final String databaseName) {
         if (databaseName == null || databaseName.isEmpty()) {
             return 0;
         }
-        return mongoClient.getDatabase(databaseName)
-                .listCollectionNames()
-                .into(new ArrayList<>())
-                .stream()
-                .filter(name -> !isSystemCollection(name))
-                .count();
+        final String key = databaseName + "/__collections__";
+        return cachedCount(key, () ->
+                mongoClient.getDatabase(databaseName)
+                        .listCollectionNames()
+                        .into(new ArrayList<>())
+                        .stream()
+                        .filter(name -> !isSystemCollection(name))
+                        .count());
     }
 
     /**
