@@ -1,6 +1,7 @@
 package org.facet.html;
 
 import static org.facet.html.internal.HtmlResponseHelper.acceptsHtml;
+import static org.facet.html.internal.HtmlResponseHelper.isEventStreamRequest;
 import static org.facet.html.internal.HtmlResponseHelper.renderErrorPage;
 import static org.facet.html.internal.HtmlResponseHelper.setCachingHeaders;
 
@@ -212,6 +213,12 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
      */
     @Override
     public boolean resolve(final ServiceRequest<?> request, final ServiceResponse<?> response) {
+        // Never intercept SSE requests - pass through to RESTHeart's SSE infrastructure unchanged
+        if (isEventStreamRequest(request.getHeaders())) {
+            LOGGER.debug("SSE request detected (Accept: text/event-stream), bypassing HTML interception for path: {}", request.getPath());
+            return false;
+        }
+
         // Only intercept when request accepts HTML
         if (!acceptsHtml(request.getHeaders())) {
             return false;

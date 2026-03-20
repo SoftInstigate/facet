@@ -51,6 +51,21 @@ public class HtmlResponseHelper {
     }
 
     /**
+     * Checks if the request is an SSE (Server-Sent Events) request.
+     *
+     * <p>SSE clients set {@code Accept: text/event-stream}. Such requests must always
+     * bypass Facet's HTML interception so that RESTHeart's SSE infrastructure can
+     * handle the response unchanged.
+     *
+     * @param headers the request headers
+     * @return true if the request accepts {@code text/event-stream}
+     */
+    public static boolean isEventStreamRequest(final HeaderMap headers) {
+        return headers.contains(Headers.ACCEPT)
+                && headers.get(Headers.ACCEPT).stream().anyMatch(v -> v.contains("text/event-stream"));
+    }
+
+    /**
      * Disables caching headers on the response (useful for development mode).
      * This is a convenience method when no caching is needed.
      *
