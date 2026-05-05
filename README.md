@@ -1,8 +1,6 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-## Transform REST APIs into server-rendered HTML using convention-based templates.
-
-No backend code required.
+## A [RESTHeart](https://restheart.org) plugin that turns your MongoDB data into server-rendered HTML — no backend code required.
 
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
@@ -26,9 +24,11 @@ If you are building a web interface on top of a REST API and want to avoid maint
 
 ## What is Facet?
 
+**[RESTHeart](https://restheart.org)** is the agent-ready backend for MongoDB: it instantly exposes your data through REST, GraphQL, WebSocket, and MCP APIs with built-in authentication and authorization — zero boilerplate. Facet is a RESTHeart plugin (interceptor) that extends those same endpoints with server-side HTML rendering.
+
 Building a web UI on top of a REST API usually means choosing between a JavaScript frontend project or a Java template engine that requires controllers. Facet is a third option.
 
-Facet is a SSR Java Web Framework that transforms REST APIs into web interfaces using simple HTML templates. You already have the API, just add templates where you want HTML.
+Facet is a server-side rendering plugin for RESTHeart that turns MongoDB REST API responses into web interfaces using simple HTML templates. You already have the API — just add templates where you want HTML.
 
 **The core idea:** Your API structure is your site structure.
 ```
@@ -85,11 +85,13 @@ You'll see a complete product catalog with search, pagination, and authenticatio
 }
 ```
 
-### 2. Facet exposes it as REST API
+### 2. RESTHeart exposes it as a REST API
 ```bash
 curl http://localhost:8080/shop/products
 # Returns JSON array of products
 ```
+
+RESTHeart handles authentication, authorization, filtering, sorting, and pagination automatically. Facet intercepts the response before it reaches the client.
 
 ### 3. Add a template
 ```html
@@ -182,7 +184,7 @@ Edit templates, refresh browser, see changes. No restart required.
 **Not for:**
 - Heavy client-side state management (use React/Vue)
 - Non-MongoDB databases (Facet requires a MongoDB-compatible database)
-- Projects without REST API layer
+- Backends not running RESTHeart — Facet is a RESTHeart-specific plugin
 
 ## Quick Comparison
 
@@ -204,7 +206,7 @@ Edit templates, refresh browser, see changes. No restart required.
 ## Technical Details
 
 Built on proven technologies:
-- **[RESTHeart](https://restheart.org)** - Production-grade MongoDB REST API server
+- **[RESTHeart](https://restheart.org)** - The agent-ready backend for MongoDB. Provides REST, GraphQL, WebSocket, and MCP APIs with built-in auth and zero boilerplate. Facet ships as a RESTHeart plugin and is also available as a [premium plugin on RESTHeart Cloud](https://cloud.restheart.com).
 - **[Pebble](https://pebbletemplates.io)** - Fast template engine (similar to Jinja2/Twig)
 - **[GraalVM](https://www.graalvm.org)** - High-performance runtime with optional native compilation
 
