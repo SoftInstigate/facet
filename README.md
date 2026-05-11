@@ -72,7 +72,7 @@ Note: example docker-compose files build a local image by default. To use the pu
 
 You'll see a complete product catalog with search, pagination, and authentication—all built with templates.
 
-**[→ Follow the Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** to understand how it works by exploring the code.
+**[→ Follow the Tutorial](https://getfacet.org/docs/tutorial/)** to understand how it works by exploring the code.
 
 ## How It Works
 
@@ -232,9 +232,9 @@ _Compatibility depends on MongoDB wire protocol implementation._
 ## Get Started
 
 **Learn by example:**
-1. **[Product Catalog Tutorial](docs/TUTORIAL_PRODUCT_CATALOG.md)** - Walk through working code
-2. **[Developer's Guide](docs/DEVELOPERS_GUIDE.md)** - Complete reference
-3. **[Template Variables](docs/TEMPLATE_CONTEXT_REFERENCE.md)** - What's available in templates
+1. **[Product Catalog Tutorial](https://getfacet.org/docs/tutorial/)** - Walk through working code
+2. **[Developer's Guide](https://getfacet.org/docs/developers-guide/)** - Complete reference
+3. **[Template Variables](https://getfacet.org/docs/template-context/)** - What's available in templates
 
 **Try it yourself (quickstart):**
 ```bash
