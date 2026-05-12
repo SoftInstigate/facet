@@ -1,6 +1,6 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-## A [RESTHeart](https://restheart.org) plugin that turns your MongoDB data into server-rendered HTML — no backend code required.
+## A [RESTHeart](https://restheart.org) plugin that turns your MongoDB data into server-rendered HTML.
 
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
@@ -24,11 +24,9 @@ If you are building a web interface on top of a REST API and want to avoid maint
 
 ## What is Facet?
 
-**[RESTHeart](https://restheart.org)** is the agent-ready backend for MongoDB: it instantly exposes your data through REST, GraphQL, WebSocket, and MCP APIs with built-in authentication and authorization — zero boilerplate. Facet is a RESTHeart plugin (interceptor) that extends those same endpoints with server-side HTML rendering.
+Facet adds server-rendered HTML to your [RESTHeart](https://restheart.org) + MongoDB API through path-based templates. Place a template where the URL expects it: that endpoint immediately serves HTML to browsers and JSON to API clients. No controllers. No routing config. No JavaScript build pipeline.
 
 Building a web UI on top of a REST API usually means choosing between a JavaScript frontend project or a Java template engine that requires controllers. Facet is a third option.
-
-Facet is a server-side rendering plugin for RESTHeart that turns MongoDB REST API responses into web interfaces using simple HTML templates. You already have the API — just add templates where you want HTML.
 
 **The core idea:** Your API structure is your site structure.
 ```
