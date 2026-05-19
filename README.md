@@ -1,6 +1,6 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-## A [RESTHeart](https://restheart.org) plugin that turns your MongoDB data into server-rendered HTML.
+## Turn your MongoDB data into HTML.
 
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
@@ -10,17 +10,17 @@
 
 <img src="docs/decorate.png" alt="decorate API" width="98%" height="auto" />
 
-If you are building a web interface on top of a REST API and want to avoid maintaining a separate JavaScript project, Facet is worth a look. You create template files that mirror your API structure. That is the entire workflow.
+Building a UI over a REST API usually means a separate frontend project, route/controller boilerplate, and duplicated logic. Facet avoids that: map templates to API paths and render HTML directly from your existing RESTHeart + MongoDB stack.
 
-- **Zero Backend Code:** Ship features without writing controllers or services. Templates plus data equals HTML, end to end.
+- **No Controllers or Routes:** Ship pages by adding templates, not backend plumbing.
 
-- **Non-breaking:** SSR is opt-in per resource. Endpoints without a template keep returning JSON unchanged. Your existing API is never affected by adding Facet.
+- **API Stays Intact:** SSR is opt-in per resource. No template means the endpoint keeps returning JSON unchanged.
 
-- **Hybrid by Default:** The same endpoint serves JSON to API clients and HTML to browsers via content negotiation. One codebase, not two.
+- **One Endpoint, Two Representations:** The same URL serves JSON to API clients and HTML to browsers via content negotiation.
 
-- **Convention-Based:** Drop a template where the path matches the resource and you are done. No routing files, no configuration.
+- **Convention-Based:** Template path matches API path. No routing files or extra configuration.
 
-- **Progressive Enhancement:** Start with server-side rendering, add HTMX for interactivity where needed. SEO-friendly by default.
+- **Progressive Enhancement with HTMX:** Start with SSR, add interactivity where needed, keep pages fast and SEO-friendly.
 
 ## What is Facet?
 
