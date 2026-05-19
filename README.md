@@ -24,7 +24,7 @@ If you are building a web interface on top of a REST API and want to avoid maint
 
 ## What is Facet?
 
-Facet adds server-rendered HTML to your [RESTHeart](https://restheart.org) + MongoDB API through path-based templates. Place a template where the URL expects it: that endpoint immediately serves HTML to browsers and JSON to API clients. No controllers. No routing config. No JavaScript build pipeline.
+Facet renders your MongoDB data exposed by [RESTHeart](https://restheart.org) APIs into server-rendered HTML through path-based templates. Place a template where the URL expects it: that endpoint immediately serves HTML to browsers and JSON to API clients. No controllers. No routing config. No JavaScript build pipeline.
 
 Building a web UI on top of a REST API usually means choosing between a JavaScript frontend project or a Java template engine that requires controllers. Facet is a third option.
 
@@ -47,6 +47,12 @@ Result:
 ```
 
 No routing files, no controllers and no duplicate logic. Just drop templates where your data lives.
+
+## Architecture
+
+Facet runs as a RESTHeart response interceptor: it decides at response time whether to return JSON unchanged or render HTML from templates.
+
+<img src="docs/facet-architecture.png" alt="Facet architecture: request flow through RESTHeart, Facet interceptors, template resolution, and HTML/JSON response negotiation" width="98%" height="auto" />
 
 ## See It in Action
 
