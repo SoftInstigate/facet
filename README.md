@@ -1,6 +1,6 @@
 # <img src="https://getfacet.org/assets/img/facet-logo.svg" alt="Facet logo" width="32px" height="auto" /> Facet
 
-## Turn your MongoDB data into HTML.
+## Turn your MongoDB data into HTML
 
 
 [![Java CI with Maven](https://github.com/SoftInstigate/facet/actions/workflows/build.yml/badge.svg)](https://github.com/SoftInstigate/facet/actions/workflows/build.yml)
@@ -10,13 +10,17 @@
 
 <img src="docs/decorate.png" alt="decorate API" width="98%" height="auto" />
 
-Building a UI over a REST API usually means a separate frontend project, route/controller boilerplate, and duplicated logic. Facet avoids that: map templates to API paths and render HTML directly from your existing RESTHeart + MongoDB stack.
+Building a UI over a REST API usually means a separate frontend project, route/controller boilerplate, and duplicated logic. Facet avoids that: map templates to API paths and render HTML directly from your existing RESTHeart + MongoDB stack. RESTHeart stays under the hood, so you can start productively without advanced RESTHeart knowledge or Java.
 
 - **No Controllers or Routes:** Ship pages by adding templates, not backend plumbing.
 
 - **API Stays Intact:** SSR is opt-in per resource. No template means the endpoint keeps returning JSON unchanged.
 
 - **One Endpoint, Two Representations:** The same URL serves JSON to API clients and HTML to browsers via content negotiation.
+
+- **RESTHeart Under the Hood:** Facet builds on RESTHeart, but you can get started with templates without learning RESTHeart internals first.
+
+- **No Java Required to Start:** Run the Docker image, write templates, and optionally add JavaScript for interactivity. Java is only needed for local plugin development/custom builds.
 
 - **Convention-Based:** Template path matches API path. No routing files or extra configuration.
 
@@ -56,7 +60,7 @@ Facet runs as a RESTHeart response interceptor: it decides at response time whet
 
 ## See It in Action
 
-Try the working example:
+Try the working example (no Java required if you use the published image):
 ```bash
 git clone https://github.com/SoftInstigate/facet.git
 cd facet
@@ -75,6 +79,8 @@ Note: example docker-compose files build a local image by default. To use the pu
 **Open:** http://localhost:8080/shop/products
 
 You'll see a complete product catalog with search, pagination, and authentication—all built with templates.
+
+You can start with Facet template conventions first and learn deeper RESTHeart features only when you need them.
 
 **[→ Follow the Tutorial](https://getfacet.org/docs/tutorial/)** to understand how it works by exploring the code.
 
@@ -252,6 +258,8 @@ docker compose up
 # Visit in browser (login required)
 open http://localhost:8080/
 ```
+
+You only need Java/Maven if you want to build Facet locally or work on the plugin itself.
 
 Note: the root docker-compose.yml builds a local image by default. To use the published image, replace the `build:` section with `image: softinstigate/facet:latest`.
 
