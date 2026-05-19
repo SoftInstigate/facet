@@ -22,6 +22,8 @@ Building a UI over a REST API usually means a separate frontend project, route/c
 
 - **No Java Required to Start:** Run the Docker image, write templates, and optionally add JavaScript for interactivity. Java is only needed for local plugin development/custom builds.
 
+- **Polyglot Extensibility:** Add custom services in GraalVM-supported languages (for example JavaScript) when you need backend logic beyond templates.
+
 - **Convention-Based:** Template path matches API path. No routing files or extra configuration.
 
 - **Progressive Enhancement with HTMX:** Start with SSR, add interactivity where needed, keep pages fast and SEO-friendly.
@@ -219,6 +221,10 @@ Built on proven technologies:
 - **[RESTHeart](https://restheart.org)** - The agent-ready backend for MongoDB. Provides REST, GraphQL, WebSocket, and MCP APIs with built-in auth and zero boilerplate. Facet ships as a RESTHeart plugin and is also available as a [premium plugin on RESTHeart Cloud](https://cloud.restheart.com).
 - **[Pebble](https://pebbletemplates.io)** - Fast template engine (similar to Jinja2/Twig)
 - **[GraalVM](https://www.graalvm.org)** - High-performance runtime with optional native compilation
+
+Facet leverages GraalVM in two ways: standard JVM execution for maximum compatibility during development, and optional Native Image builds for production profiles that benefit from faster cold starts and lower memory usage.
+
+GraalVM also enables polyglot programming: you can build custom services and extensions with GraalVM-supported languages (for example JavaScript), so teams can add backend behavior without being limited to Java only.
 
 **Runtime options:**
 - Standard JVM: ~1s startup, full plugin support
