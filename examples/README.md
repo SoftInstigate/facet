@@ -304,9 +304,9 @@ For dynamic updates without page reloads:
 
 ## Resources
 
-- [Facet Developer's Guide](../docs/DEVELOPERS_GUIDE.md)
-- [Template Context Reference](../docs/TEMPLATE_CONTEXT_REFERENCE.md)
-- [Product Catalog Tutorial](../docs/TUTORIAL_PRODUCT_CATALOG.md)
+- [OpenWiki Quickstart](../openwiki/quickstart.md)
+- [Template System](../openwiki/template-system.md)
+- [Operations & Deployment](../openwiki/operations.md)
 - [RESTHeart Documentation](https://restheart.org/docs/)
 - [Pebble Templates](https://pebbletemplates.io/)
 - [HTMX Documentation](https://htmx.org/)

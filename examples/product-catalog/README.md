@@ -52,7 +52,7 @@ Edit `plugins/product-stats/product-stats.mjs` while the stack is running. The n
 | [`plugins/product-stats/package.json`](plugins/product-stats/package.json) | Declares the plugin to RESTHeart |
 | [`templates/shop/stats/index.html`](templates/shop/stats/index.html) | Facet template for the HTML dashboard |
 
-For a full guide on writing and deploying JavaScript plugins, see the [Developer's Guide — JavaScript Plugins](../../docs/DEVELOPERS_GUIDE.md#javascript-plugins).
+For build and deployment details related to plugins, see [OpenWiki Operations & Deployment](../../openwiki/operations.md).
 
 ## CRUD Operations
 
@@ -478,9 +478,9 @@ To customize: Add your own CSS in the `<style>` block or override Pico's CSS var
 
 ## Resources
 
-- [Facet Developer's Guide](../../docs/DEVELOPERS_GUIDE.md)
-- [Template Context Reference](../../docs/TEMPLATE_CONTEXT_REFERENCE.md)
-- [Product Catalog Tutorial](../../docs/TUTORIAL_PRODUCT_CATALOG.md)
+- [OpenWiki Quickstart](../../openwiki/quickstart.md)
+- [Template System](../../openwiki/template-system.md)
+- [HTMX Integration](../../openwiki/htmx.md)
 - [RESTHeart Documentation](https://restheart.org/docs/)
 - [Pebble Templates](https://pebbletemplates.io/)
 - [HTMX Documentation](https://htmx.org/)

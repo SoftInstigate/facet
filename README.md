@@ -54,6 +54,15 @@ Result:
 
 No routing files, no controllers and no duplicate logic. Just drop templates where your data lives.
 
+## Documentation
+
+This repository uses OpenWiki as the primary documentation hub.
+
+- **Start here:** [openwiki/quickstart.md](openwiki/quickstart.md)
+- **Browse all pages:** [openwiki/index.md](openwiki/index.md)
+
+For user-facing guides and tutorials on the public website, use https://getfacet.org.
+
 ## Architecture
 
 Facet runs as a RESTHeart response interceptor: it decides at response time whether to return JSON unchanged or render HTML from templates.
@@ -84,7 +93,7 @@ You'll see a complete product catalog with search, pagination, and authenticatio
 
 You can start with Facet template conventions first and learn deeper RESTHeart features only when you need them.
 
-**[→ Follow the Tutorial](https://getfacet.org/docs/tutorial/)** to understand how it works by exploring the code.
+**[→ Follow the OpenWiki Quickstart](openwiki/quickstart.md)** to understand how the repository is structured and where to go next.
 
 ## How It Works
 
@@ -248,9 +257,9 @@ _Compatibility depends on MongoDB wire protocol implementation._
 ## Get Started
 
 **Learn by example:**
-1. **[Product Catalog Tutorial](https://getfacet.org/docs/tutorial/)** - Walk through working code
-2. **[Developer's Guide](https://getfacet.org/docs/developers-guide/)** - Complete reference
-3. **[Template Variables](https://getfacet.org/docs/template-context/)** - What's available in templates
+1. **[OpenWiki Quickstart](openwiki/quickstart.md)** - Entry point and navigation map
+2. **[Template System](openwiki/template-system.md)** - Resolution rules and template context
+3. **[Operations & Deployment](openwiki/operations.md)** - Build, Docker, and runtime configuration
 
 **Try it yourself (quickstart):**
 ```bash
