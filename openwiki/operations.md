@@ -191,7 +191,7 @@ Daily scheduled run (08:00 UTC) + manual dispatch:
 ./setversion.sh 1.0.0
 
 # Set snapshot version
-./setversion.sh 1.0.1-SNAPSHOT
+./setversion.sh 1.0.2-SNAPSHOT
 
 # Preview changes
 ./setversion.sh 1.0.0 --dry-run

@@ -67,7 +67,7 @@ facet/
 ├── etc/                            # RESTHeart config + seed data
 ├── examples/product-catalog/       # Full CRUD example with HTMX
 ├── docs/                           # Architecture diagram assets
-├── pom.xml                         # Parent POM (Java 25, RESTHeart 9.2.0)
+├── pom.xml                         # Parent POM (Java 25, RESTHeart 9.5.2)
 └── Dockerfile                      # RESTHeart base + Facet plugin
 ```
 
@@ -84,9 +84,9 @@ facet/
 ## Key Technical Facts
 
 - **Java 25** — set via `maven.compiler.release` in the parent POM
-- **RESTHeart 9.2.0** — core dependency, scoped as `provided`
+- **RESTHeart 9.5.2** — core dependency, scoped as `provided`
 - **Pebble 4.1.1** — template engine (Jinja2/Twig-like syntax)
-- **Current version** — `1.0.1-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
+- **Current version** — `1.0.2-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
 - **License** — Apache 2.0
 
 ## Quick Reference: Template Conventions

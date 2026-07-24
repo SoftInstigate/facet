@@ -18,9 +18,9 @@ Facet has a JUnit 5 test suite with 67+ tests covering core template resolution,
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| JUnit Jupiter | 6.0.3 | Test framework |
+| JUnit Jupiter | 6.1.2 | Test framework |
 | Mockito | 5.23.0 | Mocking |
-| Byte Buddy | 1.18.7-jdk5 | Java 25 compatibility for Mockito |
+| Byte Buddy | 1.18.11-jdk5 | Java 25 compatibility for Mockito |
 
 Tests run with the `byte-buddy-agent` as a Java agent to suppress Mockito self-attach warnings:
 
@@ -170,3 +170,4 @@ There are **no automated integration tests** in the repository. Testing the full
 3. Use Mockito to mock `TemplateProcessor` and RESTHeart request/response objects
 4. Test both success and edge cases (null, empty, missing)
 5. Run the full suite: `mvn -pl core test`
+
