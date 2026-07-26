@@ -20,9 +20,9 @@ Browser/API Client
         │                                       │
         ▼                                       ▼
   HtmlAuthRedirectInterceptor          Service (MongoDB/JSON)
-  (REQUEST_AFTER_AUTH, priority MAX)           │
-  Catches 401/403 → /login redirect    HtmlErrorResponseInterceptor
-        │                             (REQUEST_AFTER_AUTH, priority MAX)
+  (REQUEST_AFTER_FAILED_AUTH,                  │
+   priority 1000)                    HtmlErrorResponseInterceptor
+  Catches 401/403 → /login redirect    (REQUEST_AFTER_AUTH, priority MAX)
         │                             Catches early errors (db/coll not found)
         ▼
   HtmlResponseInterceptor
@@ -63,7 +63,7 @@ Facet registers four RESTHeart plugins via `@RegisterPlugin` annotations:
 |--------|-------|-----------------|---------|
 | `html-response-interceptor` | `HtmlResponseInterceptor` | `RESPONSE` (priority 5) | Main SSR: transforms 2xx and 4xx/5xx to HTML |
 | `html-error-response-interceptor` | `HtmlErrorResponseInterceptor` | `REQUEST_AFTER_AUTH` (priority MAX) | Catches early errors before RESPONSE phase |
-| `html-auth-redirect-interceptor` | `HtmlAuthRedirectInterceptor` | `REQUEST_AFTER_AUTH` | Redirects unauthenticated browsers to `/login` |
+| `html-auth-redirect-interceptor` | `HtmlAuthRedirectInterceptor` | `REQUEST_AFTER_FAILED_AUTH` (priority 1000) | Redirects unauthenticated browsers to `/login` |
 | `login-service` | `LoginService` | N/A (JsonService) | Serves login form; interceptor renders the template |
 
 All are `enabledByDefault = false` except `HtmlErrorResponseInterceptor`. Enable them in RESTHeart config:
@@ -108,8 +108,8 @@ this.handlers.add(new JsonHtmlResponseHandler(templateProcessor)); // fallback
 Handles `MongoRequest` instances (RESTHeart's MongoDB service). Builds rich template context including:
 
 - BsonDocument list transformation to JSON
-- Pagination: `page`, `pagesize`, `totalPages`, `totalDocuments`
-- MongoDB metadata: `database`, `collection`, `requestType`
+- Pagination: `page`, `pagesize`, `totalPages`, `totalItems`
+- MongoDB metadata: `database`, `collection`, `resourceType`
 - Mount context: `mountedDatabase`, `mountedCollection`, permission flags
 - Query parameters: `filter`, `sort`, `keys`
 - Document `_id` metadata for URL generation

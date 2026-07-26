@@ -21,7 +21,7 @@ Facet provides first-class [HTMX](https://htmx.org) support for progressive enha
 | `HX-Trigger` | Element that triggered the request |
 | `HX-Trigger-Name` | Name of the triggering element |
 | `HX-Prompt` | User prompt value |
-| `HX-Boosted` | Boosted link/form flag |
+| `HX-Current-URL` | Current browser URL (for history management) |
 
 A request is considered HTMX when `HX-Request: true` is set **and** the `Accept` header is `*/*` (HTMX's default). This is important because HTMX sends `Accept: */*` rather than `Accept: text/html`.
 
