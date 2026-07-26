@@ -178,7 +178,7 @@ Triggers on semver tag push (e.g., `1.0.0`) or manual dispatch:
 
 ### OpenWiki Update (`openwiki-update.yml`)
 
-Daily scheduled run (08:00 UTC) + manual dispatch:
+Daily scheduled run (04:00 UTC) + manual dispatch:
 - Runs `openwiki code --update --print`
 - Creates PR with documentation updates
 
@@ -256,3 +256,4 @@ environment:
 | Change interceptor matching | `HtmlResponseInterceptor.java` | Manual integration test |
 | Add Pebble filter | New filter + `CustomPebbleExtension.java` | Unit test |
 | Change error pages | `HtmlResponseHelper.java` | `HtmlResponseHelperTest` |
+

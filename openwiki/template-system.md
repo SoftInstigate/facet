@@ -102,11 +102,11 @@ Templates receive context from `TemplateContextBuilder` and response handlers.
 | Variable | Type | Description |
 |----------|------|-------------|
 | `items` | `List<Map>` | Document objects with `data` (BSON as JSON) and metadata |
-| `json` | `String` | JSON string of the full response |
+| `data` | `String` | JSON string of the full response |
 | `page` | `int` | Current page number |
 | `pagesize` | `int` | Items per page |
 | `totalPages` | `int` | Total page count |
-| `totalDocuments` | `long` | Total document count |
+| `totalItems` | `long` | Total document/item count |
 | `filter` | `String` | MongoDB filter query parameter |
 | `sort` | `String` | Sort query parameter |
 | `keys` | `String` | Keys (projection) query parameter |
@@ -115,10 +115,25 @@ Templates receive context from `TemplateContextBuilder` and response handlers.
 
 | Variable | Type | Description |
 |----------|------|-------------|
+| `db` | `String` | Resolved database name |
+| `coll` | `String` | Resolved collection name |
 | `mountedDatabase` | `String` | From parametric mongo-mounts |
 | `mountedCollection` | `String` | From parametric mongo-mounts |
 | `canCreateDatabases` | `boolean` | Permission flag |
 | `canCreateCollections` | `boolean` | Permission flag |
+| `canCreateDocuments` | `boolean` | `true` unless the request targets a DOCUMENT resource |
+| `canDeleteDatabase` | `boolean` | Permission flag |
+| `canDeleteCollection` | `boolean` | Permission flag |
+| `resourceUrl` | `String` | MongoDB resource path from mount context |
+| `collectionUrl` | `String` | Collection-level URL (for navigation) |
+
+### Tenant Context
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `tenantId` | `String` | Tenant ID as JSON value (quoted string or `null`) |
+| `isMultiTenant` | `boolean` | `true` if multi-tenant MongoDB is configured |
+| `hostParams` | `String` | JSON object of hostname parameters for tenant resolution |
 
 ### HTMX Context
 
