@@ -178,7 +178,7 @@ Triggers on semver tag push (e.g., `1.0.0`) or manual dispatch:
 
 ### OpenWiki Update (`openwiki-update.yml`)
 
-Daily scheduled run (04:00 UTC) + manual dispatch:
+Weekly scheduled run (Saturdays 04:17 UTC) + manual dispatch:
 - Runs `openwiki code --update --print`
 - Creates PR with documentation updates
 
