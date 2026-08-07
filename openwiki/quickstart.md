@@ -78,6 +78,7 @@ facet/
 | **Architecture** | [architecture.md](architecture.md) | Understand the interceptor pipeline, plugin registration, and request flow |
 | **Template System** | [template-system.md](template-system.md) | Learn the resolution algorithm, naming conventions, and context variables |
 | **HTMX Integration** | [htmx.md](htmx.md) | Fragment resolution, partial updates, and mutation patterns |
+| **JavaScript Plugins** | [javascript-plugins.md](javascript-plugins.md) | Write server-side services and interceptors in JavaScript, hot-reload, MongoDB access |
 | **Operations** | [operations.md](operations.md) | Build, Docker, RESTHeart config, CI/CD, and release process |
 | **Testing** | [testing.md](testing.md) | Test suite structure, how to run tests, and known gaps |
 
