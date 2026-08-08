@@ -165,7 +165,7 @@ User credentials are in `etc/users.yml` (development only — plaintext password
 
 Triggers on push/PR to `master` when `*.java` or `**/pom.xml` change:
 - JDK 25 (Temurin), Maven cache
-- `mvn -B verify`
+- `mvn -B package`
 - Skips if commit message contains `[skip ci]`
 
 ### Release (`release.yml`)
