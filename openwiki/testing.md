@@ -12,7 +12,7 @@ resource: core/src/test/java/org/facet/
 
 The test suite covers core [architecture](architecture.md) and [template system](template-system.md) components.
 
-Facet has a JUnit 5 test suite with 67+ tests covering core template resolution, HTMX detection, response headers, and template context building.
+Facet has a JUnit 5 test suite with 75 tests covering core template resolution, HTMX detection, response headers, template context building, and response helper utilities.
 
 ### Test Framework
 
