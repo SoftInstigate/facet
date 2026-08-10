@@ -13,10 +13,13 @@ resource: pom.xml
 Facet is a Maven multi-module project. Java 25 is required. See [Testing Guide](testing.md) for test suite details.
 
 ```bash
-# Full build with tests
+# Full build with unit tests
 mvn package
 
-# Skip tests
+# Build and run integration tests (requires Docker)
+mvn verify
+
+# Skip all tests
 mvn -DskipTests package
 
 # Build only the core module
@@ -256,4 +259,5 @@ environment:
 | Change interceptor matching | `HtmlResponseInterceptor.java` | Manual integration test |
 | Add Pebble filter | New filter + `CustomPebbleExtension.java` | Unit test |
 | Change error pages | `HtmlResponseHelper.java` | `HtmlResponseHelperTest` |
+| Add/modify JavaScript plugin | `examples/product-catalog/plugins/` | `JsPluginsIT` (integration test) |
 
