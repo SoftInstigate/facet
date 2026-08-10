@@ -18,6 +18,11 @@
 
     <properties>
         <bytebuddy.version>1.18.11-jdk5</bytebuddy.version>
+        <junit-jupiter.version>6.1.3</junit-jupiter.version>
+        <mockito-core.version>5.23.0</mockito-core.version>
+        <rest-assured.version>6.0.1</rest-assured.version>
+        <testcontainers.version>2.0.5</testcontainers.version>
+        <testcontainers-junit-jupiter.version>1.21.4</testcontainers-junit-jupiter.version>
     </properties>
 
     <repositories>
@@ -39,7 +44,7 @@
         <dependency>
             <groupId>org.restheart</groupId>
             <artifactId>restheart-commons</artifactId>
-            <version>${restheart.version}</version>
+            <version>${restheart-commons.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -54,13 +59,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>6.1.2</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.23.0</version>
+            <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -80,19 +85,19 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>6.0.1</version>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>2.0.5</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.21.4</version>
+            <version>${testcontainers-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -104,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.6</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>-Dnet.bytebuddy.experimental=true -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
                 </configuration>
@@ -112,7 +117,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.6</version>
+                <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <argLine>-Dnet.bytebuddy.experimental=true -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
                     <includes>
@@ -131,7 +136,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-dependency-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>agent-jar-path</id>
@@ -155,7 +160,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>${maven-assembly-plugin.version}</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/assembly/with-deps.xml</descriptor>
