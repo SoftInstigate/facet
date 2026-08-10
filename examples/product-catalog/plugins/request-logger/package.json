@@ -1,0 +1,6 @@
+{
+  "name": "request-logger",
+  "version": "1.0.0",
+  "description": "Diagnostic response headers interceptor for the Facet product catalog example",
+  "rh:interceptors": ["request-logger.mjs"]
+}

@@ -155,8 +155,8 @@ There are **no automated integration tests** in the repository. Testing the full
 ## Known Test Gaps
 
 - **Integration tests** — no automated end-to-end tests for the full RESTHeart + MongoDB + Facet stack
+- **JavaScript plugins** — require RESTHeart image with GraalJS support. Use `softinstigate/restheart-snapshot:diagnostic` or later. See [restheart#663](https://github.com/SoftInstigate/restheart/issues/663) for the full history of bugs and fixes.
 - **MongoHtmlResponseHandler** — the largest source file (~29KB) has no dedicated unit test class
-- **JsonHtmlResponseHandler** — no dedicated unit tests
 - **LoginService** — no tests
 - **HtmlAuthRedirectInterceptor** — no tests
 - **Pebble filters** — no dedicated unit tests for `BuildPathFilter`, `ParentPathFilter`, `StripTrailingSlashFilter`, `ToJsonFilter`

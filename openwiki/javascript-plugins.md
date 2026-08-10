@@ -177,15 +177,15 @@ Facet resolves the template by path: the service URI `/shop/stats` maps to `temp
 Example template:
 
 ```html
-{% extends "layout.html" %}
-{% block content %}
+{% extends "layout" %}
+{% block main %}
 <h1>Statistics</h1>
-<p>Total products: {{ document.total }}</p>
-<p>Average price: ${{ document.avgPrice }}</p>
+<p>Total products: {{ total }}</p>
+<p>Average price: ${{ avgPrice }}</p>
 {% endblock %}
 ```
 
-The rendered JSON is available as the `document` context variable in the template, exactly like MongoDB data.
+Each top-level JSON key returned by the service becomes a direct template variable — no `document.` prefix needed. Facet's `JsonHtmlResponseHandler` merges all service data keys into the template context via `withServiceData()`.
 
 ```bash
 # JSON response (API clients)
@@ -195,24 +195,33 @@ curl -u admin:secret http://localhost:8080/shop/stats
 curl -u admin:secret -H "Accept: text/html" http://localhost:8080/shop/stats
 ```
 
-## Working Example: Product Statistics
+## Working Examples
 
-The [product-catalog example](../examples/product-catalog/) includes a working JavaScript service at `plugins/product-stats/`:
+The [product-catalog example](../examples/product-catalog/) includes both a JavaScript service and an interceptor:
+
+### Service: Product Statistics
 
 | File | Description |
 |---|---|
 | [`plugins/product-stats/product-stats.mjs`](../examples/product-catalog/plugins/product-stats/product-stats.mjs) | Service that aggregates product stats from MongoDB |
-| [`plugins/product-stats/package.json`](../examples/product-catalog/plugins/product-stats/package.json) | Plugin declaration |
+| [`plugins/product-stats/package.json`](../examples/product-catalog/plugins/product-stats/package.json) | Plugin declaration (`rh:services`) |
 | [`templates/shop/stats/index.html`](../examples/product-catalog/templates/shop/stats/index.html) | Facet template for the HTML dashboard |
 
-To run it:
+### Interceptor: Request Logger
+
+| File | Description |
+|---|---|
+| [`plugins/request-logger/request-logger.mjs`](../examples/product-catalog/plugins/request-logger/request-logger.mjs) | Interceptor that adds diagnostic response headers to `/shop/` endpoints |
+| [`plugins/request-logger/package.json`](../examples/product-catalog/plugins/request-logger/package.json) | Plugin declaration (`rh:interceptors`) |
+
+To run both:
 
 ```bash
 cd examples/product-catalog
 docker compose up
 ```
 
-Then open http://localhost:8080/shop/stats in a browser (login: `admin` / `secret`).
+Then open http://localhost:8080/shop/stats in a browser (login: `admin` / `secret`). Inspect the response headers to see the interceptor in action (`X-Facet-Plugin`, `X-Request-Path`, `X-Request-Method`).
 
 ## TypeScript
 
@@ -226,6 +235,7 @@ RESTHeart supports TypeScript with transpilation at load time when using GraalVM
 
 ## Limitations and Caveats
 
+- **Docker image requirement**: RESTHeart 9.7.x had multiple bugs preventing JS plugins from loading. Use `softinstigate/restheart-snapshot:diagnostic` or later until a stable release includes the fixes. See [restheart#663](https://github.com/SoftInstigate/restheart/issues/663) for details.
 - Hot-reload requires the plugins directory to be mounted as a writable volume and RESTHeart to be running on GraalVM. Static native builds do not support hot-reload.
 - The `mclient` global is available only in services and interceptors running inside RESTHeart; it is not available during build or test time.
 - Large or CPU-intensive computations are better suited to Java plugins, which benefit from JIT compilation.

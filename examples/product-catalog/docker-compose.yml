@@ -47,6 +47,7 @@ services:
       - ./static:/opt/restheart/static:ro
       # Mount JavaScript plugins (hot-reload supported on GraalVM)
       - ./plugins/product-stats:/opt/restheart/plugins/product-stats:ro
+      - ./plugins/request-logger:/opt/restheart/plugins/request-logger:ro
     networks:
       - facet-network
     healthcheck:
