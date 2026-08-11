@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.2] - 2026-08-11
 
+### Added
+
+- **JavaScript server-side plugins** — Facet now supports custom backend logic written in JavaScript
+  (or TypeScript) via RESTHeart's GraalVM integration. Add computed endpoints, data aggregations,
+  and request/response interceptors without writing Java or compiling. Edit a `.mjs` file, send a
+  request, see the result. See the [JavaScript Plugins guide](openwiki/javascript-plugins.md).
+
+- **JavaScript plugin integration tests** — `JsPluginsIT` validates server-side JavaScript plugin
+  loading and a request-logger interceptor using HTMX-driven verification.
+
 ### Changed
 
 - **RESTHeart commons** updated from 9.5.2 to 9.7.2 (compatible with RESTHeart 9.7).
