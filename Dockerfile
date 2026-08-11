@@ -1,6 +1,6 @@
 # Facet base image (RESTHeart + Facet plugin)
 
-FROM softinstigate/restheart:9
+FROM softinstigate/restheart:9.7
 
 # Copy locally built plugin artifacts
 COPY core/target/facet-core.jar /opt/restheart/plugins/
