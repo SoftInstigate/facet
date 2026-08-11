@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] - 2026-08-11
+
+### Changed
+
+- **RESTHeart commons** updated from 9.5.2 to 9.7.2 (compatible with RESTHeart 9.7).
+- **Pebble** updated from 4.1.1 to 4.1.2.
+- **Maven plugin versions** now managed as properties in the parent POM:
+  `maven-compiler-plugin` 3.15.0, `maven-surefire-plugin` 3.5.6, `maven-failsafe-plugin` 3.5.6,
+  `maven-dependency-plugin` 3.11.0, `maven-assembly-plugin` 3.8.0, `versions-maven-plugin` 2.21.0.
+- **Dockerfile** base image updated to RESTHeart 9.7.
+
+### Added
+
+- **JavaScript plugin integration tests** — `JsPluginsIT` validates server-side JavaScript plugin
+  loading and a request-logger interceptor using HTMX-driven verification.
+
+### Fixed
+
+- **`update-dependencies.sh`** improved with better version control logic.
+
+---
+
+## [1.0.1] - 2026-03-19
+
+### Fixed
+
+- Bypass HTML interception for SSE `event-stream` requests (#8).
+- Allow `setversion.sh` to run from `master` and `release/*` branches.
+- Update `restheart.version` to 9.2.0 in POM.
+
+### Added
+
+- **OpenWiki documentation** — Architecture, HTMX integration, operations, quickstart, template
+  system, and testing guides now live in the repository under `openwiki/`.
+- **`update-dependencies.sh`** — Script to update project dependencies using Maven Versions Plugin.
+- **Polyglot extensibility** documented in README (GraalVM support).
+
+### Changed
+
+- README rewritten for clarity on Facet as a RESTHeart plugin with server-rendered HTML.
+- CI workflows updated to latest GitHub Actions versions.
+- Documentation consolidated: detailed guides moved to OpenWiki and the project website.
+
+---
+
 ## [1.0.0] - 2026-03-13
 
 First stable release. The core API and template conventions are now considered stable.
