@@ -26,7 +26,7 @@ Facet has a JUnit 5 test suite with 75 tests covering core template resolution, 
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| JUnit Jupiter | 6.1.2 | Test framework |
+| JUnit Jupiter | 6.1.3 | Test framework |
 | Mockito | 5.23.0 | Mocking |
 | Byte Buddy | 1.18.11-jdk5 | Java 25 compatibility for Mockito |
 | REST-Assured | 6.0.1 | HTTP API integration testing |

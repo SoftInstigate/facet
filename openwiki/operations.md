@@ -240,6 +240,26 @@ The script:
 
 After running: `git push && git push --tags`
 
+### Dependency Updates
+
+`update-dependencies.sh` uses the Maven Versions Plugin to update dependency versions:
+
+```bash
+# Patch-level updates only (default)
+./update-dependencies.sh
+
+# Allow minor updates
+./update-dependencies.sh true
+```
+
+The script filters out prerelease qualifiers (M, RC, alpha, beta, EA) by default. Override with the `MAVEN_VERSION_IGNORE` environment variable:
+
+```bash
+MAVEN_VERSION_IGNORE=".+-M[0-9]*" ./update-dependencies.sh
+```
+
+All dependency versions in both POMs are managed via `<properties>` for centralized control. The parent POM owns shared build-plugin versions; `core/pom.xml` owns test-scoped dependency versions.
+
 ## Maven / JitPack Distribution
 
 Facet publishes release tags to [JitPack](https://jitpack.io/#SoftInstigate/facet):
