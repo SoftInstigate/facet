@@ -43,6 +43,8 @@ jobs:
           files: |
             core/target/facet-core-with-deps.zip
             core/target/facet-core-with-deps.tar.gz
+      - name: Pull latest base image
+        run: docker pull softinstigate/restheart:9
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Log in to Docker Hub
