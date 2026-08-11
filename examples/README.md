@@ -13,10 +13,11 @@ This directory contains runnable examples demonstrating Facet's features. Each e
 
 ### Running Any Example
 
-1. **Optional: build Facet core plugin** (only if you want a local image):
-   ```bash
-   cd /path/to/facet
-   mvn package -DskipTests
+1. **Use the published image (recommended):**
+   Replace the `build:` section in the example `docker-compose.yml` with:
+
+   ```yaml
+   image: softinstigate/facet:latest
    ```
 
 2. **Navigate to an example and start it**:
@@ -25,15 +26,24 @@ This directory contains runnable examples demonstrating Facet's features. Each e
    docker compose up
    ```
 
-   By default, each example's docker-compose file builds a local image. To use the published image instead, replace the `build:` section with:
+3. **Optional local build path** (for Facet plugin changes):
 
-   ```yaml
-   image: softinstigate/facet:latest
+   ```bash
+   cd /path/to/facet
+   mvn package -DskipTests
+   cd examples/product-catalog
+   docker compose up --build
    ```
 
-   Then run `docker compose up` (no `--build`).
+4. **Access the application** (check example README for specific URL)
 
-3. **Access the application** (check example README for specific URL)
+By default, each example `docker-compose.yml` uses a local build:
+
+   ```yaml
+   build:
+     context: ../../
+     dockerfile: Dockerfile
+   ```
 
 ## Available Examples
 
@@ -83,7 +93,7 @@ example-name/
         └── component.html
 ```
 
-Each example can be run independently from its own directory with simple `docker compose up` commands. By default, examples build a local image; you can switch to the published image by setting `image: softinstigate/facet:latest` in docker-compose.
+Each example can be run independently from its own directory with simple `docker compose up` commands. For most users, the published `softinstigate/facet` image is the recommended default. Local image builds are useful when you are changing Facet plugin code.
 
 ## Docker Setup
 
@@ -96,13 +106,13 @@ Builds a custom Facet image based on `softinstigate/restheart:9` with:
 - **Plugin dependencies** from `../../core/target/lib/*.jar`
 - Development-friendly base configuration
 
-The Dockerfile references the built artifacts from the repository root, allowing each example to package the latest Facet plugin. If you want to use the published image instead, you can skip the Dockerfile and set `image: softinstigate/facet:latest` in docker-compose.
+The Dockerfile references the built artifacts from the repository root, allowing each example to package the latest Facet plugin when you are developing Facet itself.
 
 ### docker-compose.yml
 
 Defines a multi-container setup with:
 - **MongoDB 8.0** with data persistence and sample data initialization
-- **Facet/RESTHeart** built from the local Dockerfile (or the published image if you replace the `build:` section)
+- **Facet/RESTHeart** from the local Dockerfile by default, with an easy switch to the published image for Docker-first usage
 - Volume mounts for configuration, templates, and static assets (enabling hot-reload)
 - Healthchecks for service readiness
 - Networking between containers

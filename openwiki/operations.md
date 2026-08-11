@@ -8,6 +8,18 @@ resource: pom.xml
 
 # Operations & Deployment
 
+## Deployment Paths
+
+Facet supports two deployment paths:
+
+1. **Docker image (recommended)**
+Run the published `softinstigate/facet` image for the fastest and most self-contained setup.
+
+2. **Manual plugin deployment (advanced)**
+Add Facet artifacts to an existing RESTHeart installation when you need full control over that runtime.
+
+If you are evaluating Facet or starting a new setup, use Docker first.
+
 ## Build
 
 Facet is a Maven multi-module project. Java 25 is required. See [Testing Guide](testing.md) for test suite details.
@@ -33,6 +45,8 @@ The build produces:
 - `core/target/facet-core.jar` — the plugin JAR
 - `core/target/lib/` — runtime dependencies (Pebble, etc.)
 - `core/target/facet-core-with-deps.zip` / `.tar.gz` — bundled archive for releases
+
+For manual plugin deployment, use the bundled release archive (or the JAR together with `target/lib`).
 
 ## Docker
 
@@ -178,6 +192,24 @@ Triggers on semver tag push (e.g., `1.0.0`) or manual dispatch:
 2. Creates GitHub release with `facet-core-with-deps.zip` and `.tar.gz`
 3. Builds and pushes Docker image to Docker Hub (`softinstigate/facet`)
 4. Image tags match release version
+
+### Release Notes Template
+
+Use this snippet in each release to keep artifact communication consistent:
+
+```markdown
+## Distribution
+
+- Primary artifact: `softinstigate/facet:<version>` Docker image (recommended default)
+- Secondary artifact: Facet plugin bundle (`facet-core-with-deps.zip` and `.tar.gz`) for manual RESTHeart deployments
+
+## Compatibility
+
+- Supported RESTHeart line: 9.x
+- See this release assets for exact artifact versions and checksums
+```
+
+Keep the Docker image line first in release notes so new users see the default path immediately.
 
 ### OpenWiki Update (`openwiki-update.yml`)
 

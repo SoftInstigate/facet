@@ -21,13 +21,23 @@ No controllers, no routing config, no JavaScript build pipeline required.
 
 ## Run It in 30 Seconds
 
+Choose your deployment path first:
+
+1. Docker image (recommended)
+Use the published Facet image for the fastest self-contained setup.
+
+2. Manual plugin deployment (advanced)
+Add Facet artifacts into an existing RESTHeart runtime when you already operate RESTHeart directly.
+
+If you are evaluating Facet or starting from scratch, use Docker.
+
 ```bash
 git clone https://github.com/SoftInstigate/facet.git && cd facet
 
-# Option A: use the published image (no Java needed)
+# Recommended: use the published image (no Java needed)
 docker compose up
 
-# Option B: build locally
+# Optional: local build path (for Facet plugin changes)
 mvn -pl core -am -DskipTests package
 docker compose up --build
 ```

@@ -12,6 +12,15 @@
 
 Building a UI over a REST API usually means a separate frontend project, route/controller boilerplate, and duplicated logic. Facet avoids that: map templates to API paths and render HTML directly from your existing RESTHeart + MongoDB stack. RESTHeart stays under the hood, so you can start productively without advanced RESTHeart knowledge or Java.
 
+## Distribution Model
+
+Facet is distributed in two ways, with a clear default:
+
+- **Primary (recommended): self-contained Docker image** for the fastest path to run and evaluate Facet.
+- **Secondary (advanced): plugin deployment into an existing RESTHeart installation** when you already operate RESTHeart and want to add Facet manually.
+
+For most users, start with Docker. Use manual plugin deployment when you need deeper control of an existing RESTHeart runtime.
+
 - **No Controllers or Routes:** Ship pages by adding templates, not backend plumbing.
 
 - **API Stays Intact:** SSR is opt-in per resource. No template means the endpoint keeps returning JSON unchanged.
@@ -71,16 +80,20 @@ Facet runs as a RESTHeart response interceptor: it decides at response time whet
 
 ## See It in Action
 
-Try the working example (no Java required if you use the published image):
+Try the working example with the published image (recommended, no Java required):
 ```bash
 git clone https://github.com/SoftInstigate/facet.git
 cd facet
 
-# Option A: use the published image
+# Recommended: use the published image
+# 1) edit examples/product-catalog/docker-compose.yml
+#    replace the `build:` section with:
+#    image: softinstigate/facet:latest
+# 2) run:
 cd examples/product-catalog
 docker compose up
 
-# Option B: build locally (for plugin changes)
+# Optional: build locally (for Facet plugin changes)
 # mvn package -DskipTests
 # docker compose up --build
 ```
@@ -239,7 +252,7 @@ GraalVM also enables polyglot programming: you can build custom services and ext
 - Standard JVM: ~1s startup, full plugin support
 - Native image: <100ms startup, minimal memory (~50MB)
 
-**Deployment:** Single JAR or native binary, runs anywhere—Docker, Kubernetes, bare metal.
+**Deployment:** Docker image by default. Manual plugin deployment into RESTHeart is available for advanced setups.
 
 ### Database Compatibility
 

@@ -91,32 +91,42 @@ This architectural approach provides:
 
 ### Running the Example
 
-1. **Optional: build the Facet plugin** (only if you want a local image):
-  ```bash
-  cd /path/to/facet
-  mvn package -DskipTests
-  ```
+1. **Use the published image (recommended):**
+   Replace the `build:` section in `docker-compose.yml` with:
+
+   ```yaml
+   image: softinstigate/facet:latest
+   ```
 
 2. **Start the example** (from the product-catalog directory):
    ```bash
    cd examples/product-catalog
-  docker compose up
+   docker compose up
    ```
 
-  By default, the docker-compose file builds a local image. To use the published image instead, replace the `build:` section with:
+3. **Optional local build path** (for Facet plugin changes):
 
-  ```yaml
-  image: softinstigate/facet:latest
-  ```
+   ```bash
+   cd /path/to/facet
+   mvn package -DskipTests
+   cd examples/product-catalog
+   docker compose up --build
+   ```
 
-  Then run `docker compose up` (no `--build`).
+   The default `docker-compose.yml` uses a local build:
 
-3. **Wait for services to start** (watch logs for "RESTHeart started" message):
+   ```yaml
+   build:
+     context: ../../
+     dockerfile: Dockerfile
+   ```
+
+4. **Wait for services to start** (watch logs for "RESTHeart started" message):
    ```bash
    docker-compose logs -f facet
    ```
 
-4. **Access the application**:
+5. **Access the application**:
    - Product Catalog: http://localhost:8080/shop/products
    - Facet API: http://localhost:8080/shop/products (with `Accept: application/json`)
    - Ping endpoint: http://localhost:8080/ping
