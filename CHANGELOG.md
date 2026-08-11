@@ -28,11 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `maven-dependency-plugin` 3.11.0, `maven-assembly-plugin` 3.8.0, `versions-maven-plugin` 2.21.0.
 - **Dockerfile** base image updated to RESTHeart 9.7.
 
-### Added
-
-- **JavaScript plugin integration tests** — `JsPluginsIT` validates server-side JavaScript plugin
-  loading and a request-logger interceptor using HTMX-driven verification.
-
 ### Fixed
 
 - **`update-dependencies.sh`** improved with better version control logic.
