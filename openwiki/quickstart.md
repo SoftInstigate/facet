@@ -97,7 +97,7 @@ facet/
 - **Java 25** — set via `maven.compiler.release` in the parent POM
 - **RESTHeart Commons 9.7.2** — core dependency, scoped as `provided`
 - **Pebble 4.1.2** — template engine (Jinja2/Twig-like syntax)
-- **Current version** — `1.0.2-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
+- **Current version** — `1.0.3-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
 - **License** — Apache 2.0
 
 ## Quick Reference: Template Conventions
