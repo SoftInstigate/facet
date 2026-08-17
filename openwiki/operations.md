@@ -70,10 +70,10 @@ services:
       - ./static:/opt/restheart/static:ro
 ```
 
-The Dockerfile extends `softinstigate/restheart:9`:
+The Dockerfile extends `softinstigate/restheart:9.7`:
 
 ```dockerfile
-FROM softinstigate/restheart:9
+FROM softinstigate/restheart:9.7
 COPY core/target/facet-core.jar /opt/restheart/plugins/
 COPY core/target/lib/*.jar /opt/restheart/plugins/
 CMD ["-o", "/opt/restheart/etc/restheart.yml"]
@@ -226,10 +226,13 @@ Weekly scheduled run (Saturdays 04:17 UTC) + manual dispatch:
 ./setversion.sh 1.0.0
 
 # Set snapshot version
-./setversion.sh 1.0.2-SNAPSHOT
+./setversion.sh 1.0.3-SNAPSHOT
 
 # Preview changes
 ./setversion.sh 1.0.0 --dry-run
+
+# Force version change (e.g., downgrade or overwrite existing tag)
+./setversion.sh 1.0.2 --force
 ```
 
 The script:
