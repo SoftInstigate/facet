@@ -3,7 +3,27 @@ type: Architecture
 title: Facet Architecture
 description: Core architecture of Facet — the interceptor pipeline, plugin registration via @RegisterPlugin, dependency injection, request flow from RESTHeart through template rendering, and the response handler strategy pattern.
 tags: [architecture, interceptor, plugin, restheart, pipeline]
-resource: core/src/main/java/org/facet/html/HtmlResponseInterceptor.java
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-09-07T14:22:17.051Z
+sources:
+  - id: openwiki-source-a5313f36c45e023b274caf2b
+    resource: repo://core/src/main/java/org/facet/html/handlers/HtmlResponseHandler.java
+  - id: openwiki-source-47278839aff3a331b532591a
+    resource: repo://core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java
+  - id: openwiki-source-2273ce38809c3a26ed2bedda
+    resource: repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java
+  - id: openwiki-source-ba055822b509e50a40b16d36
+    resource: repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java
+  - id: openwiki-source-1329b245d7b8f94f7c751283
+    resource: repo://core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java
+  - id: openwiki-source-24f507ac229139f88a25eaea
+    resource: repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java
+  - id: openwiki-source-4beb8d02f10b860d56903cfb
+    resource: repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java
+  - id: openwiki-source-4398d873f3918d016977e46f
+    resource: repo://core/src/main/java/org/facet/html/LoginService.java
+generated: { by: "openwiki/0.5.0", at: "2026-09-07T14:22:17.051Z" }
 ---
 
 # Facet Architecture
@@ -12,48 +32,38 @@ Facet is a [RESTHeart](https://restheart.org) plugin that intercepts HTTP respon
 
 ## Request Flow
 
+```mermaid
+flowchart TD
+    Browser["Browser / API Client"]
+    Auth["RESTHeart Auth"]
+    MService["MongoDB Service"]
+    JService["JSON / Other Service"]
+
+    Browser --> Auth
+    Auth -- "401/403 + Accept: text/html" --> AuthRedirect["HtmlAuthRedirectInterceptor\nREQUEST_AFTER_FAILED_AUTH\npriority 1000"]
+    AuthRedirect --> Redirect302["302 → /login?redirect=…"]
+    Auth -- "authenticated" --> MService
+    Auth -- "authenticated" --> JService
+    MService -- "early error (db/coll not found)" --> ErrorInterceptor["HtmlErrorResponseInterceptor\nREQUEST_AFTER_AUTH\npriority MAX"]
+    ErrorInterceptor --> ErrorPage["errors/{status}.html\nor error.html fallback"]
+    MService -- "reaches RESPONSE phase" --> MainInterceptor["HtmlResponseInterceptor\nRESPONSE\npriority 5"]
+    JService -- "reaches RESPONSE phase" --> MainInterceptor
+    MainInterceptor -- "not HTML-capable" --> JSONPassthrough["JSON passthrough"]
+    MainInterceptor -- "SSE text/event-stream" --> SSEPassthrough["SSE passthrough"]
+    MainInterceptor -- "401/403" --> AuthChallenge["Auth challenge passthrough"]
+    MainInterceptor -- "4xx/5xx" --> ErrorPage
+    MainInterceptor -- "2xx MongoRequest" --> MongoHandler["MongoHtmlResponseHandler\npagination, BSON docs, metadata"]
+    MainInterceptor -- "2xx other" --> JsonHandler["JsonHtmlResponseHandler\nraw JSON context"]
+    MongoHandler --> TemplateResolve["PathBasedTemplateResolver"]
+    JsonHandler --> TemplateResolve
+    TemplateResolve -- "HTMX + HX-Target" --> Fragment["resolveFragment — 2-level lookup"]
+    TemplateResolve -- "full page" --> Hierarchical["resolve — hierarchical walk"]
+    Fragment --> Pebble["PebbleTemplateProcessor.process()"]
+    Hierarchical --> Pebble
+    Pebble --> HTMLOut["HTML response\nwith ETag caching"]
 ```
-Browser/API Client
-        │
-        ▼
-   RESTHeart Auth ──────────────────────────────┐
-        │                                       │
-        ▼                                       ▼
-  HtmlAuthRedirectInterceptor          Service (MongoDB/JSON)
-  (REQUEST_AFTER_FAILED_AUTH,                  │
-   priority 1000)                    HtmlErrorResponseInterceptor
-  Catches 401/403 → /login redirect    (REQUEST_AFTER_AUTH, priority MAX)
-        │                             Catches early errors (db/coll not found)
-        ▼
-  HtmlResponseInterceptor
-  (RESPONSE, priority 5)
-        │
-        ├── acceptsHtml()? ── No ──→ JSON passthrough
-        ├── SSE event-stream? ── Yes ──→ Passthrough
-        ├── 401/403? ── Yes ──→ Passthrough (auth challenge)
-        ├── 4xx/5xx? ── Yes ──→ renderErrorPage()
-        │                        └── errors/{statusCode}.html
-        │                        └── error.html (fallback)
-        └── 2xx success
-              │
-              ├── MongoRequest? → MongoHtmlResponseHandler
-              │     └── builds context with pagination, BSON docs, metadata
-              │
-              └── Other → JsonHtmlResponseHandler (fallback)
-                    └── builds context from raw JSON
-                          │
-                          ▼
-                    PathBasedTemplateResolver
-                          │
-                          ├── HTMX? → resolveFragment() (2-level)
-                          └── Full page → resolve() (hierarchical)
-                                │
-                                ▼
-                          PebbleTemplateProcessor.process()
-                                │
-                                ▼
-                          HTML Response (with ETag caching)
-```
+
+*Request flow from browser through RESTHeart interceptors to HTML rendering.*
 
 ## Plugin Registration
 
