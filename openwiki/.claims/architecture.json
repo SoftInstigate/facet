@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ba00b8c7b223c110d22b29751692caef09fbcb0e2c6930e29c110795dde9c6a4",
+  "claims": [
+    {
+      "id": "claim_c64649c933874366b69db074f6df26c4",
+      "statement": "Facet registers four RESTHeart plugins via @RegisterPlugin: HtmlResponseInterceptor (RESPONSE, priority 5), HtmlErrorResponseInterceptor (REQUEST_AFTER_AUTH, priority MAX), HtmlAuthRedirectInterceptor (REQUEST_AFTER_FAILED_AUTH, priority 1000), and LoginService (JsonService).",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L56-L61",
+          "version": "repo-lines-v1:sha256:10218a905199a7319414d758136aba9d8f11088ea9c5e1dc1e55935730974e74:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhZWM5YTg0MjNhYWI3ZTU5Njk0MTEyOTBjMGVkNzI1ZjgyZWJjZmQ2OGZlZTEwMmYzNzI5ZDM4YjU2YzRhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNlMzcyNmNjMWY1MmU4YTc3YmRkMTI4YzEwNDU2ZjE4NDkxNjQ2M2ZmZTk2YTAzMmYzMDRhYjE4NjQzYzk2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGRjNmFkYzYzNmRlOTUxMzk0NjYzZjgyMTI3ZTYwMTVmMWFiN2M1OGQyNmY3ZDk3Yzg5NTA3ZDdmZjc2NzY0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2VmM2RhMzdkMTU0ODBjY2I0NjQzOTkwODY4ODQ0MjllZWZiODY5MGFmMzgzYmRiOWNmODRmMzJmODQyYmE3ZSJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java#L42-L47",
+          "version": "repo-lines-v1:sha256:19a919ed5ce80a72cae7f04cef0dbfb31b6f26bfd041e760755841ebc2d2650c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhZWM5YTg0MjNhYWI3ZTU5Njk0MTEyOTBjMGVkNzI1ZjgyZWJjZmQ2OGZlZTEwMmYzNzI5ZDM4YjU2YzRhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk0ZGI4ZDExODJmMmM4ZWExMWYzZDdlMzhlNTQyMGM0ODJkNGY3ZTNlYTNkY2ExNzZlNDY2Njc3YTUwZDdmMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGM3ZDJkYWFmOTc0NTY1YzNmZTlkZTliZDE2OGIyOGEyYTA3ZGRjOTY5ZDBkNDE0NzVhZjgwYjIwZjYxOTA0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWVlODQ0M2M4YTU5ZWNmNTEwNzY1NGVkNDUwM2ZlYjQ4MTZlNzA5NmI2NWM2Y2NmNjIyN2FkMjQ0ZWQ4Yjg1MCJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L92-L97",
+          "version": "repo-lines-v1:sha256:f2276fa23e2be1644aca0a9c510351e73d71141d74edea050fca71fb56780925:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhZWM5YTg0MjNhYWI3ZTU5Njk0MTEyOTBjMGVkNzI1ZjgyZWJjZmQ2OGZlZTEwMmYzNzI5ZDM4YjU2YzRhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNlMzcyNmNjMWY1MmU4YTc3YmRkMTI4YzEwNDU2ZjE4NDkxNjQ2M2ZmZTk2YTAzMmYzMDRhYjE4NjQzYzk2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2E5NTA0NTU0NzIyMDdkZDQ3OThkNzA5YWE5NDMzMTQ3OGYxYWU2NDFlY2I3MTdjY2RlZDAxY2U3NTZlZWZlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmM5NzQ0OTRjMTlkOTYzOGI2ZmQwNTZhZDQxOTg0MjVmNDM3ODI2NzYwMGVmZDdkODVmMTI0ODk0ZTA5NTdlNCJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L57-L61",
+          "version": "repo-lines-v1:sha256:c133969ddfe98b1d0e9d2215cfa9dfe822f0450583225ffb98b422a3ab724177:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhZWM5YTg0MjNhYWI3ZTU5Njk0MTEyOTBjMGVkNzI1ZjgyZWJjZmQ2OGZlZTEwMmYzNzI5ZDM4YjU2YzRhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlmZDQyYzkzZWJiMmFjODI3ODZkYjM5MGVkMmUzZWZkODAyM2FjZWU3YzBkMjhkNmEyYTdiNzI0ODllYmU2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTU3M2JhY2JiZDlmOTkwMGZkMjM3MTJkNjNiNDMzZTI4YzgxNjgwMDY3MjMyNjViYTc0Njc4ZGU0YjQ5OTdlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzM3MzgyNjYwOTM3MmM5ZTc0ZmM5MjUxMjMwZGE4MWQyMTUxNGY4NWY0OTZiZWQ0ZDBkNWVkM2Y4ODA2ZjQ2MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0c1b4cd42fcc4b998aaf1a965fcd9c09",
+      "statement": "HtmlResponseInterceptor uses @Inject for pebble-template-processor, mclient (MongoClient), and config, and in @OnInit registers MongoHtmlResponseHandler first then JsonHtmlResponseHandler as fallback.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L170-L205",
+          "version": "repo-lines-v1:sha256:f54c6f6a1916b7eeb741727a8583fee122af30937905c519892b42788c5e298d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyNDIwYTc0YjBiN2U3ZmNjNjJmM2QyZjkwNjY0ZDFkNjI4ZWNlMTEyNTQ4ZDE0YjZkOTU2MDA1ZTIyM2FhZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkxZWM0MGEyNmU4Yjg5MDU0OWQ5ZGM1MjBiYjcwY2I1NzI2YWM4ZmE1ZjhiNDRhYWFmOGVlNjMzMTcwNmEyZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmMzE1OWVhZGRhZWYzMWMxZGQ2MzRjMTEzNWY4NmI5MWNlNGYxZjVkNDg5ZjZiOGRmODFjMThlYzYwMmQxYmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7d91e9e39d44ebb848b0769182b20ac",
+      "statement": "HtmlResponseInterceptor.resolve() bypasses SSE (text/event-stream) requests, bypasses 401/403, and intercepts HTML-capable requests for errors (4xx/5xx) or when a template exists for 2xx responses.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L214-L266",
+          "version": "repo-lines-v1:sha256:12c9600e7b58d76ac6e14a064bdc6d5c50439b73bab5830e068f90d24bbb8d86:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzRlMTY2NGExMzBlZWNiZTEzNzFkNWExNzljNGJhMGU2MTMwMjgzNGE1YTkxZTI3NjMzZTZmMDc3MzAxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYTFlNWVhZmY5YzgyYTcxYjNlZTZiODM0Y2Y5NmQ1YTUyNzkwM2U3OTUxMTM0NmQ0OGJlZWFiODVlZTQ5YWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c59893b89b145d9b6ed92fa89de5cd7",
+      "statement": "HtmlErrorResponseInterceptor catches errors at REQUEST_AFTER_AUTH phase (before RESPONSE) for any service, such as MongoDB database/collection not found, and delegates to HtmlResponseHelper.renderErrorPage().",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java#L14-L72",
+          "version": "repo-lines-v1:sha256:e8ac366893803deb42d861fc20d1045a7cbc4f51b4ce5dd64c45e9223be8f752:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZjNlYmZmMTVlNjUyZjEzMzhiOWQ4YTdkOTU1YzY1ZDg3ZTdiOTQ0YmE1ZDlmYjU3YTBlYTM1NmNjODU2MGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwNGY4OWZjMGVjOThjOTgyNDE4M2U3OTVkM2VkZDE5ZTkzMGY3YmM0NzFmOTAxMmFhM2Q1MDNiZTJmODk3NGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe6e5ed3bf3b42388aeeb9268bd48282",
+      "statement": "HtmlAuthRedirectInterceptor redirects HTML-capable (Accept: text/html or HX-Request: true) requests to a configurable login URI with 302 Found when authentication fails, and supports exclude-paths to skip API endpoints.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L56-L149",
+          "version": "repo-lines-v1:sha256:8e2eb81731289d19857a72c949e61bfae2c2c408b38f39094c9d2bc74909845b:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYWVjOWE4NDIzYWFiN2U1OTY5NDExMjkwYzBlZDcyNWY4MmViY2ZkNjhmZWUxMDJmMzcyOWQzOGI1NmM0YTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkYzZhZGM2MzZkZTk1MTM5NDY2M2Y4MjEyN2U2MDE1ZjFhYjdjNThkMjZmN2Q5N2M4OTUwN2Q3ZmY3Njc2NGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_63b3d79d7d1049daa7d3effe9dbab698",
+      "statement": "LoginService is a JsonService that returns a JSON model for GET /login (rendered as HTML by HtmlResponseInterceptor), and dynamically registers HtmlAuthRedirectInterceptor if not already present.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L62-L184",
+          "version": "repo-lines-v1:sha256:31c0c5730a748eae2b72155f4569eecb128f0e4c8b755b78b10ca00297f359d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3YzE5MzQ2NDkxOTA0MTkzMzUyNDNiZTAyMjY0YTQzMjZjOTRhZGY4YTgxZmFhZWRkMzZkNTUzY2VmMDg1ZjQ5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZGNkMWZkMjgwZjBkNWY1OWIwZmNhMDQ1MDcxYjVmOThjMTdlZjdmZGU4MjI1MTk3YWQ1NDVlZjAyNDMzZGE1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_37a56165b92349d893b447dded2ef312",
+      "statement": "The HtmlResponseHandler strategy interface defines canHandle() and buildContext() methods; handlers are tried in order and first match wins.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L386-L398",
+          "version": "repo-lines-v1:sha256:95bdd61ad2653194f65685c76f90b7e7f27d4ccf2c983f345b3fd1253e581a92:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1OTYwZWQzNWIyYzZjM2U2NDI4ODAyZDYxMGE1NmVmMTM2YTY4YTY4MDQzNjgyZGI4ZGQxNjYxMzNkY2Y0NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjMjJkNTNiMzIyZWIzYjUzMTc3YjQ1MDcwZTkxOGQ3N2VmY2M5NTZlM2E1YWU5MTVkNzlkMDg4ZWMxMTMxMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkYTQ0YjE3MWQ4OTZlYjdhOWU2OTAwNTM1ZGNiNmNkY2NjMzM0MzkzZGUwM2ZkYWE3YWFmYWZmNjE0MDE5YmYifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/HtmlResponseHandler.java#L28-L59",
+          "version": "repo-lines-v1:sha256:be7adcf0cdd60e328ade921e933bcc401e79f4d4e7a723ad9e630695646b1495:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYWQ4NjhiYTU0NTdkOWViNzU0ZTE4MDliMzM3NWNkNTQyZmY3NzdjNzdmYzdkY2Y3MDgwM2ZkYzNhNGVkNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjN2QyZGFhZjk3NDU2NWMzZmU5ZGU5YmQxNjhiMjhhMmEwN2RkYzk2OWQwZDQxNDc1YWY4MGIyMGY2MTkwNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_29808e4a67a14f3fb4ccecacb37a9a7a",
+      "statement": "MongoHtmlResponseHandler handles MongoRequest/MongoResponse pairs and builds context with pagination (page, pagesize, totalPages, totalItems), MongoDB metadata (db, coll, resourceType), mount-aware permissions, query parameters, and tenant context.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L116-L164",
+          "version": "repo-lines-v1:sha256:084e7c9428a7427c2d5cae749197131cf9e9e6b7f2119e6b7d8dadf42b8f1b78:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ZGJhM2ViNGFlZDI5YzFlYTJhMWZlNmFiZDFkYWIwMzFjNDAzZDBiMmU1OWIxMTVkMTNmMTg3MGVhZmZiOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MzlmNTg1NmMyMTUxMmUxNzc4OTk3ZTBjZGIzNjc3MTRkOGI3MmUwNjQ0NjA3MjNjNTRhN2I1MWQzZjVkMTEifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L207-L231",
+          "version": "repo-lines-v1:sha256:8db684659230068db936169f260ce004b33d215f4293f0311ac1b2e276e9d732:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljODExYjFlMjhlMGYwYjM1YmMyZTUxMDkwOTIyNWYyNmZjYWVhMTc1MTZhNmU1MjcwZTM5MzFjYzBmYzZiNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmYjQ1MzQ3ZTRkOTJjNjhhNzk5ZGM1ODhlOWI3NzQ0YjE0N2JhMjM3NDNiZThkMGJhMDkzOGU2OTgwMTgyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwNzEyMDk3OWJmMmE3NDg2ZDE5MTZkNDhkZDAxYjc0ZWYyYWQ4NzkxYTVlYjMwNTg2YTFlOWRkNzc5MzllYTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_50d33a1601f349fabb556112775a0f5d",
+      "statement": "MongoHtmlResponseHandler maintains a ConcurrentHashMap-based TTL count cache (5-second expiry) for estimatedDocumentCount, countDocuments, countDatabases, and countCollections to avoid extra MongoDB round-trips.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L454-L464",
+          "version": "repo-lines-v1:sha256:16fd58c2cf12e74fd6ce8241d85b75dbc4bc43ea35e91b5233576a13c85ad846:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwZDhjMzAwMjhkMDVjNjQ4NDA5YTRhYjI5NGI4NGQwNzU0NjExNjlhMDU4YjhlMmJmMTYxODk4NzA1NjhhNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiMDIzYTNkNTE0MTQzYjgyZjQ3ZWNlNzkwNDRjY2MzN2JhOGVmZmVjMjdjZmU0NDg1N2JmNTE2MmM3NjI3OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0OTIxYmFmMzE1MGRlNzRmNjMxMWU2NGJiMjA0ZDhiMzJjZDFiZTliZDdjOGQyMzk1NWI1NGMyOGY5OWU0MzMifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L50-L63",
+          "version": "repo-lines-v1:sha256:fb4f296d16446c15b572a048c376e0ed4aa1b3594359c7dda862a3ffe6aef148:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMjgyN2I5N2E0M2VhY2QzNmFlNDFmMDVkOTYxNGJhMDMzMmZiNTkyZTVmZGQ5N2VkNjA2NDU5NDk1ODgwNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NzEzMDljYjBhMzlmZDdiYzQ2MGFlZjI5MDY3NzBkMTg4NWY0N2U5NWFkNTA5OWQyYjVmYTdlMTUxMjJmYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwNGZiN2Y5ZjJlOGRiMDljMjg2MDU5ODdiYjI4YTkwOTc3MDJjNGRmMmIwYmE0MTdmMzE3NGJmMWM3ZmQ3M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNThkZGI4ZDcxOWFlZDM1NmVjNGE2ZTIzNjE2NTk5OWRkYjRmYzAxNDhjYzY2ZDljMDEzNTA0OWIxYmRkNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7114917ef8c048539642a844ab480aec",
+      "statement": "JsonHtmlResponseHandler is a fallback handler (canHandle returns true) that parses the raw JSON response content into a map and builds a minimal template context with path, raw data, and service data.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java#L57-L83",
+          "version": "repo-lines-v1:sha256:87e6713d7458a36a4d922629b480d33a5a631bd46a8b5373e90f897bad77b4b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2YzQ0NjAwZDkzMmYxNjk5NTNkZmQ5M2ZiNzAzZjJkOTI4YWVjYjcxYTNlYjU1NDRlNWEzOWRjNGY4MGM5MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjODIyOTFkMWQ0MjRlZTU4Y2VjODFmYjE1YjkyZjA5NDlhY2MxMDliNTc5ZDRmZGZlZDM3MDU4ODdiYzY5MGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1b3b246d2bd14d01ae3696f33bf46f10",
+      "statement": "HtmlResponseHelper.acceptsHtml() considers a request HTML-capable when Accept: text/html is present OR when HX-Request: true and Accept: */*. HtmlResponseHelper.renderErrorPage() resolves status-specific error templates (errors/{statusCode}.html) with fallback to error.html, and falls back to inline HTML if template processing fails.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java#L115-L155",
+          "version": "repo-lines-v1:sha256:eb14aedd6088863981732a0d42f2d170826ae4926307c6774a71d8d63b93b084:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMzhhNWEwNzY5NzIyMWQ2MTM4OTBjOGQ2NDZkNjFhZDAwZDViOTUzNTkyODRjOThmNDljODAxMjdlZjFlOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkNzlhZjhjZmQ4NmViNzUzODI5ZGY1N2I0M2I1MjJiZDU0NTAzMmY2ZGQ4ZDA0MGE0YWY2ZTA0YmM4OTU2OTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5OGE4ZmU5MjJmMGM2YzMxZDYyMTEyZDFmYWM2OGRkMDE0ZGI1MTQzZmY0MTUzMzkzNjhiZTQzNWM4ZTA5NWUifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java#L39-L51",
+          "version": "repo-lines-v1:sha256:1f5db453e58eff8905a093205e1382a6d0fc7eb1a7d464d4e25b73030803a845:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3MzVmNDFhZDVmNTRjNTQyOGVmMTgxODdkZjc4Zjg0NmFmYjA3MjUxOGU0MTNhMzA2OTRhMTA2ZjAxZTE0MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5N2NmYmUxM2I1ZDNlNjRhMGYzYTY2MDQyMDhmZmVlNjg3NDY5M2RmNDVkMDA3Y2FiZWJiMWNmMGRjNGQwYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkOTViN2Y1NDk1OWQ1OGU0OWQyYjZkNDkzOTM1ZjVkNjVhZDZlYTZiOWRhN2RjMzNhNzc4YzUwYTRmZTIxOGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_54a6598d3db44f7196cad96eeab56f44",
+      "statement": "HtmlResponseInterceptor handles HTMX requests by resolving fragment templates via templateResolver.resolveFragment() when HX-Target header is present, and reports a 500 error if the fragment template is not found.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L136-L147",
+          "version": "repo-lines-v1:sha256:a5f75f46b13da61d83bd710e4f39d2584dcf2a4ec532e9fa0206e23afac53da9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExYzNkM2Y4MTcxOGM0OTRhMGE1NWU1YzZjNDYyZjQxN2M3ZmE1YzkyNjFlNDYzNGNiYWM5MDJhZTE1ZmIxZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlNDkwNmNhNzU0OTNiNTcxMWQyZjVlMTEyMmRlODM2NmQwYWQ4MTE1NmM4ZDg4YmQ1OGNiZDkxMjVhNDI4YTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYWMxOTM2NzYxM2ZjNzAwYjQ2NTUwMzhkNWZjNDc5N2FmYzkzYzZmYjA1ODVkYzFmMDVjNjJmNjRiNWU4NWEifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L306-L354",
+          "version": "repo-lines-v1:sha256:5081c293d83a23a8d1c134e2faab2e41203b58a0898f4d9ac619f5166691d380:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1YjE0MmJmZjc0MDhjMjkzYTI1Njc3OWJjYzUzODk3ZDY2ZmE1NmU4NzdkMjVjMGY3ZTljODJjYmJhNDczZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5NWI1YTE0YzZkMzA0OTQzNTZhZWE3NGM3MDIwZmEwMzVlNGNiZjc4ZTNjODU2ZjZmMTczNzEwNjc1MmQzNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYjBlM2NkZDI0MDgwZDQwYTQ5NWZiZmNiNDE3ZGY0NmZjMTI2NGRlOTNmZDkyZjE2ZDU0NjdlMDY0NzRiM2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_accb17b10a164fd4a3c4f207ae204c1d",
+      "statement": "HtmlResponseInterceptor supports ETag-based response caching with configurable max-age and response-caching toggle, sending 304 Not Modified when If-None-Match matches the content hash.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L157-L168",
+          "version": "repo-lines-v1:sha256:af2441e4d1209132cf0c24166c48ea13061a70de9e4c6a9438f3d71191b776e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZmRhZmYzNDE4ZTQ3ODk2ZDdjNGU3MTRiZDNjNWNhZTZlNDYyYjdlMzI4MTU5Mzg1MTM5NmQ2ZDMxN2I2OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzMGMzNGZlOTgwYTg5YmEwMDk0NDRkMDFkZWFhNDMxOWJlNWViNWFjYjk5ZTQzZTM1ZTZjZWU1NjNhOGVhMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhMDMyYjlhOTEyNTU1OGVlYjE5MzYyNzJhOGM2ODE0N2JhNTFkZmI5MTE3YmIyODI1MTc2NDFkYTNkYTQwZTMifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L451-L476",
+          "version": "repo-lines-v1:sha256:0c3c0bffc2c1a7d47164c9e336e0907468e8e0288be54b1d457ed8026bff97ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjMWQ4NTZiMGU4ZmIxYWU0NjI1N2IyNzM0YWYzMzA0ZTkwNjcwOTc2NWE4M2I0Mzk3MmU1YjZkNGE2OGFlZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmOTI4M2EzOTY5YWU0MmRkNjI0ZDZmNDViMGFkMTE4MmY1MDdlZGMzZDA2MzNmZjRkNzUxZmFiYTkyOTY5NDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwNGY4OWZjMGVjOThjOTgyNDE4M2U3OTVkM2VkZDE5ZTkzMGY3YmM0NzFmOTAxMmFhM2Q1MDNiZTJmODk3NGIifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java#L89-L97",
+          "version": "repo-lines-v1:sha256:4252a7571ac99342df8984fb0724cb2abca1b554b092f151c3314cecd80f7dd5:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMwMDdhYTMwODhhYTU1NTJiZDhiZjJiOGI2NThmMWVlYTJlNjRmZmQ5ODVmYjYyZDIzMDEyZWZkOTA4ZGFkZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTc3MzlhYzQ4NmM4OTRkYTY4YzY5NDM3M2U5ODU1NThkYWU2NDdiYzFmZDhhYjFiMzI3YmQ3YjU3OWIyYTAxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTVkZWIyY2QwYWUwOTM4YzQ2ZDY2NTgxNTgxMjg5NzMwMWM4MmNiOGIzMGQyMmZkODAwZjYwNjRmODMyOGQxNiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-07T14:22:17.051Z"
+  }
+}
