@@ -3,7 +3,33 @@ type: Playbook
 title: Operations & Deployment
 description: How to build, configure, deploy, and release Facet — Maven build commands, Docker setup, RESTHeart configuration reference, CI/CD workflows, versioning with setversion.sh, and JitPack publishing.
 tags: [operations, deployment, docker, maven, ci-cd, restheart, config]
-resource: pom.xml
+verified:
+  - by: openwiki/0.5.1
+    at: 2026-09-12T23:09:54.715Z
+sources:
+  - id: openwiki-source-4d1d392666be6dfdd7a91a2e
+    resource: repo://.github/workflows/release.yml
+  - id: openwiki-source-4953616e2e42dce9b871023a
+    resource: repo://core/pom.xml
+  - id: openwiki-source-b8b6c47f4353d31d5b9b5b9c
+    resource: repo://core/src/assembly/with-deps.xml
+  - id: openwiki-source-b79fbbd921df689b4bbdc82f
+    resource: repo://docker-compose.yml
+  - id: openwiki-source-bb1ebe868e35e9e500714501
+    resource: repo://Dockerfile
+  - id: openwiki-source-10729bcc248e38025f4c362d
+    resource: repo://etc/restheart.yml
+  - id: openwiki-source-4d027e04a808e21feced8097
+    resource: repo://examples/product-catalog/docker-compose.yml
+  - id: openwiki-source-188d7998f843273008bb0d28
+    resource: repo://examples/product-catalog/Dockerfile
+  - id: openwiki-source-24dd11bc6e088b225824ce40
+    resource: repo://jitpack.yml
+  - id: openwiki-source-2355f81d7cf522f8dbdaabd4
+    resource: repo://pom.xml
+  - id: openwiki-source-9a509e4f28155fbfb293d571
+    resource: repo://setversion.sh
+generated: { by: "openwiki/0.5.1", at: "2026-09-12T23:09:54.715Z" }
 ---
 
 # Operations & Deployment
@@ -52,30 +78,59 @@ For manual plugin deployment, use the bundled release archive (or the JAR togeth
 
 ### Quickstart Stack
 
-The root `docker-compose.yml` runs a minimal stack:
+The root `docker-compose.yml` runs a minimal stack with health checks, a dedicated bridge network, and a persistent MongoDB volume:
 
 ```yaml
 services:
   mongodb:
     image: mongo:8.0
+    container_name: facet-mongo
     volumes:
+      - mongo-data:/data/db
       - ./etc/init-data.js:/docker-entrypoint-initdb.d/init-data.js:ro
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   facet:
-    build: { context: ., dockerfile: Dockerfile }
-    ports: ["8080:8080"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: facet-quickstart:latest
+    container_name: facet
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      RHO: >
+        /mclient/connection-string->"mongodb://mongodb";
+        /pebble-template-processor/enabled->true;
+        /http-listener/host->"0.0.0.0";
     volumes:
       - ./etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro
       - ./etc/users.yml:/opt/restheart/etc/users.yml:ro
       - ./templates:/opt/restheart/templates:ro
       - ./static:/opt/restheart/static:ro
+    healthcheck:
+      test: curl -f http://localhost:8080/ping || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 ```
 
 The Dockerfile extends `softinstigate/restheart:9.7`:
 
 ```dockerfile
 FROM softinstigate/restheart:9.7
+
 COPY core/target/facet-core.jar /opt/restheart/plugins/
 COPY core/target/lib/*.jar /opt/restheart/plugins/
+
 CMD ["-o", "/opt/restheart/etc/restheart.yml"]
 ```
 
@@ -92,10 +147,14 @@ docker run --rm -p 8080:8080 \
 
 ### Product Catalog Example
 
+The product-catalog example extends the published `softinstigate/facet:latest` image with example-specific configuration and JavaScript plugins:
+
 ```bash
 cd examples/product-catalog
 docker compose up   # builds from root Dockerfile with example-specific config
 ```
+
+The example mounts additional JavaScript plugins (`product-stats`, `request-logger`) into `/opt/restheart/plugins/` for hot-reload during development. See the example's `docker-compose.yml` for the full volume configuration.
 
 ## RESTHeart Configuration Reference
 
@@ -162,16 +221,97 @@ See [Architecture](architecture.md) for how this interceptor fits into the reque
 /fileRealmAuthenticator:
   enabled: true
   conf-file: /opt/restheart/etc/users.yml
+```
 
+### JWT Token Management
+
+```yaml
 /jwtTokenManager:
   enabled: true
-  ttl: 15
+  ttl: 15                       # Token lifetime in minutes
   srv-uri: /token
 
+/jwtConfigProvider:
+  key: change-me                # Secret key — change for production
+  algorithm: HS256
+  base64Encoded: false
+  issuer: facet-quickstart
+
+/jwtAuthenticationMechanism:
+  enabled: true
+  base64Encoded: false
+  usernameClaim: sub
+  rolesClaim: roles
+  fixedRoles: []
+```
+
+### Auth Cookies
+
+```yaml
 /authCookieSetter:
   enabled: true
   name: rh_auth
-  ttl: 15
+  domain: localhost             # Set to your domain for production
+  path: /
+  secure: false                 # true for HTTPS
+  http-only: true
+  same-site: true
+  same-site-mode: lax
+  ttl: 15                       # Minutes — matches jwtTokenManager/ttl
+  allow-legacy: true
+
+/authCookieHandler:
+  enabled: true
+
+/authCookieRemover:
+  enabled: true
+  secure: false                 # true for HTTPS
+  uri: /logout
+```
+
+### Authorization (File ACL)
+
+```yaml
+/fileAclAuthorizer:
+  enabled: true
+  permissions:
+    # Unauthenticated users can access static assets
+    - roles: ['$unauthenticated']
+      predicate: >
+        path('/favicon.ico') or path-prefix('/apple-touch-icon')
+        or path('/robots.txt') or path-prefix('/static')
+      priority: 999
+      mongo:
+        allowManagementRequests: false
+        allowBulkPatch: false
+        allowBulkDelete: false
+        allowWriteMode: false
+    # Admin can do anything
+    - role: admin
+      predicate: path-prefix[path=/]
+      priority: 0
+      mongo:
+        readFilter: null
+        writeFilter: null
+    # Viewer can only read
+    - role: viewer
+      predicate: path-prefix[path=/]
+      priority: 1
+      mongo:
+        readFilter: null
+        writeFilter: '{"_id": {"$exists": false}}'
+```
+
+### Static Resources
+
+```yaml
+/static-resources:
+  - what: /opt/restheart/static/favicon.ico
+    where: /favicon.ico
+    embedded: false
+  - what: /opt/restheart/static
+    where: /static
+    embedded: false
 ```
 
 User credentials are in `etc/users.yml` (development only — plaintext passwords).
@@ -188,10 +328,10 @@ Triggers on push/PR to `master` when `*.java` or `**/pom.xml` change:
 ### Release (`release.yml`)
 
 Triggers on semver tag push (e.g., `1.0.0`) or manual dispatch:
-1. Builds core artifacts
-2. Creates GitHub release with `facet-core-with-deps.zip` and `.tar.gz`
+1. Builds core artifacts (`mvn -B package`)
+2. Creates GitHub release with `facet-core-with-deps.zip` and `.tar.gz` (tag push only)
 3. Builds and pushes Docker image to Docker Hub (`softinstigate/facet`)
-4. Image tags match release version
+4. Image tags match release version plus `latest`
 
 ### Release Notes Template
 
@@ -215,7 +355,7 @@ Keep the Docker image line first in release notes so new users see the default p
 
 Weekly scheduled run (Saturdays 04:17 UTC) + manual dispatch:
 - Runs `openwiki code --update --print`
-- Creates PR with documentation updates
+- Creates PR with documentation updates to `openwiki/` and agent files
 
 ## Versioning
 
@@ -237,9 +377,10 @@ Weekly scheduled run (Saturdays 04:17 UTC) + manual dispatch:
 
 The script:
 1. Validates semver format
-2. Checks current version and branch
-3. Updates both parent and core POM versions
-4. Commits and tags (for release versions)
+2. Checks current version and branch (requires `master`, `release/*`, or `<major>.x`)
+3. Verifies working tree is clean
+4. Updates both parent and core POM versions
+5. Commits and tags (for release versions)
 
 After running: `git push && git push --tags`
 
@@ -280,7 +421,7 @@ Facet publishes release tags to [JitPack](https://jitpack.io/#SoftInstigate/face
 </dependency>
 ```
 
-The `jitpack.yml` file configures the JitPack build environment.
+The `jitpack.yml` file configures the JitPack build environment (currently `openjdk25`).
 
 ## Development Workflow
 
@@ -315,4 +456,3 @@ environment:
 | Add Pebble filter | New filter + `CustomPebbleExtension.java` | Unit test |
 | Change error pages | `HtmlResponseHelper.java` | `HtmlResponseHelperTest` |
 | Add/modify JavaScript plugin | `examples/product-catalog/plugins/` | `JsPluginsIT` (integration test) |
-

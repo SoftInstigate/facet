@@ -4,8 +4,8 @@ title: Facet Architecture
 description: Core architecture of Facet — the interceptor pipeline, plugin registration via @RegisterPlugin, dependency injection, request flow from RESTHeart through template rendering, and the response handler strategy pattern.
 tags: [architecture, interceptor, plugin, restheart, pipeline]
 verified:
-  - by: openwiki/0.5.0
-    at: 2026-09-07T14:22:17.051Z
+  - by: openwiki/0.5.1
+    at: 2026-09-12T23:09:54.715Z
 sources:
   - id: openwiki-source-a5313f36c45e023b274caf2b
     resource: repo://core/src/main/java/org/facet/html/handlers/HtmlResponseHandler.java
@@ -23,7 +23,7 @@ sources:
     resource: repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java
   - id: openwiki-source-4398d873f3918d016977e46f
     resource: repo://core/src/main/java/org/facet/html/LoginService.java
-generated: { by: "openwiki/0.5.0", at: "2026-09-07T14:22:17.051Z" }
+generated: { by: "openwiki/0.5.1", at: "2026-09-12T23:09:54.715Z" }
 ---
 
 # Facet Architecture
@@ -69,14 +69,14 @@ flowchart TD
 
 Facet registers four RESTHeart plugins via `@RegisterPlugin` annotations:
 
-| Plugin | Class | Intercept Point | Purpose |
-|--------|-------|-----------------|---------|
-| `html-response-interceptor` | `HtmlResponseInterceptor` | `RESPONSE` (priority 5) | Main SSR: transforms 2xx and 4xx/5xx to HTML |
-| `html-error-response-interceptor` | `HtmlErrorResponseInterceptor` | `REQUEST_AFTER_AUTH` (priority MAX) | Catches early errors before RESPONSE phase |
-| `html-auth-redirect-interceptor` | `HtmlAuthRedirectInterceptor` | `REQUEST_AFTER_FAILED_AUTH` (priority 1000) | Redirects unauthenticated browsers to `/login` |
-| `login-service` | `LoginService` | N/A (JsonService) | Serves login form; interceptor renders the template |
+| Plugin | Class | Intercept Point | Priority | enabledByDefault | Purpose |
+|--------|-------|-----------------|----------|------------------|---------|
+| `html-response-interceptor` | `HtmlResponseInterceptor` | `RESPONSE` | 5 | `false` | Main SSR: transforms 2xx and 4xx/5xx to HTML |
+| `html-error-response-interceptor` | `HtmlErrorResponseInterceptor` | `REQUEST_AFTER_AUTH` | `MAX` | **`true`** | Catches early errors before RESPONSE phase |
+| `html-auth-redirect-interceptor` | `HtmlAuthRedirectInterceptor` | `REQUEST_AFTER_FAILED_AUTH` | 1000 | `false` | Redirects unauthenticated browsers to `/login` |
+| `login-service` | `LoginService` | N/A (JsonService) | N/A | `false` | Serves login form; dynamically registers auth redirect interceptor |
 
-All are `enabledByDefault = false` except `HtmlErrorResponseInterceptor`. Enable them in RESTHeart config:
+Only `HtmlErrorResponseInterceptor` is enabled by default. Enable the others in RESTHeart config:
 
 ```yaml
 /html-response-interceptor:
@@ -87,11 +87,14 @@ All are `enabledByDefault = false` except `HtmlErrorResponseInterceptor`. Enable
 /html-auth-redirect-interceptor:
   enabled: true
   login-uri: /login
+  exclude-paths: [/api, /tokens]  # optional: paths that bypass redirect
 
 /login-service:
   enabled: true
   uri: /login
 ```
+
+See [operations.md](operations.md) for full configuration reference.
 
 ## Dependency Injection
 
@@ -120,19 +123,28 @@ Handles `MongoRequest` instances (RESTHeart's MongoDB service). Builds rich temp
 - BsonDocument list transformation to JSON
 - Pagination: `page`, `pagesize`, `totalPages`, `totalItems`
 - MongoDB metadata: `database`, `collection`, `resourceType`
-- Mount context: `mountedDatabase`, `mountedCollection`, permission flags
+- Mount context: mount-resolved `db`, `coll`, permission flags (`canCreateDatabases`, `canCreateCollections`, etc.)
 - Query parameters: `filter`, `sort`, `keys`
-- Document `_id` metadata for URL generation
+- Document `_id` metadata for URL generation via `IdTypeDetector`
+- Tenant context: `tenantId`, `isMultiTenant`, `hostParams` for parametric mount support
 
-Includes a **TTL count cache** (`ConcurrentHashMap<String, CacheEntry>`, 5-second TTL) to avoid extra MongoDB round-trips for `estimatedDocumentCount()` and `countDocuments()` per rendered page.
+Includes a **TTL count cache** (`ConcurrentHashMap<String, CacheEntry>`, 5-second TTL) to avoid extra MongoDB round-trips for `estimatedDocumentCount()`, `countDocuments()`, `countDatabases()`, and `countCollections()` per rendered page.
 
 Source: [`core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java`](../core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java)
 
 ### JsonHtmlResponseHandler
 
-Generic fallback for non-MongoDB service responses. Wraps the raw JSON response body in a minimal template context.
+Generic fallback for non-MongoDB service responses. Wraps the raw JSON response body in a minimal template context. Always returns `canHandle = true`, so it must be registered last.
 
 Source: [`core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java`](../core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java)
+
+### LoginService
+
+`LoginService` is a `JsonService` (not an interceptor) that returns a JSON model for `GET /login`. The `HtmlResponseInterceptor` then renders the model into the `templates/login/index.html` template.
+
+On initialization, `LoginService` dynamically registers `HtmlAuthRedirectInterceptor` via the plugin registry if no instance is already present. This ensures that unauthenticated browser requests are redirected to the login page even when the interceptor was not explicitly configured.
+
+Source: [`core/src/main/java/org/facet/html/LoginService.java`](../core/src/main/java/org/facet/html/LoginService.java)
 
 ## Template Resolution
 
@@ -142,22 +154,23 @@ See [template-system.md](template-system.md) for the full resolution algorithm.
 
 ## HTMX Awareness
 
-The interceptor detects HTMX requests via `HtmxRequestDetector` and adjusts rendering:
+The interceptor detects HTMX requests via `HtmxRequestDetector.isHtmxRequest()`, which checks for `HX-Request: true` header combined with `Accept: */*`. It adjusts rendering accordingly:
 
-- **HTMX + `HX-Target`** → fragment template (strict 2-level lookup)
-- **HTMX without `HX-Target`** → full page template (same as standard)
+- **HTMX + `HX-Target`** → fragment template (strict 2-level lookup via `_fragments/` subdirectories)
+- **HTMX without `HX-Target`** → full page template (same as standard browser request)
 - **SSE `text/event-stream`** → always bypasses interception
 
 See [htmx.md](htmx.md) for fragment resolution details.
 
 ## Error Handling
 
-Two interceptors cooperate for error rendering:
+Two interceptors cooperate for error rendering, covering different lifecycle phases:
 
-1. **`HtmlErrorResponseInterceptor`** (REQUEST_AFTER_AUTH) — catches errors that occur before the RESPONSE phase, such as MongoDB database/collection not found. Runs at `Integer.MAX_VALUE` priority (last).
-2. **`HtmlResponseInterceptor`** (RESPONSE) — catches errors that reach the RESPONSE phase, such as document-not-found (404).
+1. **`HtmlErrorResponseInterceptor`** (`REQUEST_AFTER_AUTH`, `Integer.MAX_VALUE` priority) — catches errors that occur *before* the RESPONSE phase. Some services (notably MongoDB) detect errors like database/collection-not-found during `REQUEST_AFTER_AUTH` and terminate the exchange early. This interceptor catches those early errors for HTML-capable browser requests and delegates to `HtmlResponseHelper.renderErrorPage()`.
 
-Both delegate to `HtmlResponseHelper.renderErrorPage()`, which resolves per-status-code templates (`errors/{statusCode}.html`) with fallback to `error.html`.
+2. **`HtmlResponseInterceptor`** (`RESPONSE`, priority 5) — catches errors that reach the RESPONSE phase, such as document-not-found (404) or paths with invalid extra segments (treated as 404). Also delegates to `HtmlResponseHelper.renderErrorPage()`.
+
+Both interceptors call `HtmlResponseHelper.renderErrorPage()`, which resolves per-status-code templates (`errors/{statusCode}.html`) with fallback to `error.html`, and falls back to inline HTML if template processing fails entirely.
 
 Source: [`core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java`](../core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java)
 
@@ -171,18 +184,19 @@ Source: [`HtmlResponseInterceptor.java` — `isEventStreamRequest()` check](../c
 
 | File | Role |
 |------|------|
-| `core/src/main/java/org/facet/html/HtmlResponseInterceptor.java` | Main interceptor: resolve + handle |
-| `core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java` | Early error rendering |
-| `core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java` | Auth redirect to /login |
-| `core/src/main/java/org/facet/html/LoginService.java` | Login form service |
-| `core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java` | MongoDB context builder (largest file) |
-| `core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java` | JSON fallback handler |
-| `core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java` | acceptsHtml, renderErrorPage, caching |
-| `core/src/main/java/org/facet/html/internal/HtmxRequestDetector.java` | HTMX header parsing |
-| `core/src/main/java/org/facet/html/internal/HtmxResponseHelper.java` | Server-side HTMX response headers |
-| `core/src/main/java/org/facet/html/internal/IdTypeDetector.java` | MongoDB _id type detection |
-| `core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java` | Template resolution (hierarchical) |
+| `core/src/main/java/org/facet/html/HtmlResponseInterceptor.java` | Main interceptor: SSE bypass, handler strategy, HTMX fragment resolution, ETag caching |
+| `core/src/main/java/org/facet/html/HtmlErrorResponseInterceptor.java` | Early error rendering (REQUEST_AFTER_AUTH phase) |
+| `core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java` | Auth redirect to /login with exclude-paths support |
+| `core/src/main/java/org/facet/html/LoginService.java` | Login form service; dynamically registers auth redirect interceptor |
+| `core/src/main/java/org/facet/html/handlers/HtmlResponseHandler.java` | Strategy interface: `canHandle()` + `buildContext()` |
+| `core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java` | MongoDB context builder: pagination, BSON docs, mount context, tenant, count cache |
+| `core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java` | JSON fallback handler (accepts any response) |
+| `core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java` | `acceptsHtml()`, `isEventStreamRequest()`, `renderErrorPage()`, ETag caching |
+| `core/src/main/java/org/facet/html/internal/HtmxRequestDetector.java` | HTMX header parsing (`HX-Request`, `HX-Target`, etc.) |
+| `core/src/main/java/org/facet/html/internal/HtmxResponseHelper.java` | Server-side HTMX response headers (`HX-Trigger`, `HX-Retarget`, etc.) |
+| `core/src/main/java/org/facet/html/internal/IdTypeDetector.java` | MongoDB `_id` type detection for RESTHeart `id_type` query parameter |
+| `core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java` | Template resolution with hierarchical fallback and HTMX fragment support |
 | `core/src/main/java/org/facet/templates/TemplateProcessor.java` | Template engine interface |
-| `core/src/main/java/org/facet/templates/TemplateContextBuilder.java` | Context variable builder |
-| `core/src/main/java/org/facet/templates/TemplateResolver.java` | Resolver interface contract |
-| `core/src/main/java/org/facet/templates/pebble/PebbleTemplateProcessor.java` | Pebble implementation |
+| `core/src/main/java/org/facet/templates/TemplateContextBuilder.java` | Fluent context variable builder |
+| `core/src/main/java/org/facet/templates/TemplateResolver.java` | Resolver interface contract (`resolve`, `resolveFragment`) |
+| `core/src/main/java/org/facet/templates/pebble/PebbleTemplateProcessor.java` | Pebble template engine implementation |
