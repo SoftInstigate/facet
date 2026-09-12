@@ -3,6 +3,31 @@ type: Guide
 title: Facet Quickstart
 description: Entry point for the Facet code wiki — a RESTHeart plugin that renders MongoDB data as server-side HTML via convention-based Pebble templates with first-class HTMX support.
 tags: [quickstart, facet, entrypoint, restheart, mongodb]
+verified:
+  - by: openwiki/0.5.1
+    at: 2026-09-12T23:09:54.715Z
+sources:
+  - id: openwiki-source-ca6cb4b1a14fd7969dfae3ec
+    resource: repo://CHANGELOG.md
+  - id: openwiki-source-2273ce38809c3a26ed2bedda
+    resource: repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java
+  - id: openwiki-source-24f507ac229139f88a25eaea
+    resource: repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java
+  - id: openwiki-source-85f08b39af893d538ccc6eff
+    resource: repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java
+  - id: openwiki-source-b79fbbd921df689b4bbdc82f
+    resource: repo://docker-compose.yml
+  - id: openwiki-source-bb1ebe868e35e9e500714501
+    resource: repo://Dockerfile
+  - id: openwiki-source-47d02fca3524898d5aae2b3b
+    resource: repo://LICENSE
+  - id: openwiki-source-2355f81d7cf522f8dbdaabd4
+    resource: repo://pom.xml
+  - id: openwiki-source-23775c3de52f3ab95a13cb8b
+    resource: repo://README.md
+  - id: openwiki-source-227ce050fb6511ac078080da
+    resource: repo://templates/mydb/products/list.html
+generated: { by: "openwiki/0.5.1", at: "2026-09-12T23:09:54.715Z" }
 ---
 
 # Facet Quickstart
@@ -10,6 +35,24 @@ tags: [quickstart, facet, entrypoint, restheart, mongodb]
 **Facet** is a data-driven web framework that turns [MongoDB](https://mongodb.com) data into server-rendered HTML. It runs as a [RESTHeart](https://restheart.org) plugin and uses convention-based [Pebble](https://pebbletemplates.io) templates: place a template where the URL expects it, and that endpoint immediately serves HTML to browsers while continuing to return JSON to API clients.
 
 The core idea: **your API structure is your site structure**.
+
+```mermaid
+flowchart TD
+    Browser["Browser Request"]
+    RESTHeart["RESTHeart API"]
+    Facet["Facet Interceptor"]
+    Template["Template Lookup"]
+    HTML["HTML Response"]
+    JSON["JSON Response"]
+
+    Browser --> RESTHeart
+    RESTHeart --> Facet
+    Facet --> Template
+    Template -->|"Template exists"| HTML
+    Template -->|"No template"| JSON
+```
+
+*How a browser request becomes HTML: Facet intercepts RESTHeart responses and checks for matching templates.*
 
 ```
 API:       /shop/products       → JSON
@@ -117,3 +160,4 @@ No template? JSON passes through. See [template-system.md](template-system.md) f
 - **Configurable count cache TTL** — hardcoded at 5 seconds in `MongoHtmlResponseHandler`. Source: `core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java`.
 - **MongoDB timeout handling** — operation timeout not configurable. Source: CHANGELOG.md.
 - **Thread pool config for Pebble** — not yet exposed. Source: CHANGELOG.md.
+- **Redirect query param name** — `?redirect=` parameter name not configurable. Source: CHANGELOG.md.

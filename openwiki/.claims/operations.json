@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:27805878be99cc8b71cb2351b48e1a5e89e4bca482c495cd9f4b866388d03f83",
+  "claims": [
+    {
+      "id": "claim_8da2e99589d7483b899d8225472c0793",
+      "statement": "Facet supports two deployment paths: running the published softinstigate/facet Docker image (recommended), or manually deploying plugin artifacts to an existing RESTHeart installation.",
+      "evidence": [
+        {
+          "resource": "repo://Dockerfile#L1-L10",
+          "version": "repo-lines-v1:sha256:dd55bc63cbd798e7e5d8387d704112b4cc0cd10edfeedbb47d8cab084ea97905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://core/pom.xml#L108-L159",
+          "version": "repo-lines-v1:sha256:c4f3731c0e6c67d1935de7ed6ab7e1d559f1aeb42fd8740144011f20bb0ea977:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljZDI2Y2E4MDc5NWFjODkwNWEyODUzNmU4N2VhOTgxMjg5YzIyYmZiODM1ZWUwMjg4ZmUzNTMyODEyZWVhOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MWQyNjZlNzI0ZTNhYTc5ZDY4NWRhYmJmZmNhNWFmNzRiMzQ3OWM0ZGNjMTU4Y2M0N2Q4Y2JhNTk0OGJmYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5N2Y1N2I2NzdmOThkNjI0MDU4NGE5NzIxMTUwOGE3M2E4YmJiZWY0NGU1YWQ4NDJhNjFjODM5MmFiZWU1NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZDM1MTgzMDY2MWMzNzg2MDQ0MjJkMmY1ODY2OTc2MTljNTE1YzVlYmMxOTM1YjliNGFkNDY4ZTQ2NzJlNWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_64db3da27fd947d195426f6f1f3ebbdc",
+      "statement": "The Maven build requires Java 25 and produces three artifacts: facet-core.jar plugin, lib/ directory with runtime dependencies, and bundled .zip/.tar.gz archives for releases.",
+      "evidence": [
+        {
+          "resource": "repo://core/pom.xml#L136-L178",
+          "version": "repo-lines-v1:sha256:a346a84f49f8657c577feded0d896bad60d48e3178035524afbc1d645fadc1ea:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZjA1MDYxZTExOWMxZjk0M2Q5OGI0NzhmNWJiNTNkN2NkZTRkYjdjMDlmNzA4N2ZkNDQzNGRlNGU2MDg3M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MWQyNjZlNzI0ZTNhYTc5ZDY4NWRhYmJmZmNhNWFmNzRiMzQ3OWM0ZGNjMTU4Y2M0N2Q4Y2JhNTk0OGJmYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5MDNiYjA1MTYyOTRhOTMzOWI0NzljNjJiYTM5MjQ1Y2NiNzVmY2ViZTM5YWE4ODljMjBkZWI3NGEwM2IzNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1MzZhMmUxNzdmNzg1MTY3ZTc5MDA5NDA0ZDVhMTg2YjczZGM1N2Y0OTBiYzg5YWIwODEzZjZkZTAzODdiOGIifQ"
+        },
+        {
+          "resource": "repo://core/src/assembly/with-deps.xml#L1-L27",
+          "version": "repo-lines-v1:sha256:da494731d201f203cfc58cef6f07b2e37c253df735bd100253d1459895dfc988:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYjY0MWRjY2YxMDYwY2Y4MjgzMTc3OGFiMDRiMjcwYjk3YjI0NzgwZDA4OTVkNWIwMGQ0ZWIyMTdmYzhhMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NDIwY2FhM2UyYmI1YTI3MTQ0ZmJlNDZiZDJmZmRkNDI5MDUyZWMxZjJmZGE0OTdiMWU2NDljOTkyMDZkNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L19-L21",
+          "version": "repo-lines-v1:sha256:65768358ea58fa6f79872630d3318374a27f327a15a62e688ef64ba8c4c84b8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA0MDEyYWMzYWIwNjExNTIwNGI5NmM3MmUzNTFjMWU1NmQxNGIzYWQ4OTJhYTM1ZjkwZmJmOGUyNDQ0M2JjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBmN2FmODNjN2Y1MjU3ZDEwZDM4NWE0ZWRhZmExNmZiMjcwOTYyNjMxODA1MmQwMzAxMmUyOWMxMDY1NmU4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTU2OTNkMTMxMDA4ZWQwNzgyNGFjODcwMDM4NzFlZTNiNWIwYzZlMTU1YzA0MmViYzJiMjQ0MzYwZWMxNWRhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTMyNGRlZWU5MzQ0ZmQ2NDI4Njg3MmE3ZGE4ZmQ3MTNkNzhhYWQxYmZkNDIzY2VjMGJkMjNjZDRkYmJmMzRlMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd6707695fb54e918d9c5840ab2d95ba",
+      "statement": "The Dockerfile extends softinstigate/restheart:9.7, copying the plugin JAR and its runtime dependencies into /opt/restheart/plugins/.",
+      "evidence": [
+        {
+          "resource": "repo://Dockerfile#L1-L10",
+          "version": "repo-lines-v1:sha256:dd55bc63cbd798e7e5d8387d704112b4cc0cd10edfeedbb47d8cab084ea97905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9afe600fdb7c42ea984f00de26f531ff",
+      "statement": "The quickstart docker-compose.yml includes MongoDB and Facet services with health checks, a dedicated bridge network, persistent MongoDB volume, and RHO environment variable overrides.",
+      "evidence": [
+        {
+          "resource": "repo://docker-compose.yml#L1-L55",
+          "version": "repo-lines-v1:sha256:32834a6193ffacc9a7a776eeebe7b2249257f3d28b668529194ed6cd3c3b4cdc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3ZTA2ZmYyNWJmZGFjYTcyNjVmYWVhYjk3NzYxNDYxMTAyOTE4ZTYxMjk3NzEzNTQ4OGM3MzcxMWMxZTkxMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NjcwZTEyNjliODgxNzdhNGVjNzhmYWI1ODhjNDM2MzU2NGNkZDg1YWJlYzQwNDY0NjZhYmE4NTU0NzRjZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c19ad34d2fd548c8b79bd501e11f0d57",
+      "statement": "The release workflow triggers on semver tag push (e.g., 1.0.0) or manual dispatch, builds core artifacts, creates a GitHub release with bundled archives (tag push only), and builds and pushes the Docker image to Docker Hub with version and latest tags.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L1-L63",
+          "version": "repo-lines-v1:sha256:f18b8f475a1bb78301bf1d8970d42dafe7860d5ab198bf7aeea915bc7dba4e01:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZWVmOTAzMGQwYzcwMjkwMTBjNDYzNTY4OWY1ODMyOGQxMDllNmE4NWVkMWE5MjQ1YjIwZjM5NTViN2RiMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYWE0OWIzZjNiNTA5ZjJmZTNiZmQxOTk5MDBmOWI0NmNkOTRjNmY1MWZhOGJkMDhmYTUwM2M3MzAzNjgyZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_27611cbff58a42fea54396fa46f1b3a9",
+      "statement": "setversion.sh validates semver format, checks the current branch (requires master, release/*, or <major>.x), verifies a clean working tree, updates both parent and core POM versions, and commits with a tag for release versions.",
+      "evidence": [
+        {
+          "resource": "repo://setversion.sh#L1-L219",
+          "version": "repo-lines-v1:sha256:4d1bce88b018cd0190776ecd2c52f69ffcb01509cd45e5a54c6950e6d54bcc0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxZDk1ZmMwNGE4MGM5NTJmNDljZTQxODg2MjdjNTNiMGZiZThjNDQwNDFiOTUyZDU5MmFjZDFkZTk5ODYxNDY2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlN2ZiN2Q2NDEwNDBjN2VkOWU4Y2IxMzAyOTEwYzE5YmVlZWMyMDk4MzdiNDI5Y2M1NmQ3OTA2NjU2ZmU0OTJhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d46105bf6674af2b925f9cf27a1f8ac",
+      "statement": "JitPack publishes release tags using the openjdk25 build environment as configured in jitpack.yml.",
+      "evidence": [
+        {
+          "resource": "repo://core/pom.xml#L28-L40",
+          "version": "repo-lines-v1:sha256:e5dff2429047626a8e89c14b4ac63777d0cfaa65a346f2932cf9ea229bbd391a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkYjJkM2Y4YTY5MzJiZTA2OGY2YzNlYWNlYzUyMjhkYzFlY2VjOGMzNDczMDJhODMzOTNhMTEzOTdhODc0ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMzRjYTllMjhhMjc5NGQzYjdmZTA0MTFjZDkxNWY3NTQxNzhhYjRlZGUzYTQ1ZWM1ZWU5YTIxY2ZmMGNkYjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyNGIwN2I2ZTAxNDYwZWI4Y2I4YzFmNjkwNWZmNjhmZGE3MjI4N2Y2NWIzYTg3MzI0Y2U0MGIwMzNkNzMwMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhZjU2NDkwNDNkOTYyZmFlMzhmY2U3MmYzZGEzY2QxZDM2NDhjNWNkZGQxZTI1ZmUxOWU4YjRjN2E2NmI0OTIifQ"
+        },
+        {
+          "resource": "repo://jitpack.yml#L1-L2",
+          "version": "repo-lines-v1:sha256:5f47f2e8211ae48c5165e6f0621f8ddc8e3774effc24797620fae0b6fd17310e:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjJjNWRiZDhkZDRiOWZjZGE4ZTMxZGM5YWZlMTE0ZGJkZjdhZGE0YTU4OTAzM2VjNjdlMGYxNjUzNGFmZWI4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQzZTM4OTk3NTYzYzFlOWRmODhlN2E3Y2FkYTA2NDkyZjQ2ZWIzYjE1YjYxMGNkM2I2NGQ4YzdjYzZmYWM3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_79672371c79c44b79ceea8958f55280c",
+      "statement": "RESTHeart configuration for Facet includes blocks for pebble-template-processor, html-response-interceptor, html-auth-redirect-interceptor, login-service, mclient, mongo-mounts, authentication (basicAuthMechanism, fileRealmAuthenticator), JWT (jwtTokenManager, jwtConfigProvider, jwtAuthenticationMechanism), auth cookies (authCookieSetter, authCookieHandler, authCookieRemover), authorization (fileAclAuthorizer), and static-resources.",
+      "evidence": [
+        {
+          "resource": "repo://etc/restheart.yml#L1-L145",
+          "version": "repo-lines-v1:sha256:52314025bcf42b1e14fce39c37924c393612dbc65b648e0d8ee4edb8083aa1d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMDQ5NWMyYWQ4NjAzMDlmYmQ2ZmMxZmQ5NjZlYTkxMDk5NTQwMmNjYjU1Nzg0ZjZlY2JkOTlmMDI2N2U4ODhmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxM2ZkM2FiNTExNWQ0ZWNjZjdmN2ExZjEzNmIxYTQ4NTg4NmRlZTcxYTNhNDFjMWI2OTAwYmIzMGRlY2M0MTkyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7ba2725bcb148fb810479bcc4942b87",
+      "statement": "The product-catalog example extends softinstigate/facet:latest with example-specific configuration and mounts additional JavaScript plugins (product-stats, request-logger) for hot-reload during development.",
+      "evidence": [
+        {
+          "resource": "repo://examples/product-catalog/Dockerfile#L1-L11",
+          "version": "repo-lines-v1:sha256:1b2f2da709291abbdcfae5df00ea01bdf8bcdd9993d9cad6413bbae6ea2033a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0ZmU0ZDBmMjZhYmZkNTYzMDJkMDY5MDg4ZTFiMmQ0NGM0NTQ5ZjUxMTdkNzI4MmQ3NGYyMzZhOTEzNzMyOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1OGVhYTkzNDczNTM3NzFlZDgyNTZiNDljNWViNTI5YjVhODQ3ZmY4NzBhNGEwYzNmMjQ0NGVjYTU2OWEzODYifQ"
+        },
+        {
+          "resource": "repo://examples/product-catalog/docker-compose.yml#L22-L58",
+          "version": "repo-lines-v1:sha256:7b18b7a1ccb92d122b4450ef7b0ce9f2a3f0e3ac79d3b42b29f29b1e9a25aa56:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YTQ3Yzg4MTEzNzk1N2ZlZjQ4NTRmOWY2NTA1MWMyOGFiMzE5MjRiZDY0ZThiZGVjYTFkOTc4NjY1NDY3MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxMDFhMDM4NzM5MzY2ZGYwNmM0ZDUyNTRmMjVhMzJhM2QxYjliZjliMTA5NDMxNGI5MjQxNTlhMjYzNmNkOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhNWNkZmUxZWFmMzE1ZjU1NWE0MWFkY2NhZjg1ZTI5MGExNTcwNTNiNjY5MzBjODk2Y2I2YmZiZGY0ZjY2ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1NzZhODRkMDI0YmZlNGNlZjA5MGRhYWYzZGIwN2YwMDJmMjdjNTMyMzQwYTJlNDI1NTg0ZmJjY2YzZGNjNzAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.1",
+    "at": "2026-09-12T23:09:54.715Z"
+  }
+}
