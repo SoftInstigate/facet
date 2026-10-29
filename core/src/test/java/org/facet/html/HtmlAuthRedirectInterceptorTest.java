@@ -70,6 +70,24 @@ class HtmlAuthRedirectInterceptorTest {
     }
 
     @Test
+    @DisplayName("encodePath re-encodes reserved and non-ASCII characters, keeps slashes")
+    void encodePath() {
+        assertEquals("/mydb/products/a%3Fb", HtmlAuthRedirectInterceptor.encodePath("/mydb/products/a?b"));
+        assertEquals("/a%20b/c%25d%23e", HtmlAuthRedirectInterceptor.encodePath("/a b/c%d#e"));
+        assertEquals("/caff%C3%A8", HtmlAuthRedirectInterceptor.encodePath("/caffè"));
+        assertEquals("/plain/path", HtmlAuthRedirectInterceptor.encodePath("/plain/path"));
+        assertEquals("/", HtmlAuthRedirectInterceptor.encodePath(""));
+    }
+
+    @Test
+    @DisplayName("encoded id round-trips through the redirect parameter")
+    void encodedIdRoundTrip() {
+        String url = HtmlAuthRedirectInterceptor.buildLoginRedirectUrl("/login", "redirect",
+                HtmlAuthRedirectInterceptor.encodePath("/mydb/products/a?b"), null);
+        assertEquals("/login?redirect=%2Fmydb%2Fproducts%2Fa%253Fb", url);
+    }
+
+    @Test
     @DisplayName("custom parameter name is used")
     void customParam() {
         assertEquals("/login?next=%2Fa",

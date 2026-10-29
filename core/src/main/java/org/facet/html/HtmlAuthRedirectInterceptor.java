@@ -157,9 +157,9 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
         final boolean htmx = HtmxRequestDetector.isHtmxRequest(request);
         final var responseHeaders = response.getExchange().getResponseHeaders();
 
-        // Use the raw (still encoded) request URI, so that encoded characters in document ids
-        // survive the round trip through the redirect parameter
-        String[] original = {request.getExchange().getRequestURI(), request.getQueryString()};
+        // Undertow decodes the request path (also getRequestURI): re-encode it so that
+        // characters such as '?' or '%' in document ids survive the redirect round trip
+        String[] original = {encodePath(path), request.getQueryString()};
         if (htmx) {
             // The HTMX request targets a fragment or an action endpoint: send the user back to
             // the page they were on instead
@@ -212,6 +212,24 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
             : path + "?" + queryString;
         final String separator = loginUri.contains("?") ? "&" : "?";
         return loginUri + separator + redirectParam + "=" + URLEncoder.encode(original, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Percent-encodes a decoded request path, leaving legal path characters untouched.
+     *
+     * @param decodedPath e.g. {@code /mydb/products/a?b}
+     * @return e.g. {@code /mydb/products/a%3Fb}
+     */
+    static String encodePath(final String decodedPath) {
+        if (decodedPath == null || decodedPath.isEmpty()) {
+            return "/";
+        }
+        try {
+            return new URI(null, null, decodedPath, null).toASCIIString();
+        } catch (final URISyntaxException e) {
+            LOGGER.debug("Could not re-encode path '{}': {}", decodedPath, e.getMessage());
+            return decodedPath;
+        }
     }
 
     /**
