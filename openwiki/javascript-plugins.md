@@ -3,6 +3,29 @@ type: Guide
 title: JavaScript Server-Side Plugins
 description: How to extend Facet with JavaScript and TypeScript plugins — writing RESTHeart services and interceptors in JavaScript, hot-reload workflow, GraalVM interop with MongoDB, and pairing JS services with Facet templates.
 tags: [javascript, plugins, graalvm, restheart, service, interceptor, typescript, hot-reload]
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-29T12:45:43.106Z
+sources:
+  - id: openwiki-source-ca6cb4b1a14fd7969dfae3ec
+    resource: repo://CHANGELOG.md
+  - id: openwiki-source-e6dc9d1b51c8c391877051b7
+    resource: repo://core/src/test/java/org/facet/integration/JsPluginsIT.java
+  - id: openwiki-source-bb1ebe868e35e9e500714501
+    resource: repo://Dockerfile
+  - id: openwiki-source-10729bcc248e38025f4c362d
+    resource: repo://etc/restheart.yml
+  - id: openwiki-source-188d7998f843273008bb0d28
+    resource: repo://examples/product-catalog/Dockerfile
+  - id: openwiki-source-463c6e641b7e3ab88a703a0c
+    resource: repo://examples/product-catalog/plugins/product-stats/product-stats.mjs
+  - id: openwiki-source-3c3e2e4892f6a3afaa5ef191
+    resource: repo://examples/product-catalog/plugins/request-logger/request-logger.mjs
+  - id: openwiki-source-949731e547d46b0c92f51d96
+    resource: repo://examples/product-catalog/restheart.yml
+  - id: openwiki-source-722156b318e01e90ab97dc1f
+    resource: repo://examples/product-catalog/templates/shop/stats/index.html
+generated: { by: "openwiki/0.7.2", at: "2026-10-29T12:45:43.106Z" }
 ---
 
 # JavaScript Server-Side Plugins
@@ -107,9 +130,12 @@ export function resolve(request) {
 }
 
 export function handle(request, response) {
-    response.getHeaders().add("X-Powered-By", "Facet");
+    const HttpString = Java.type("io.undertow.util.HttpString");
+    response.getHeaders().add(HttpString.tryFromString("X-Powered-By"), "Facet");
 }
 ```
+
+`response.getHeaders()` returns Undertow's `HeaderMap`, whose `add()` method expects an `HttpString` key rather than a plain JavaScript string, hence the `Java.type()` import.
 
 Declare it in `package.json`:
 
@@ -235,7 +261,7 @@ RESTHeart supports TypeScript with transpilation at load time when using GraalVM
 
 ## Limitations and Caveats
 
-- **Docker image requirement**: RESTHeart 9.7.x had multiple bugs preventing JS plugins from loading. Use `softinstigate/restheart-snapshot:diagnostic` or later until a stable release includes the fixes. See [restheart#663](https://github.com/SoftInstigate/restheart/issues/663) for details.
+- **Docker image requirement**: both the root `Dockerfile` and the `examples/product-catalog/Dockerfile` build on `softinstigate/restheart:9.12.3` (the former directly, the latter via the published `softinstigate/facet:latest` image that is itself built from it). The GraalJS plugin-loading bugs tracked in [restheart#663](https://github.com/SoftInstigate/restheart/issues/663) that affected RESTHeart 9.7.x no longer apply on 9.12.3: `JsPluginsIT` builds a container image from these same sources and exercises the `product-stats` service and `request-logger` interceptor end-to-end in CI, confirming JS plugins load and run correctly. There is no need to pin to a snapshot/diagnostic image anymore — the stable `9.12.3` tag is sufficient.
 - Hot-reload requires the plugins directory to be mounted as a writable volume and RESTHeart to be running on GraalVM. Static native builds do not support hot-reload.
 - The `mclient` global is available only in services and interceptors running inside RESTHeart; it is not available during build or test time.
 - Large or CPU-intensive computations are better suited to Java plugins, which benefit from JIT compilation.

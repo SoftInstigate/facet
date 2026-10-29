@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:29b90a53bc7940babb15ec17f3d9a61ba195152b4e27c562cba26247ee923d69",
+  "claims": [
+    {
+      "id": "claim_da84a1fc0ece433dab49229367db8324",
+      "statement": "Facet's non-integration JUnit 5 test suite under core/src/test/java/org/facet/ contains 105 @Test methods across 9 classes: PathBasedTemplateResolverTest (29), HtmxRequestDetectorTest (14), HtmxResponseHelperTest (12), TemplateContextBuilderTest (12), HtmlResponseHelperTest (15), HtmlAuthRedirectInterceptorTest (10), LoginServiceTest (3), JsonHtmlResponseHandlerTest (2), and PebbleTemplateProcessorTest (8).",
+      "evidence": [
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/HtmlAuthRedirectInterceptorTest.java",
+          "version": "repo-file-v1:sha256:2512511bc9f31797e2a3a8d3629e8c29b84ceb0dfe015bbcde6026f224ffaec8"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/LoginServiceTest.java",
+          "version": "repo-file-v1:sha256:915926142d1b82a768ee93085df75fa2f2f0c297faa6b33c4172402f6799a4af"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/handlers/JsonHtmlResponseHandlerTest.java",
+          "version": "repo-file-v1:sha256:88613cd0c97656bc0cce14e8e4ce4cc6d2499d626c191b8c83baa85fc60932f1"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/internal/HtmlResponseHelperTest.java",
+          "version": "repo-file-v1:sha256:7059f89fd624d61a7f5cc9372aee5072e793e1f376cc4868b46ce730a72f5cde"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/internal/HtmxRequestDetectorTest.java",
+          "version": "repo-file-v1:sha256:a7d9175480d8e787947fa02de4919e0390e2c5d48cde2ddb0d99be468b87d4d6"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/internal/HtmxResponseHelperTest.java",
+          "version": "repo-file-v1:sha256:d172940afb4c88a76a3544bf3915d784d1675c269d589038b588ac283e49a35b"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/templates/PathBasedTemplateResolverTest.java",
+          "version": "repo-file-v1:sha256:eeb30e464031f2f4fa84699f6f99a6df2c664b4b557b20c5769b17570a669691"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/templates/TemplateContextBuilderTest.java",
+          "version": "repo-file-v1:sha256:3380a380e4e270fe83cdb292955ff70b37b7f8cf64983d3dd1bc4e1fa4543608"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/templates/pebble/PebbleTemplateProcessorTest.java",
+          "version": "repo-file-v1:sha256:01e8bb17b711766439558f9af11edb31dabb46e38c09a62d78d39aca72253720"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7a7851b6adc43879affbd699612c66e",
+      "statement": "core/pom.xml declares its own test-dependency version properties (junit-jupiter.version, mockito-core.version, bytebuddy.version, rest-assured.version, testcontainers.version, testcontainers-junit-jupiter.version) rather than inheriting them from the parent pom.xml's dependencyManagement, which only manages restheart-commons and pebble versions; the parent pom's pluginManagement centrally pins the maven-surefire-plugin and maven-failsafe-plugin versions (3.5.6) used by core/pom.xml.",
+      "evidence": [
+        {
+          "resource": "repo://core/pom.xml#L19-L26",
+          "version": "repo-lines-v1:sha256:b5d9b750d8fa1aef8d7e550b9aa89631d0b2c7b28d2c932814b9209cfc062c47:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA0MDEyYWMzYWIwNjExNTIwNGI5NmM3MmUzNTFjMWU1NmQxNGIzYWQ4OTJhYTM1ZjkwZmJmOGUyNDQ0M2JjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmY1NDlmMTEzYzUzODc3NzM2YWU3MWQxY2M0NGVlZWU1NzEwYzJkYzUwNWNiMmQyMDA0YzhmODg0MWIxZDFhMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzY0ZWM5Mzk0YmI3OTZlMzE1ZGNiMjA3OThlZGM1NzdjMDQ2YmI5Y2JkZGQ4YjZlMmIxNDJjZjYxYzFiZThhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjJjZjQ2OTU0ZGZjNDM4NTA3YTEyZWNjMGUzN2Q1OTUyN2E5YmFiZmU4NzQwOTkzZjZkYTRiNGJlYWFlYWY0ZCJ9"
+        },
+        {
+          "resource": "repo://pom.xml#L19-L73",
+          "version": "repo-lines-v1:sha256:d7050801e7243c54412a92060fd2de2ea208fa7cd404396a607671f2cacacfcd:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNDAxMmFjM2FiMDYxMTUyMDRiOTZjNzJlMzUxYzFlNTZkMTRiM2FkODkyYWEzNWY5MGZiZjhlMjQ0NDNiY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNTk2NWQxYjdkZDg4NzYxYjQwOGEwMzc1NzBiNGJhNjI2OTQ3MmE2ZDdjMTZkYmVhMDA3NGEwYzM5NmU5NTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1NjkzZDEzMTAwOGVkMDc4MjRhYzg3MDAzODcxZWUzYjViMGM2ZTE1NWMwNDJlYmMyYjI0NDM2MGVjMTVkYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjNzY4ZjA5ZTY3YjMzOTYwNjZhYjZjYzNmODI3ODE4NTc4ZGE2ZTQxYTEzODk0Nzg3MjFmOTVmZmY3NzhmODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fec45a6f3e8d4a0f9cfb5841f20ebb4d",
+      "statement": "HtmlAuthRedirectInterceptorTest unit-tests only the static URL-building/parsing helpers of HtmlAuthRedirectInterceptor (buildLoginRedirectUrl, localPathOf, encodePath); the interceptor's runtime behavior for 401-vs-403 handling, HX-Redirect vs 302 selection, exclude-paths matching, and auth-cookie clearing is implemented in HtmlAuthRedirectInterceptor but is not covered by a dedicated unit test.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L27-L78",
+          "version": "repo-lines-v1:sha256:30ae36714d66a8bd5d87dd227f09963b03dde049324205cfaf1c62bde24ec80a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiOTY3NzRiZjMwNWQ5ZWExZjYxNzJjMjAyNTJkNDVmNmQwNjQwNjRjZmE1Zjc2ZTkyOWY0MTUwOTRhNjg1MzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4Mzc2MzVkNzUyNTlkNDdhMWY1NzIwNjk2Njc5ZTE5NmM1MGRhZGYwMTBkMDI0NDgwNjIxMzkxNDQ3MTdkY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0NTViYjNiNTNiMDQ0MGU2NjBjZjc4NDcyMDFhMGM0OGM5MGI1YTY4YzZjMDczMmVlZjUyMjU4MmRkY2NhOTAifQ"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/HtmlAuthRedirectInterceptorTest.java",
+          "version": "repo-file-v1:sha256:2512511bc9f31797e2a3a8d3629e8c29b84ceb0dfe015bbcde6026f224ffaec8"
+        }
+      ]
+    },
+    {
+      "id": "claim_7bedf5f7023c4659b0f8edd5bfb9560e",
+      "statement": "LoginServiceTest verifies LoginService.safeRedirect() falls back to a default target for null/blank input and for a battery of unsafe redirect targets (protocol-relative URLs, backslash hosts, javascript: URIs, CRLF injection, and quote/angle-bracket/space-containing paths), while local absolute paths with query strings are returned unchanged, preventing the login page from being used as an open redirector.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L50-L53",
+          "version": "repo-lines-v1:sha256:760b178591406e28e4622aed90518dc1fa235575da36ba31ca091cbdc361079f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjIzY2I0YzEzZDY3NzU5ZDU0Zjc2NzFkNDQwMzQ5NzJkMDkwM2EzOWQwOGFmYWU3M2JiOTgxZWI5YWIwZGNmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM2MzljNzQyNWYwNzhlNTY2ZTg5NmI5M2FmYTBmOThlZGRhNDcxNDRlNDQzYjhmM2VmMjJkNjVjM2Y5ZjhjYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmNjNjM2YjdlZWRjMjI3ODJjMTljMjFiZTIyNjMwMmY4ZjllZDQwNmViYmM4NzcwMGFhMWI1NTY1NzIxYWRjMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjFjM2NkMGVmMzk0NjYzODdhNDM3NzBhZWEyZTA1NzZjMDczYzdhMTE5M2ZlZGQzMTI1YmVkMDQwY2RiNTliNCJ9"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/LoginServiceTest.java",
+          "version": "repo-file-v1:sha256:915926142d1b82a768ee93085df75fa2f2f0c297faa6b33c4172402f6799a4af"
+        }
+      ]
+    },
+    {
+      "id": "claim_f5e3432b5ded49f3a46693c78bde5b18",
+      "statement": "JsonHtmlResponseHandlerTest verifies that JsonHtmlResponseHandler.buildContext() prevents a service's JSON response fields from overriding Facet-managed template variables (isAuthenticated, path, username) by adding service data to TemplateContextBuilder before the authenticated-user and path/data values are set.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/JsonHtmlResponseHandler.java#L67-L84",
+          "version": "repo-lines-v1:sha256:711bca73082934c08feb7facddbea0be87c9eca5a3814ccf55ce6285bb7af7fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhYjJlNzEyZTVkZWU5NTBjZjcyM2I5ZGNmMTI3MmZjNjkyNmJjNDEwNmNiYjAzM2EzNzFlOTg2MGE3ODQxMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3NjY0YjcyNDZiNWM1MzllZDM0NTQyOGNiYjYxMzZkZjkzZDk2MzY0Zjc4ZmI1MmI5ZWY3ODFhNmM3NDU3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjODIyOTFkMWQ0MjRlZTU4Y2VjODFmYjE1YjkyZjA5NDlhY2MxMDliNTc5ZDRmZGZlZDM3MDU4ODdiYzY5MGEifQ"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/html/handlers/JsonHtmlResponseHandlerTest.java",
+          "version": "repo-file-v1:sha256:88613cd0c97656bc0cce14e8e4ce4cc6d2499d626c191b8c83baa85fc60932f1"
+        }
+      ]
+    },
+    {
+      "id": "claim_7dc1dcbc33d3451fa359a628f9f7e1d8",
+      "statement": "PebbleTemplateProcessorTest exercises PebbleTemplateProcessor against a real file-based Pebble loader in a JUnit @TempDir, verifying templateExists() for present/missing/missing-subfolder templates, that process() wraps missing-template and template-syntax errors into TemplateProcessingException, and that getGlobalTemplateContext()/addToGlobalTemplateContext() behave as a defensive-copy-backed mutable global context.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/test/java/org/facet/templates/pebble/PebbleTemplateProcessorTest.java",
+          "version": "repo-file-v1:sha256:01e8bb17b711766439558f9af11edb31dabb46e38c09a62d78d39aca72253720"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e47f89351ae46f3bab7a1f02c7ebc00",
+      "statement": "JsPluginsIT runs 8 ordered integration tests against a Testcontainers-managed mongo:8.0 replica-set container and a facet-test:latest RESTHeart container built from softinstigate/restheart:9.12.3, covering the product-stats service's JSON response, its HTML rendering via Facet templates, request-logger interceptor response headers, and 401 on unauthenticated requests; no Maven or CI step in this repository currently builds or tags the facet-test:latest image automatically.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/build.yml",
+          "version": "repo-file-v1:sha256:847dd0d0f80b8f3415d59c1541d7df1f50424ddd5575f1d399bdcce263dfc67d"
+        },
+        {
+          "resource": "repo://Dockerfile",
+          "version": "repo-file-v1:sha256:9a3caca309df6a95ae62bb78a3e1c0f4aa39781ac79101c61b34479f782fe9e7"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/integration/JsPluginsIT.java",
+          "version": "repo-file-v1:sha256:71e7aa21ff21592f8e9839013f7045bf9a06ea8ce2382662515d735648e2f87c"
+        }
+      ]
+    },
+    {
+      "id": "claim_85d57c9129424c78bd749ec5a0e41401",
+      "statement": "MongoHtmlResponseHandler, the Pebble filter classes (BuildPathFilter, ParentPathFilter, StripTrailingSlashFilter, ToJsonFilter), and HtmlResponseHelper.setCachingHeaders() have no dedicated unit test classes/coverage in the current test tree.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java",
+          "version": "repo-file-v1:sha256:4ff92ea5c487d20802d133dc680f280b2aa95067abdb0455e481a81655bf2d28"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/pebble/BuildPathFilter.java",
+          "version": "repo-file-v1:sha256:ae6985d8370c8ab11043b95e9f4d903d0c4bb2fe306c07ab6531817262d80012"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/pebble/ParentPathFilter.java",
+          "version": "repo-file-v1:sha256:e9a905169ac2e42d9927c75cb40ffc7545cec9f2225ef00608616691c509b1b3"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/pebble/StripTrailingSlashFilter.java",
+          "version": "repo-file-v1:sha256:9750cb215053e84316bd512e4b95cdd35ee848ae52e148b0360d76a5b4cdcead"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/pebble/ToJsonFilter.java",
+          "version": "repo-file-v1:sha256:307a53898a10a9151b1ee461691dce348fc45b3a8882a42fef57283e58feac42"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-29T12:45:43.106Z"
+  }
+}

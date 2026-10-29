@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:24e65c711962a5296eca71483d388840a260e77b9884a6ad7df0badf141e10f9",
+  "pageVersion": "sha256:484cd2431b9cf3766b80e2896f9411f18a406b57f97d05c547d700ff5c3756f5",
   "claims": [
     {
       "id": "claim_2d53a2b36c124990a5bc6191649c15b0",
@@ -11,7 +11,7 @@
           "version": "repo-lines-v1:sha256:eefc19c21f9a2e33c311625742abacbfbde5901471cf7509b14f5c34b7fef92d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMjU5ZTMwMjkwNDgxYTA5NDQ4Zjk5OTRmYmFhZDE1NmZjYjk2Mzg0ZmI3ZDMzNjRlODg1Y2ViN2Y1MjdhOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlZGM3N2IxZDUzMDQ1YTBhODhmZWFhZTQzNTNlNzQ3MWVjYzAwZmNlYjg4YjgyMzg0MjIzZDFmYjFkZDU0N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMjRmZmU2NjA2MTQ0ZmM4YjFjODMwMDc0MDdlMjMwZWI5NGYyZDY1ZjhhNjI2MGRmMGVhMjYwZjA0YjM4OTkifQ"
         },
         {
-          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L92-L98",
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L96-L102",
           "version": "repo-lines-v1:sha256:6ab9db86371788d67978649d91adac696c07ab17cd40f00e42898dcad2e140bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2FhZWM5YTg0MjNhYWI3ZTU5Njk0MTEyOTBjMGVkNzI1ZjgyZWJjZmQ2OGZlZTEwMmYzNzI5ZDM4YjU2YzRhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWE4MzMwN2U0NTM3YjBiY2NjOGRmYzRjODRmNWNkMmM5ZDNlOGM4Yjg2NjkwMjIzNzQyNmRlNjM0YWE3NjhhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2E5NTA0NTU0NzIyMDdkZDQ3OThkNzA5YWE5NDMzMTQ3OGYxYWU2NDFlY2I3MTdjY2RlZDAxY2U3NTZlZWZlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjRiNTI5YzY3ZWIyYzU0N2E0YTc3NzE3ZmJjYzZmZGZmNzBiODU4MTQ2OTU2Y2EyYjRiZTRmODVjYzU2NzY0NCJ9"
         }
       ]
@@ -28,11 +28,15 @@
     },
     {
       "id": "claim_ad445487d7cf40b48592182641bafa39",
-      "statement": "The Docker quickstart uses MongoDB 8.0, seeds sample products via /etc/init-data.js, and runs the Facet RESTHeart image with templates from /templates, accessible at http://localhost:8080/mydb/products with admin/secret credentials.",
+      "statement": "The Docker quickstart uses MongoDB 8.0, seeds sample products via /etc/init-data.js, and runs the Facet image built FROM softinstigate/restheart:9.12.3 (bumped from the 9.7.x line) with templates from /templates, accessible at http://localhost:8080/mydb/products with admin/secret credentials; the plugin required no source changes for this base image bump.",
       "evidence": [
         {
+          "resource": "repo://CHANGELOG.md#L25-L28",
+          "version": "repo-lines-v1:sha256:325377cd204a3ca122942dcd479a1e8d4b71f80f9a535c9618071c924998657d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M0MGEyNTkxODQ1OGU0NGU1OWQ5ZGM1OTc1NGZlOGExMDJhZGVmODljNjJmNTIwZWFhOWE0ZWYyZWE0MWMxOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDkxMTk2MmY0NDA2NDE5M2Q3NmQ3NzAyY2JiZGQyZDYzNmQzYTEyYzM5OWUyMTZkZTY4ODNkMmIwZDNmZmQyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWNkZDUxMmQ4MTc2NjJhYjBjMjhmMzdlY2VjZDExMGViNGI5MTFiMzViYzc0YTVjNDAyNTUyYWZkOWQ1MjY5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWZkMDA0MGZiODU3ZDFhOWY2MzVjM2UzOGRmZGJjNWRlZjM4Y2MzYWMxNDk1YWNkZDRmNjE0MGRkMTU1MjJmNyJ9"
+        },
+        {
           "resource": "repo://Dockerfile#L1-L10",
-          "version": "repo-lines-v1:sha256:dd55bc63cbd798e7e5d8387d704112b4cc0cd10edfeedbb47d8cab084ea97905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:9a3caca309df6a95ae62bb78a3e1c0f4aa39781ac79101c61b34479f782fe9e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://docker-compose.yml#L1-L55",
@@ -45,22 +49,26 @@
       "statement": "Facet intercepts HTTP responses at the RESPONSE phase: if the request accepts HTML and a matching template exists, it renders HTML via Pebble; otherwise, the original JSON response passes through unchanged.",
       "evidence": [
         {
-          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L214-L266",
-          "version": "repo-lines-v1:sha256:12c9600e7b58d76ac6e14a064bdc6d5c50439b73bab5830e068f90d24bbb8d86:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzRlMTY2NGExMzBlZWNiZTEzNzFkNWExNzljNGJhMGU2MTMwMjgzNGE1YTkxZTI3NjMzZTZmMDc3MzAxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYTFlNWVhZmY5YzgyYTcxYjNlZTZiODM0Y2Y5NmQ1YTUyNzkwM2U3OTUxMTM0NmQ0OGJlZWFiODVlZTQ5YWMifQ"
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L280-L334",
+          "version": "repo-lines-v1:sha256:52a470bb6b1d291f588ebe5cf600f59b7a5bd3b7f18f634c0eae45d043f0f912:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzRlMTY2NGExMzBlZWNiZTEzNzFkNWExNzljNGJhMGU2MTMwMjgzNGE1YTkxZTI3NjMzZTZmMDc3MzAxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYTFlNWVhZmY5YzgyYTcxYjNlZTZiODM0Y2Y5NmQ1YTUyNzkwM2U3OTUxMTM0NmQ0OGJlZWFiODVlZTQ5YWMifQ"
         }
       ]
     },
     {
       "id": "claim_a38b31f787884bec9674df1b6caa5cd9",
-      "statement": "Facet uses Java 25, RESTHeart Commons 9.7.2, Pebble 4.1.2, is at version 1.0.3-SNAPSHOT, and is licensed under Apache 2.0.",
+      "statement": "Facet uses Java 25, RESTHeart Commons 9.12.3 (managed centrally as a property in the root pom.xml dependencyManagement and inherited by core/pom.xml), Pebble 4.1.2, is at version 1.1.0-SNAPSHOT, and is licensed under Apache 2.0.",
       "evidence": [
         {
           "resource": "repo://LICENSE#L1-L20",
           "version": "repo-lines-v1:sha256:ab9768c2c058564aa6fbdee0637d1cea0edcc09fe430db6b853f12dbdbd19baa:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTNjNGFmMGY2NzhiODY2ZDM0ZDcxYTNjMGJhMzZiM2QyY2I1MjEyMzliNTFmYzU3YTgwODlkNjE2ZjU4NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkMmJlMDFjNTdjODcyMzNkNjA5ZTIwYjYxMTNmMjRjNzMzMmNjMjU0YTU2MmMwOTY2Mzg4NzMwNDVjMDMzOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiZTVhNGYzYjdhYjNiMTUzMjAzOWI4YmQ0OGVjZGUxZDYzNWZiMTM2ZjE1Yzc2OThkMzI2ODA0NDNiNjExYzcifQ"
         },
         {
-          "resource": "repo://pom.xml#L1-L30",
-          "version": "repo-lines-v1:sha256:0ea608f4a2f7d86e6394cdafabf5ff762b3a257509a35e76a43f295b4ecab12f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYjY0MWRjY2YxMDYwY2Y4MjgzMTc3OGFiMDRiMjcwYjk3YjI0NzgwZDA4OTVkNWIwMGQ0ZWIyMTdmYzhhMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTQ5ZjExM2M1Mzg3NzczNmFlNzFkMWNjNDRlZWVlNTcxMGMyZGM1MDVjYjJkMjAwNGM4Zjg4NDFiMWQxYTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMDk5YjgwOGJkMWNlYWI5YjIwNTBiYTEwMjdjZjdhMzE3YmYxNjE3OTIyZDBkYWEzN2RhZmNkNGNkNzRmYTMifQ"
+          "resource": "repo://core/pom.xml#L1-L54",
+          "version": "repo-lines-v1:sha256:4cfb82c3c8f9393a37d6cd0144c3d6ebda000f600f862010d5b24138bd939b99:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYjY0MWRjY2YxMDYwY2Y4MjgzMTc3OGFiMDRiMjcwYjk3YjI0NzgwZDA4OTVkNWIwMGQ0ZWIyMTdmYzhhMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNWU3NmRjNzEwODgzYmVlMDYwYjFhZDZiNTllYWQ5NDhmNDJiZmRiN2VhNWI4ZGI1ZDMwZDM1ZWEwZDBkYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NWQ3MTI0MDIxOWJjNmI4YjNhYzJiMjVmNTcwYzM2ZmRmNTk4OGI0Yzc4YmRjMjgxMGY5NjRmMjQzOTY1MjkifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L1-L47",
+          "version": "repo-lines-v1:sha256:e849d99ccfd2eb70086b3295685b6c7acac5fa81fbc4d9467e9a97811dfd1891:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYjY0MWRjY2YxMDYwY2Y4MjgzMTc3OGFiMDRiMjcwYjk3YjI0NzgwZDA4OTVkNWIwMGQ0ZWIyMTdmYzhhMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1Yjk4OTU5ZmJhYmI0OGYxMzNiMzZjMzU1OTY5ZWQyMTllM2NhYjIwY2Q4YjM0NTFiZTYwMmY1YjFiMzA2MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzU3NmVlN2IyMTAzYjY0OTQyYzQ5MDBhM2M3NzI2NDUyZTliMjA2MTYyNDQwNjlhMGNkYjQ2MzAzOWU2MGYifQ"
         }
       ]
     },
@@ -84,21 +92,49 @@
     },
     {
       "id": "claim_256d81c63773429fbbafc4807e11752a",
-      "statement": "Known limitations include: HX-Reselect header not implemented, JsonHtmlResponseHandler loads full response into memory, count cache TTL hardcoded at 5 seconds, MongoDB timeout handling not configurable, thread pool size not configurable, and redirect query param name not configurable.",
+      "statement": "Remaining known limitations include: HX-Reselect header not implemented, JsonHtmlResponseHandler loads full response into memory, MongoDB timeout handling not configurable, and thread pool size not configurable for the Pebble processor. The MongoDB count cache is no longer a plain hardcoded-TTL map: it is a bounded Caffeine cache (5-second TTL, 1000-entry max size) keyed by filter JSON, though the TTL/size are still compile-time constants rather than runtime-configurable.",
       "evidence": [
         {
-          "resource": "repo://CHANGELOG.md#L121-L130",
-          "version": "repo-lines-v1:sha256:c0e4dacd3d78a0fab8c7035ca20b3af9dfad2ab331b1897e79a2768e850c70bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlYTM0MjcwOGFkMjJlYjcxNDA3MmEwYWE5YTk0ZjlmNmU5NzQ4YjE0OWYyZGVlOWYwMWQ2NWMwNTZlYTI2MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNjJhNWNhYjA3MWUwYWUzZmQ4YjU0MjMyZTdmNDZlYzM4NzYzNGQ5ZmQ5Y2EyMmNlNDhhODFjOGI4N2QyODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://CHANGELOG.md#L191-L199",
+          "version": "repo-lines-v1:sha256:ff6e73a101577cec85da790dfe7857ec21d7f7f9d55cbf675142efdcdb57ba43:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWVhMzQyNzA4YWQyMmViNzE0MDcyYTBhYTlhOTRmOWY2ZTk3NDhiMTQ5ZjJkZWU5ZjAxZDY1YzA1NmVhMjYyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmVkMWNjNmI2NjE3MGI1NGExY2Y5NWMwNzVkMmRjYzM0NzhmYzg1YWM0OGY5ZWYwYmJlNzM4NWYyOThiNzcwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDAxZjJlYzE3NTkzYzEwNTRlYjQ2MzY3ZDg0NTNlZjI0YTE3M2NlOTZiNzExN2Q5MWY5YTY4ZDQ0ZmVmOGIwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmI2MmE1Y2FiMDcxZTBhZTNmZDhiNTQyMzJlN2Y0NmVjMzg3NjM0ZDlmZDljYTIyY2U0OGE4MWM4Yjg3ZDI4MyJ9"
         },
         {
-          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L50-L50",
-          "version": "repo-lines-v1:sha256:1b2827b97a43eacd36ae41f05d9614ba0332fb592e5fdd97ed6064594958804d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIyODI3Yjk3YTQzZWFjZDM2YWU0MWYwNWQ5NjE0YmEwMzMyZmI1OTJlNWZkZDk3ZWQ2MDY0NTk0OTU4ODA0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIyODI3Yjk3YTQzZWFjZDM2YWU0MWYwNWQ5NjE0YmEwMzMyZmI1OTJlNWZkZDk3ZWQ2MDY0NTk0OTU4ODA0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDA0ZmI3ZjlmMmU4ZGIwOWMyODYwNTk4N2JiMjhhOTA5NzcwMmM0ZGYyYjBiYTQxN2YzMTc0YmYxYzdmZDczYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTBkZmE4YmZhZWQ0YTQ0YTE5MzBmYmZiZDczMTUzYmY4OWVlN2MyNGY5Yjg2ODg0NTY1MjdiYWY0MzA0ZGJjMyJ9"
+          "resource": "repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java#L53-L65",
+          "version": "repo-lines-v1:sha256:fc98a3b701ab80f08046530f637d2e04b7bacfbf5be914be18b09581d4c8eeb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlZjdiNzFmYzU0Njk0NDdmM2M1MjlmYjA4ODcyNzkxN2VhMzVkZGYxMjdkMzExZTVmNWZmYTg0YzM5MGU4NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNGFjYTVhMzU4ODg0NWM1NWM2NGI2ZmU1NTFkNTY5MjI5N2Y2YjBhZmNkMTk1NzEwMzExY2M5YjA0ZGE3MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwNGZiN2Y5ZjJlOGRiMDljMjg2MDU5ODdiYjI4YTkwOTc3MDJjNGRmMmIwYmE0MTdmMzE3NGJmMWM3ZmQ3M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNThkZGI4ZDcxOWFlZDM1NmVjNGE2ZTIzNjE2NTk5OWRkYjRmYzAxNDhjYzY2ZDljMDEzNTA0OWIxYmRkNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c81efcb5d20424f853525b8eb0bdac2",
+      "statement": "LoginService and HtmlAuthRedirectInterceptor both expose a redirect-param option (default \"redirect\") and a cookie-name option (default \"rh_auth\"); LoginService forwards both values to the HtmlAuthRedirectInterceptor it registers so the two stay in sync.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L83-L123",
+          "version": "repo-lines-v1:sha256:d6c5b2fc4e51c5147f8545696f5a907307d97a51950a1d576bf381c0c8ad5413:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyOWQzMzRlMWIyMmZhMGIzMWY4Y2JkMDJmZWJkMWM3NWU4NmFkZTg2MDYyZDRhZWQzNWJhNDllMWJjMDA4ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlY2RiYjg5YzE4NTllMDE2ZWJhYzNiOWRiYTc1ZjlmMmVkNzMzZTI5ZGY4YzhjNDU1ZTZmZjU2ZGEzOWQ0ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhOWMwNGMxYWE3MTVjY2E3YTI2YmVmNWQ5NWY2NTcwOGU0Y2Q4MjA0ZDc2OGRkNjA5ZGI1ZGI2NDAxOTZkYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyMWFhYjVkNDk2YzYxNTIzNzIyNGE0OTkwZGQ0NmEzYzIwZTk2OWI1MTQ2ZWFlMmJlZjRjMWExZDFmMzI0ZjcifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L191-L204",
+          "version": "repo-lines-v1:sha256:ddfc17724ba0c9972fd53ff644c725df1424825be894ad63a03852fe2d1f09a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxNWRkZDU5MWUyNGRhOGE3NzEwYTIzNmVlNDZkNmFmZWMxZWNmYzk1NDY1YWM3YTM3ZDE5ZjA4Yjk3ZjBiZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViYjk1ZDVmMDA3MWNlMjQ1MTMyZmZlMDM4M2RkZDE3ODNhMjcxYjRlMWE0Y2RhNDhiYWFiZWY2M2NhMmE3YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjODZhMTk2ODMzZTQ0ZWE3YTE3M2RlZGEzYTllNTZkM2JmNjhlYTVlZWUyN2EzYTQ1OGU4YWU4NTY2MDJiYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMTI5ZWU0YWI5ZmQ2Y2NiZWU1NTczYjNkYWU1MjM3YjlhMjRhMzc0NDE5M2NjNzE0NTNmYmU3YmE2ODkyMDYifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L88-L98",
+          "version": "repo-lines-v1:sha256:3dad32117e71a20b66c09e1b1fa263df981babaa8b20d60b0be74a6e01196c7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4ZWUwYTgzZDJhMTE4YjJjYzFhZWFkMDJhMjg2Zjk5ZmJjZDZkYTk5OWIzNGM1YzdiMDMyM2Y2NWY3ODc1OTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhYTdlNzIyMGJiNTExMzFjYzBhNGFlYTNhNGJjNDY4OWMzNWY3OWJjZmNlYjVlMTQ3MWFiYmU5OGMxMjFkNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhN2ExNjFlZjNhZGQyNjQ0YTlkNjk0MjRlNTJkNmEyYTNiZmNmMmQ2NjI1YzRlNDRkM2VlOTY5Mjc2NWZmYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzMzcxMmE3N2NjY2Q5NGZkNDA5NmUxMTFmMjljOThmNTEzMDNjODU0OGVjZDc2M2Y4MTQ0ODA3ZmI1MzQ4OTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa4ee0b8caeb434987de4caaf85e3b72",
+      "statement": "LoginService.safeRedirect() prevents the login flow from acting as an open redirector: it accepts only local absolute paths (starting with a single '/', not '//') free of backslashes, quotes, angle brackets, backticks, whitespace, or control characters, and falls back to the configured default-redirect for anything else.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/LoginService.java#L136-L185",
+          "version": "repo-lines-v1:sha256:92d2f294d737765ec63a812823a2c8900771aec23d031a2b3b7d9e65db5790c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OWQ4NmM2MDkyZGJlODk4MzQ0YTk3YTFhNWJlNTZhMTVlYWQ1ODM5ZGM2YTc3NGE2NGIyNjYxYmNlZjUxY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1N2NjMTgzYzc3NmFjNjI1NDE1MzI4MmZiM2E1NDZmMDQzODAwOTQ1OTA3NWU1NWRiNDg4YzM4NjAwNzU1YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyYjc0ZGExZmQ1MzU2MGQ1ZTU1ODk4YTMwM2EyYWY2ZmE4MGI5ZWRmYTU2NzUyZjQzZjUyMjNiNTg1NGJmZDQifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.1",
-    "at": "2026-09-12T23:09:54.715Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-29T12:45:43.106Z"
   }
 }

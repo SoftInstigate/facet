@@ -3,16 +3,19 @@ type: Guide
 title: Facet Quickstart
 description: Entry point for the Facet code wiki — a RESTHeart plugin that renders MongoDB data as server-side HTML via convention-based Pebble templates with first-class HTMX support.
 tags: [quickstart, facet, entrypoint, restheart, mongodb]
-verified:
-  - by: openwiki/0.5.1
-    at: 2026-09-12T23:09:54.715Z
 sources:
   - id: openwiki-source-ca6cb4b1a14fd7969dfae3ec
     resource: repo://CHANGELOG.md
+  - id: openwiki-source-4953616e2e42dce9b871023a
+    resource: repo://core/pom.xml
   - id: openwiki-source-2273ce38809c3a26ed2bedda
     resource: repo://core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java
+  - id: openwiki-source-ba055822b509e50a40b16d36
+    resource: repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java
   - id: openwiki-source-24f507ac229139f88a25eaea
     resource: repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java
+  - id: openwiki-source-4398d873f3918d016977e46f
+    resource: repo://core/src/main/java/org/facet/html/LoginService.java
   - id: openwiki-source-85f08b39af893d538ccc6eff
     resource: repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java
   - id: openwiki-source-b79fbbd921df689b4bbdc82f
@@ -27,7 +30,10 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-227ce050fb6511ac078080da
     resource: repo://templates/mydb/products/list.html
-generated: { by: "openwiki/0.5.1", at: "2026-09-12T23:09:54.715Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-29T12:45:43.106Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-29T12:45:43.106Z
 ---
 
 # Facet Quickstart
@@ -87,7 +93,7 @@ docker compose up --build
 
 Open http://localhost:8080/mydb/products — login with **admin / secret**.
 
-The root `docker-compose.yml` starts MongoDB 8.0, seeds sample products via `/etc/init-data.js`, and runs the Facet RESTHeart image with templates from `/templates`.
+The root `docker-compose.yml` starts MongoDB 8.0, seeds sample products via `/etc/init-data.js`, and runs the Facet image — built `FROM softinstigate/restheart:9.12.3` — with templates from `/templates`. The base image was bumped from the 9.7.x line to 9.12.3; the plugin needed no source changes and the full quickstart flow (HTML rendering, cookie login, HTMX fragments, JSON passthrough) was re-verified against it.
 
 ## How It Works
 
@@ -120,8 +126,8 @@ facet/
 ├── etc/                            # RESTHeart config + seed data
 ├── examples/product-catalog/       # Full CRUD example with HTMX
 ├── docs/                           # Architecture diagram assets
-├── pom.xml                         # Parent POM (Java 25, RESTHeart Commons 9.7.2)
-└── Dockerfile                      # RESTHeart base + Facet plugin
+├── pom.xml                         # Parent POM (Java 25, RESTHeart Commons 9.12.3)
+└── Dockerfile                      # RESTHeart base (9.12.3) + Facet plugin
 ```
 
 ## What to Read Next
@@ -138,9 +144,9 @@ facet/
 ## Key Technical Facts
 
 - **Java 25** — set via `maven.compiler.release` in the parent POM
-- **RESTHeart Commons 9.7.2** — core dependency, scoped as `provided`
+- **RESTHeart Commons 9.12.3** — core dependency, scoped as `provided`; version is managed centrally in the root `pom.xml` `<dependencyManagement>` and inherited by `core/pom.xml`, so `update-dependencies.sh` only needs to bump it in one place
 - **Pebble 4.1.2** — template engine (Jinja2/Twig-like syntax)
-- **Current version** — `1.0.3-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
+- **Current version** — `1.1.0-SNAPSHOT` (first stable release was 1.0.0 on 2026-03-13)
 - **License** — Apache 2.0
 
 ## Quick Reference: Template Conventions
@@ -155,9 +161,12 @@ No template? JSON passes through. See [template-system.md](template-system.md) f
 
 ## Backlog
 
-- **`HX-Reselect` response header** — not implemented (minor HTMX gap). Source: CHANGELOG.md Known Limitations.
-- **Streaming for JSON handler** — `JsonHtmlResponseHandler` loads full response into memory. Source: CHANGELOG.md.
-- **Configurable count cache TTL** — hardcoded at 5 seconds in `MongoHtmlResponseHandler`. Source: `core/src/main/java/org/facet/html/handlers/MongoHtmlResponseHandler.java`.
-- **MongoDB timeout handling** — operation timeout not configurable. Source: CHANGELOG.md.
-- **Thread pool config for Pebble** — not yet exposed. Source: CHANGELOG.md.
-- **Redirect query param name** — `?redirect=` parameter name not configurable. Source: CHANGELOG.md.
+Remaining known limitations, from the CHANGELOG.md `[Unreleased]` and "Known Limitations" sections:
+
+- **`HX-Reselect` response header** — not implemented (minor HTMX gap).
+- **Streaming for JSON handler** — `JsonHtmlResponseHandler` loads full response into memory.
+- **Count cache TTL** — MongoDB counts are cached in a bounded Caffeine cache (5 s TTL, 1000 entries, keyed by the filter JSON) inside `MongoHtmlResponseHandler`; the TTL and size are still compile-time constants, not runtime-configurable.
+- **MongoDB timeout handling** — operation timeout not configurable.
+- **Thread pool config for Pebble** — not yet exposed.
+
+Resolved since the last update: the redirect query parameter name is now configurable — both `LoginService` and `HtmlAuthRedirectInterceptor` accept a `redirect-param` option (default `redirect`) and a `cookie-name` option (default `rh_auth`), and `LoginService` forwards both when it registers the redirect interceptor. The login flow also now rejects open-redirect targets: `LoginService.safeRedirect()` only accepts local absolute paths (`/...`, not `//...` or full URLs) and rejects values containing backslashes, quotes, angle brackets, backticks, or whitespace/control characters, falling back to `default-redirect` otherwise.

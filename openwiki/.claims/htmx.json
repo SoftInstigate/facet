@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7c8935d6f4e2d900c84cc02218a8f6319ab23a7cd8212e2cdeb688eab90a9d3e",
+  "claims": [
+    {
+      "id": "claim_21ffad39cca34fa880f8ac050f37a0f8",
+      "statement": "HtmxRequestDetector.isHtmxRequest() classifies a request as HTMX only when the HX-Request header is present and the Accept header contains \"*/*\", and HtmlResponseHelper.acceptsHtml() treats a request as HTML-capable when either Accept contains text/html or this HTMX check passes.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java#L39-L51",
+          "version": "repo-lines-v1:sha256:1f5db453e58eff8905a093205e1382a6d0fc7eb1a7d464d4e25b73030803a845:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3MzVmNDFhZDVmNTRjNTQyOGVmMTgxODdkZjc4Zjg0NmFmYjA3MjUxOGU0MTNhMzA2OTRhMTA2ZjAxZTE0MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5N2NmYmUxM2I1ZDNlNjRhMGYzYTY2MDQyMDhmZmVlNjg3NDY5M2RmNDVkMDA3Y2FiZWJiMWNmMGRjNGQwYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkOTViN2Y1NDk1OWQ1OGU0OWQyYjZkNDkzOTM1ZjVkNjVhZDZlYTZiOWRhN2RjMzNhNzc4YzUwYTRmZTIxOGEifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmxRequestDetector.java#L49-L68",
+          "version": "repo-lines-v1:sha256:2a081cfad1849d0cd039d938d61315602d550d5a593243e6034195750b46c922:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxNmVjYjdhMzliY2QxOGJlOTE2YzM2OTdiMjMwMDJlODIzN2E3OGJlYTI3ZTk5OGJmMmM0ZmViZjZmZDE0MDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YTYwNzg3OThmYTBkOWIxNTRlNDFhNmY0YWI2ZTg2YWMyNmYyMDE1ZThmOTI0M2QwOGJiZDMwMDBlNDI3N2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkZTM2NmFhZmY4ODBlZGRmOWIyMTQ0ZmMwZTE0NDBjYWExZWM5MGM4YTRlY2QxOTlmMjRiMzY0OWUzOTViYzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ed5798de7ff41c492d2da1328660f8f",
+      "statement": "PathBasedTemplateResolver.resolveFragment() strips the leading '#' from the HX-Target value implicitly by requiring callers to pass a bare target id, and resolves fragments by trying only two candidates without walking the path hierarchy: templates/<path>/_fragments/<targetId>.html then templates/_fragments/<targetId>.html; a blank target id returns empty immediately.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java#L221-L253",
+          "version": "repo-lines-v1:sha256:e11aa33723a7a0b3c6152000231c4c121e49fa09c0f1175088bbca7ee2371e07:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4MDg4M2RjYzQ1NWNiNGUwODk3NDkxNzMwZmVhYmQzOWM3MTRhYTRmYTUzZTc4MzA1YThkN2ViMWQyZjYxZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1MWNmOWRiMDcwMmEyODNiYmRmYzM2MWIxMTFhMjVjNzUxN2I5NmU2YzI0NmE3ODMxNmUyYWI5MzM2MDJkNWIifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java#L265-L300",
+          "version": "repo-lines-v1:sha256:a3996274dbf467c41f96c4e78d4dc405b70570a1237e8bea9773b5fb66349e8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkMmVkNTY1ZTBjZjM1NTI0YjljYzUzOTg4NGExMTBiMjBkOWViOTU5OGViOGE5YjdlZmVkMTU3YWEwZDk3NWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMzk0YWZhNDUxMjkyZWE4NTcyNzFhNGUzZDk4OWRhYjFmMWM0NjAzNjg0MWNlMWM5N2IyZTlmODdkOTJlOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhY2FlYmUxODVjZmMwMjE4MTgzNDM4MGFjZDFjYTI0MTgzOWFjMjk4NzcwNjFlZDgzMDRkNmFjMzVlM2I1MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5YTU3YjY0ODY3MzY1ZmRmZjM2M2QyMDg3ZDNhZmI2OWE5NDc3YWJkZjE0ZGRlNzMxYjM1ODA2NDg4OTgwOTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec4bc9b0d02d42e0ae7b2a5c2b99be49",
+      "statement": "Fragment resolution operates in strict mode: when neither the resource-specific nor the root fallback fragment template exists, resolution returns empty and callers surface a 500 error instead of falling back to a full-page template.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java#L244-L253",
+          "version": "repo-lines-v1:sha256:6b79ff1f5c8369b179b26e91c58b1ae6706354db1c312b1d66af35fd61455a8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZmJhZDUzNjZlZTNiZmQ0ZGMyMmRkNzBlN2FkYzg1YjhiMzcwOTUxZGM5MDQ4ZWI1M2U2Y2JjODg2NzY0YTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkNWRmM2RlNjcyODc2MmRmZGJmNDcxNWM1OWFiNjZhZmJiOGJlODA2NzRkYWMyZDZiZGNiMTY3ZGRhZjdiNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1MWNmOWRiMDcwMmEyODNiYmRmYzM2MWIxMTFhMjVjNzUxN2I5NmU2YzI0NmE3ODMxNmUyYWI5MzM2MDJkNWIifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/PathBasedTemplateResolver.java#L56-L71",
+          "version": "repo-lines-v1:sha256:eec6b084f98e5756237620b3e3e9aec1731dcbbc68d8386b0172588c9086400d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyM2NiNGMxM2Q2Nzc1OWQ1NGY3NjcxZDQ0MDM0OTcyZDA5MDNhMzlkMDhhZmFlNzNiYjk4MWViOWFiMGRjZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0M2NiYjVmYTIxNDk1NDlhY2JmNjgyZTk5NzkwOGM1OTY4NTI4YTgwNmJlMzY2MzU1MzViZGJjYmY3MGUzMzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlZDJjNmI1ZDA5NzcyMmMyYjAyZmNlNzE5NGZmZjM4MmQ2MTI1NDQyZmJiZjFmZTRhNjMzZjM0ZjZlZTk5MDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YmIyYjY1OGYwMDllZDlmMDcwMmFkMDllOWVkZWU5NDcyNDhiZWJkN2I3OTJlOTBlZDM2Yzk3Y2Q3MjQ0NzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_54058497c18a4e34ae23b6f8c4e5b02c",
+      "statement": "HtmxResponseHelper provides static helper methods that set HTMX response headers (HX-Trigger and its After-Swap/After-Settle variants, HX-Retarget, HX-Reswap, HX-Push-Url, HX-Replace-Url, HX-Redirect, HX-Refresh) for use from custom services or interceptors.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmxResponseHelper.java#L47-L216",
+          "version": "repo-lines-v1:sha256:781c6fad1c1ac4530466fefa9cb63d7ec7f0416640ebe04b65b1e0b409c529ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI4Y2NlNmVkNTJiNGNjMDhhN2UwZDI2OTQ3NWYyYjgxMGM0NWI0NTY4MzliYzVmNjI5ZGQxNDQ5YTMwMmY1MjU2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlNzEzNDIxMjljYzRiNzJmY2Q5OTU0YTAwNmM5NDkzNGU4OTE1YTA1NzU1ODE5NDIyNGE0NGM4MzdjNDE0NjdhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_44fe6e1968654f028450fd94724452a1",
+      "statement": "HtmlAuthRedirectInterceptor runs at REQUEST_AFTER_FAILED_AUTH and, for HTMX requests, sends the login URL via an HX-Redirect response header while keeping the HTTP status at 401, instead of issuing a 302 Location redirect as it does for non-HTMX browser requests; this prevents HTMX from swapping the login page into the original fragment target.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L157-L185",
+          "version": "repo-lines-v1:sha256:0d6d6aecd4a08e615b958ea4305ca19d32978176513fa0da7f68138634fb887a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyYTUzNDVkYjY4YTZlYjIzYzA4ZWVmYzU2NDNiZTc0ZDhjZDZmN2Y2NjIwZGMyYjBkMzI5NWEwNTAwYzZlNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhOWY4NmQyOGU3ODRmOWZkMzFmYjcyZDE1ZjYwY2JjZWFhZmRkNjY5Y2JkNWI2ZGE3ODg4YTAyMzMyMWViYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMzYyMjIwMGQ4NDhlMWViMTYzYWQwMWVjNjMxZDc1MzY0MjdkM2YyODdkMGM0NTZjMGY3YWRlZDNhYzYxZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a28c5d5f4ef34e0f83f1676e202d219e",
+      "statement": "For HTMX requests, HtmlAuthRedirectInterceptor derives the auth-failure redirect target from the HX-Current-URL request header (via localPathOf()) rather than from the failing request's own path, because that path is typically a fragment or action endpoint (e.g. a PATCH to a document URL) and not a navigable page; it falls back to the raw request path if HX-Current-URL is absent or unparsable.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L160-L171",
+          "version": "repo-lines-v1:sha256:baeccdb15c2e108ae21694ae858e476f7110183e0243a37f75db9acf73b95c41:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YTNkNzA3ZTcyZTRiMjU1MmFlZTNkMTdkOTY3OWZmMzRjMTNhMGU1ZmRmZjEyNWFjMDBmNWM4MDc0YzllMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlN2E3MGNiNmNjNjAwYjljNTIzZGM0YmZhYTlhZTljYWIzOWJhMjU1ODFlOTI5YWU5NmE3NGJlNWM3NTgxMDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyZTc3MWRhMzEwNGZlNmY3MTA1ODYzMGVhY2E0YTBhNjhkYWMwM2ZlNTlmNmQwZTQ3MjM5NGU2OGMzN2FhZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjY2NjNjg5MjI3YTIyNjJmM2U0NjM4MzFhYzY5N2Q4OTUyZDcwZGY4ZTQ5ZDJhNmViNDcxZmY4YjRiNDNkNDUifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L235-L258",
+          "version": "repo-lines-v1:sha256:0f6039ec8bd5d6ec0e02bb705b93afe9e21e6b9c8dcf75f19db738b0848de54a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3MWEyMDZjM2E0MGQyYTVmOTYzYjU0ZGZkY2JjZjYzNDBiOTA5ZmUxMzEyNTk1YTJmZWJhZTQ0MDBkOGU2ZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_86869e8687bf4fd0a7e1614a658cb0aa",
+      "statement": "HtmlAuthRedirectInterceptor.resolve() only acts on unauthenticated requests that accept HTML (not request.isAuthenticated() && acceptsHtml(...)), so authenticated-but-unauthorized (403) requests are left untouched and keep their auth cookie and original response.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L260-L266",
+          "version": "repo-lines-v1:sha256:f22ba53ddc09ba0a713bca25d276fb74ecfd955aafe98fb81cb95c4420b3477d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6a6d340a84c94ff3be4294e3845b9e2d",
+      "statement": "HtmlAuthRedirectInterceptor clears the configured auth cookie and removes the WWW-Authenticate header on every redirect it issues (HTMX or not), to prevent an infinite redirect loop from a stale or expired auth token, and supports an exclude-paths configuration that bypasses the interceptor entirely for matching path prefixes.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlAuthRedirectInterceptor.java#L144-L193",
+          "version": "repo-lines-v1:sha256:c9c685f40b35adb8e50e081418278bc5451710e4f1a776b934b6a4806ec9432e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMzU4NDZjMGIwZjNiNTdmY2MyYzllYWUyZWIwOGUzODk2MGFmYWQ4YThhMGFmZjU5MjFhNjcyODE1OWY1ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlYmIxYjk1MjViNzcwYTg3YTI3MWMwMDQyZTI0ZThkY2E3ODE4Y2E3MTQ2OTdkZmVmMGM4NDNhNDUzMmZmNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2OTQ2ZTEwMWU1ZTc4ZDkwYTUxMGM2OWYyNjZlZjc2NTQwZDMwOWIxYjgyMjY5NWI1MzE3MmVkMmNhYTAyNTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_10cd7d163b664389a9958fcffcce7086",
+      "statement": "HtmlResponseHelper.isEventStreamRequest() detects SSE requests via Accept: text/event-stream, and HtmlResponseInterceptor.resolve() checks this before the general acceptsHtml() check, returning false (bypassing HTML interception) so RESTHeart's SSE infrastructure handles the response unchanged.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L280-L291",
+          "version": "repo-lines-v1:sha256:87389fffb3dc72a7bcb860562019a74e8e80b5617277bc54c86416509b0b818b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzRlMTY2NGExMzBlZWNiZTEzNzFkNWExNzljNGJhMGU2MTMwMjgzNGE1YTkxZTI3NjMzZTZmMDc3MzAxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlZDNmZjc1NjE4NTM4ZjA4NGZjZDQ1NDJjNDMzYWEzMTgyMzE4OThkNzFlZTljODhmZTk1ZTA2MTQ5OGI4MmMifQ"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmlResponseHelper.java#L53-L66",
+          "version": "repo-lines-v1:sha256:abf8e993573cbee9e86df327e5519975d6ad2518967d2be9b7d0cb42b543c574:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjYzZlYWE1M2NiNmQxYjgyNTI0M2RlMzMzMmQ0YTAxMDgwODc3OGVmNzViOTFmYjU2NGU0NmJlYzY4MTQ0OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRkNjY1OGIwODBlMjQ2NGY3N2YyMzRlZjgyYjdhZTg5MWMwNWJlNzA0ODBhOTM4NjQ3ODdlMWZlZTYxNTFmYmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_753a5a9d687c4090b2998546274fcfff",
+      "statement": "TemplateContextBuilder always sets the requestMethod template variable from the HTTP request method, making it available in every rendered template (full page or fragment) to support conditional post-mutation feedback.",
+      "evidence": [
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/TemplateContextBuilder.java#L50-L53",
+          "version": "repo-lines-v1:sha256:646aa3e0f7565c2431205c17af27e78cdeab11553e9bb51fefd44fb07ec26685:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRkMzBiMmQ5ZWQ4OTQ1NjNhZTY0YTVhOGI3YmE2ZWMyYzQ5ZDVlNmU5YTJiMTkyMjhlNWExNTM4MTU2Y2I1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjI3M2IwMjBmZDAyNThjOTc4MDQyMjhmNWRhNWI1ZWI3ZWZiYzIwOTU3ZGZmODM1ODdkMjI1NTkwNzQzOTE4ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb2a61981b9a471ba5bcdd2e3b1fd27a",
+      "statement": "The HX-Reselect response header is not implemented by HtmxResponseHelper; it is documented as a known limitation in CHANGELOG.md, first noted in the 0.2.0 release and still listed under Known Limitations/Future Work as of the current Unreleased entry.",
+      "evidence": [
+        {
+          "resource": "repo://CHANGELOG.md#L163-L165",
+          "version": "repo-lines-v1:sha256:094573994a19adfe535f10cc3fdbc8e8c0903b12d5bca02d32c0be878690d5a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjZmYTM3NjU0ZWU3Yzg1ZTM5NjE0ZTdhNWUwYzkxMWE3YmU0NDdhOTc2MjM5OWQzZDhjYmY4MGIxYzNjZjNhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQ4Y2Q4NDZkN2Q5YzY0NWFmM2NkYmNhZGM5ZTQzMGYwMjU0NTc4NDkzMjZiYmRhYzRlNjUwODAxNTQzOTM2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWNlYzk3ZjBmNjc4M2Y2ZDVjZGRmY2UzOGFmMjg0ODAyMDQ5MDJlZmIwNGUzNzhhMGJlYmUwYjEzOWQ0ZGZkYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNkZDUxMmQ4MTc2NjJhYjBjMjhmMzdlY2VjZDExMGViNGI5MTFiMzViYzc0YTVjNDAyNTUyYWZkOWQ1MjY5MyJ9"
+        },
+        {
+          "resource": "repo://CHANGELOG.md#L191-L196",
+          "version": "repo-lines-v1:sha256:d9210edcf8fc6c74de97ecc938f8b47af612c35a2c6d3fb46ce50370db042b1c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWVhMzQyNzA4YWQyMmViNzE0MDcyYTBhYTlhOTRmOWY2ZTk3NDhiMTQ5ZjJkZWU5ZjAxZDY1YzA1NmVhMjYyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTUzZjExZmEwNTUxOTFmOTY1MzM5ODgzNmEzYjQ2MTU5NmZkOGZiNjY4YzVjNWMxZGI3ZjM5ZTRmNWYyZjgzMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDAxZjJlYzE3NTkzYzEwNTRlYjQ2MzY3ZDg0NTNlZjI0YTE3M2NlOTZiNzExN2Q5MWY5YTY4ZDQ0ZmVmOGIwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzExNjllOTc3N2FmMjNiZDliOTk5NGI4MzExOWM2ZjI1MzVkZDM0YzM1MTMyODc1NjE5N2NiY2ZiOWRhNWVkYyJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/internal/HtmxResponseHelper.java#L47-L58",
+          "version": "repo-lines-v1:sha256:217a94d57924692e73e6b0c5ffb6e11bb31630c41fc1dcdfef32417317e0bfa6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjY2U2ZWQ1MmI0Y2MwOGE3ZTBkMjY5NDc1ZjJiODEwYzQ1YjQ1NjgzOWJjNWY2MjlkZDE0NDlhMzAyZjUyNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3MTM0MjEyOWNjNGI3MmZjZDk5NTRhMDA2Yzk0OTM0ZTg5MTVhMDU3NTU4MTk0MjI0YTQ0YzgzN2M0MTQ2N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNThkYTI4N2NmNDYzMjZhNDFiMjNlNmIxYWQ1NzJlNTQ2ZWFkYzQ0OWI1NzcwYzY3OTA1YWM3ZTVjNzVjZjMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-29T12:45:43.106Z"
+  }
+}

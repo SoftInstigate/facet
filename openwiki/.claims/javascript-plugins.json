@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7c46c79731e37600e99e0c1bd8d5ea59625b53c12e2b8d122e69756dbbb56224",
+  "claims": [
+    {
+      "id": "claim_0761e65fcea846e0ad5fd94011ec1bf1",
+      "statement": "The root Dockerfile builds the Facet base image FROM softinstigate/restheart:9.12.3, and examples/product-catalog/Dockerfile builds on top of the published softinstigate/facet:latest image (itself derived from 9.12.3), replacing the earlier RESTHeart 9.7.x base.",
+      "evidence": [
+        {
+          "resource": "repo://Dockerfile#L1-L10",
+          "version": "repo-lines-v1:sha256:9a3caca309df6a95ae62bb78a3e1c0f4aa39781ac79101c61b34479f782fe9e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://examples/product-catalog/Dockerfile#L1-L11",
+          "version": "repo-lines-v1:sha256:1b2f2da709291abbdcfae5df00ea01bdf8bcdd9993d9cad6413bbae6ea2033a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0ZmU0ZDBmMjZhYmZkNTYzMDJkMDY5MDg4ZTFiMmQ0NGM0NTQ5ZjUxMTdkNzI4MmQ3NGYyMzZhOTEzNzMyOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1OGVhYTkzNDczNTM3NzFlZDgyNTZiNDljNWViNTI5YjVhODQ3ZmY4NzBhNGEwYzNmMjQ0NGVjYTU2OWEzODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b7b34353f0f46ce82c7b69a192183c4",
+      "statement": "The GraalJS JS-plugin-loading bugs tracked in restheart#663, which affected RESTHeart 9.7.x, no longer need a snapshot/diagnostic image workaround: core/src/test/java/org/facet/integration/JsPluginsIT.java builds the facet-test:latest container from current sources and exercises the product-stats JS service and request-logger JS interceptor end-to-end (JSON response, HTML rendering, response headers, 401 on unauthenticated access) in CI on the 9.12.3 base.",
+      "evidence": [
+        {
+          "resource": "repo://CHANGELOG.md#L23-L30",
+          "version": "repo-lines-v1:sha256:ce8b2551347b5890356e3e852dc878440b3fe1f7985c679f404ef9e830dae130:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE3ZTMyOGY1OGZkZDY2YjAyNDZjMDE1YTU0ZmY1MWRiMjFhNDU1NTY1MmQ3MzM1ZjU3NTU4YmY3NzA2YjBjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNjYTk3MWE1OTUxNzdlN2U4MDQwYThjOTBlNTQ0NzFkNGUzYTRjZWNlYzRlM2M4MmRmZGU4YmNmM2Q0ZjM4ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Y2NmRmYjYwYjIyNmU5OTZhMTdlM2UxOWRjNGZmYjhmZDY3OGUwZGNlYjU5MmRlYjYzNTFhMGNhMjk5NmNkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWU0NzExNGE2NGUyNGQ3Njc4NmM5MGFkOTQzZTExNDVhNGI1MDA3ODQ4NGY1MDk5OWNiZjQzZjM3YWNjMzcwYyJ9"
+        },
+        {
+          "resource": "repo://core/src/test/java/org/facet/integration/JsPluginsIT.java#L36-L221",
+          "version": "repo-lines-v1:sha256:63db51e24c6635774a4b9d1b8284fa976feb2a7bea941026f28a587da859b974:eyJzZWxlY3RlZExpbmVDb3VudCI6MTg2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiM2I2YWE2YjJlNDczMzQ1NTdhNjRjMmIzYjgxYzc0ZjQzZTg5MDYxMzliMTg3YTg4MGEzZTU1ZGY3MzBlMjYwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyNjFiY2NlZWM0MmE5ZjUwMTVkZjkxMTJjMDYxZDNmY2EwZmViNDQ1MjIxZDU1N2I2ZDA5MzljM2QwNWRkZTZlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_de8a1b2ce5f945e5a70fc0fa44615a5f",
+      "statement": "The product-stats.mjs JavaScript service (examples/product-catalog/plugins/product-stats/product-stats.mjs) is a RESTHeart service registered at /shop/stats that iterates the shop.products MongoDB collection via the mclient global and BsonDocument interop, computing total/inStock/outOfStock/avgPrice/min-max price/per-category/low-stock statistics and returning them as JSON for consumption by both API clients and the templates/shop/stats/index.html Facet template.",
+      "evidence": [
+        {
+          "resource": "repo://examples/product-catalog/plugins/product-stats/product-stats.mjs#L17-L93",
+          "version": "repo-lines-v1:sha256:6eca3ec68606395491c3237d316c914202cdf39f4775f0d04aa0f50f90ac97ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNjAyMjUxYmEwZGU3OWM5NGQyYTk1Mjg0YTAxZDJjNzk3NDk0ZTYyNzg2Mjc1Yzk0MGRhMGVjNmRlMjdiNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiYWVjNmRjY2ZmNTA4M2Y0Y2RiMmExOWJmM2Q3OGIyZTdkNjQwZTAzNzljZWI3MzE4YjFlMGNmZjIzNTQ4ZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://examples/product-catalog/templates/shop/stats/index.html#L1-L154",
+          "version": "repo-lines-v1:sha256:08e7c8b53978aca39e5d1257aba3381a283e9e2b2c866db30a0ca3728441c169:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2YzY1MzcyNWVhMTEzZGU1YzliODg4ZmJlODIzZDcxNTVhMTFjNmVlMjZiYjIyNDZmZGEzMTdjNDVlYTcwNzZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3MTY5NWU5N2UwYTdkM2ExYWFkNzRiOTcyMDdkYzk4MjhkNGQ0YWM1NjRlNjBjZDAyMjU4YTJhODIwZmY2NTNjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d329a0a73ed4e1386805738ed294329",
+      "statement": "The request-logger.mjs JavaScript interceptor (examples/product-catalog/plugins/request-logger/request-logger.mjs) registers a RESPONSE interceptPoint, uses resolve() to match only paths starting with /shop/, and adds X-Facet-Plugin, X-Request-Path, and X-Request-Method response headers using io.undertow.util.HttpString.tryFromString() keys rather than plain JavaScript strings, since Undertow's HeaderMap.add() requires an HttpString key.",
+      "evidence": [
+        {
+          "resource": "repo://examples/product-catalog/plugins/request-logger/request-logger.mjs#L20-L34",
+          "version": "repo-lines-v1:sha256:0fce8c9dce671d7b890b8d50699e47e99651ebd8537c97043a86eca75d1adbe7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5ZDMzMzYwZjU1YzU0ODNlMmVhNjBjMzQ4ZjVmZTljNDI2YmM5YTlhNDc4ODI5MzMyOTAxYmY3YWVkNTMyMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZDdhYzFlMDY3YzdlMjQ5NjBiYjdhZjk3YTQ5ZjI1NjViOTQ5ZThkMTU5M2NiZTYyZWQyOWM2MDJmMjliMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlOTBlYTY5MzU1NmM1MzBkM2Q5NWMxNmIyZjQ3NWIxY2NlYmQ3YThkZTJjOTQxOTQ2YWFjZDU1NTZkOTFjNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f198552fc2c04608bc0ce17d30f9b4ab",
+      "statement": "Both the quickstart configuration (etc/restheart.yml) and the product-catalog example configuration (examples/product-catalog/restheart.yml) disable /graphql, /mcpService, /bruteForceAttackGuard, /rndTokenManager, and /tokenBasicAuthMechanism by default, alongside enabling file-based ACL/auth and the Facet template/HTML interceptor plugins needed for JS-service-to-HTML pairing.",
+      "evidence": [
+        {
+          "resource": "repo://etc/restheart.yml#L53-L67",
+          "version": "repo-lines-v1:sha256:f879ced8492c8024a3be9a2f90dc095c69fb546d0899709156462cbe7241f58d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyZThkYTI5YTAwNTU2ZTkwZTViMzQyZTkzYzdhMTI2MzI2YWE5MDUxMDY0NDgxZDhhNDkxYmJkYzMyZTQ5YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmMWNlMWYyNzBjZDBkOTMwNjY3ODNlNjg2ZDBiMGY3MWE1YmY5YjMzOGM0MzgzYzBhZDg2YzMzZGE4ZjllZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjODMwMzk5YzgwMDRmZTczODY0MmI4NDdjMDAxOGVhNDNjMDY1YTY0NjU5NDQwOGE5YTIwN2ViYmRjODlmNmYifQ"
+        },
+        {
+          "resource": "repo://examples/product-catalog/restheart.yml#L59-L71",
+          "version": "repo-lines-v1:sha256:c925719edb987c01883e46be1e05b83066e18ac6d960b93c9ae1bf5242dd1bf4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NjYyMGY0ZWUxYjJhN2JhYjE3ZjYxNjY1ODNjODVmZjllZGQ0YWIwMjM0Yjk0MTkxODllYzYwNTUzNDQyZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmMWNlMWYyNzBjZDBkOTMwNjY3ODNlNjg2ZDBiMGY3MWE1YmY5YjMzOGM0MzgzYzBhZDg2YzMzZGE4ZjllZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwM2RjY2M5OTZlMjAyMjJlMDRjN2EwOTBlODk1MDIyNmUxMGY5ZDFiZjdjODc3NGZkODM1Mzk2MWZkY2NkNGUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-29T12:45:43.106Z"
+  }
+}

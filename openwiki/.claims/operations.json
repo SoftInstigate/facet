@@ -1,46 +1,58 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:27805878be99cc8b71cb2351b48e1a5e89e4bca482c495cd9f4b866388d03f83",
+  "pageVersion": "sha256:cde20d247b34ff6b289dcfe5a549fa2916a6e0610ad5796bb43c7867343f8429",
   "claims": [
     {
       "id": "claim_8da2e99589d7483b899d8225472c0793",
-      "statement": "Facet supports two deployment paths: running the published softinstigate/facet Docker image (recommended), or manually deploying plugin artifacts to an existing RESTHeart installation.",
+      "statement": "Facet supports two deployment paths: running the published softinstigate/facet Docker image (recommended, now built FROM softinstigate/restheart:9.12.3), or manually deploying plugin artifacts (facet-core.jar plus target/lib) to an existing RESTHeart installation.",
       "evidence": [
         {
           "resource": "repo://Dockerfile#L1-L10",
-          "version": "repo-lines-v1:sha256:dd55bc63cbd798e7e5d8387d704112b4cc0cd10edfeedbb47d8cab084ea97905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:9a3caca309df6a95ae62bb78a3e1c0f4aa39781ac79101c61b34479f782fe9e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://core/pom.xml#L108-L159",
-          "version": "repo-lines-v1:sha256:c4f3731c0e6c67d1935de7ed6ab7e1d559f1aeb42fd8740144011f20bb0ea977:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljZDI2Y2E4MDc5NWFjODkwNWEyODUzNmU4N2VhOTgxMjg5YzIyYmZiODM1ZWUwMjg4ZmUzNTMyODEyZWVhOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MWQyNjZlNzI0ZTNhYTc5ZDY4NWRhYmJmZmNhNWFmNzRiMzQ3OWM0ZGNjMTU4Y2M0N2Q4Y2JhNTk0OGJmYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5N2Y1N2I2NzdmOThkNjI0MDU4NGE5NzIxMTUwOGE3M2E4YmJiZWY0NGU1YWQ4NDJhNjFjODM5MmFiZWU1NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZDM1MTgzMDY2MWMzNzg2MDQ0MjJkMmY1ODY2OTc2MTljNTE1YzVlYmMxOTM1YjliNGFkNDY4ZTQ2NzJlNWMifQ"
+          "resource": "repo://core/pom.xml#L103-L174",
+          "version": "repo-lines-v1:sha256:175bc12fd176081a51460f65cd8ca267411b3a2303384f439b938255d225d303:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNmI2MGFjNTcwMjliZGExM2M1ZDcxNTJmODI0NGI1ZThkNTdjYmI2Mjk0Y2UzODQwMmY3YzA4YzA3YjZjZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZjVhZDE2NWQ1MTc5ZjhhYTIyNmNlZTMzZDI2ZDJhYjMxYTliY2EzZDdlNDVhOTFiMWFmZWIzMDg1YWM1OWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2OThjMzY3ZTc2NjYwZDY0Y2I5NTgwNWZiOGRkZmE4OTAwYmExOTE4MTg2ZTVjMjU2OGM4Y2FkZTc1YjlmMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkNGZlZWI1MTllYzA2ZjkyZDgxY2ExYTQ2YThmNTgwNWI5NTY1ZGJhMDM2MDZjMGFhMDMxODJhOTZhZjUzODkifQ"
         }
       ]
     },
     {
       "id": "claim_64db3da27fd947d195426f6f1f3ebbdc",
-      "statement": "The Maven build requires Java 25 and produces three artifacts: facet-core.jar plugin, lib/ directory with runtime dependencies, and bundled .zip/.tar.gz archives for releases.",
+      "statement": "core/pom.xml declares test-scoped dependency versions (junit-jupiter, mockito-core, byte-buddy, rest-assured, testcontainers, testcontainers-junit-jupiter) as properties, while the parent pom.xml centrally manages the restheart-commons and pebble dependency versions plus the Surefire/Failsafe/dependency/assembly plugin versions via dependencyManagement/pluginManagement; update-dependencies.sh now correctly updates both, whereas previously the root-managed versions consumed by core were skipped.",
       "evidence": [
         {
-          "resource": "repo://core/pom.xml#L136-L178",
-          "version": "repo-lines-v1:sha256:a346a84f49f8657c577feded0d896bad60d48e3178035524afbc1d645fadc1ea:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZjA1MDYxZTExOWMxZjk0M2Q5OGI0NzhmNWJiNTNkN2NkZTRkYjdjMDlmNzA4N2ZkNDQzNGRlNGU2MDg3M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MWQyNjZlNzI0ZTNhYTc5ZDY4NWRhYmJmZmNhNWFmNzRiMzQ3OWM0ZGNjMTU4Y2M0N2Q4Y2JhNTk0OGJmYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5MDNiYjA1MTYyOTRhOTMzOWI0NzljNjJiYTM5MjQ1Y2NiNzVmY2ViZTM5YWE4ODljMjBkZWI3NGEwM2IzNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1MzZhMmUxNzdmNzg1MTY3ZTc5MDA5NDA0ZDVhMTg2YjczZGM1N2Y0OTBiYzg5YWIwODEzZjZkZTAzODdiOGIifQ"
+          "resource": "repo://CHANGELOG.md#L54-L56",
+          "version": "repo-lines-v1:sha256:4ed7ddd36f08c8b51675115b40fbc48f9904fb000452d6eb50a931f12276545c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjg4ODQ4YWZhNTEyNzE4NzBiZGI4M2FlYmVkYTY2YzEzNmJjYTRkOWM0NjU2YjYwZWY5MzdhYjVjYTE2OGE1NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc2OWNmZjU4MjBiMzAxOThmNTYwMmU1MDFhMGQ2MWIyY2QzMzM1NWJhZDlhNjRhZDU4ZjM3NDlhODA1ZWFjYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ5YzU1OTFmNWM5NGY4OTY5Y2Y2YjZkZDNmZjMwMmJjYWIwOGE5M2NkOTg1OGUyZjgwNTkyZWE0NmM1NmU1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTMwOTUyNjJmODdkZjhjZDA0NTIzMDg4MjcyNDYzMmI1YzIzMWY4NzZhNjVhZDVjMTliYTM2NTUxYzJmOWEyOSJ9"
         },
         {
-          "resource": "repo://core/src/assembly/with-deps.xml#L1-L27",
-          "version": "repo-lines-v1:sha256:da494731d201f203cfc58cef6f07b2e37c253df735bd100253d1459895dfc988:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlYjY0MWRjY2YxMDYwY2Y4MjgzMTc3OGFiMDRiMjcwYjk3YjI0NzgwZDA4OTVkNWIwMGQ0ZWIyMTdmYzhhMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NDIwY2FhM2UyYmI1YTI3MTQ0ZmJlNDZiZDJmZmRkNDI5MDUyZWMxZjJmZGE0OTdiMWU2NDljOTkyMDZkNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://core/pom.xml#L19-L26",
+          "version": "repo-lines-v1:sha256:b5d9b750d8fa1aef8d7e550b9aa89631d0b2c7b28d2c932814b9209cfc062c47:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA0MDEyYWMzYWIwNjExNTIwNGI5NmM3MmUzNTFjMWU1NmQxNGIzYWQ4OTJhYTM1ZjkwZmJmOGUyNDQ0M2JjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmY1NDlmMTEzYzUzODc3NzM2YWU3MWQxY2M0NGVlZWU1NzEwYzJkYzUwNWNiMmQyMDA0YzhmODg0MWIxZDFhMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzY0ZWM5Mzk0YmI3OTZlMzE1ZGNiMjA3OThlZGM1NzdjMDQ2YmI5Y2JkZGQ4YjZlMmIxNDJjZjYxYzFiZThhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjJjZjQ2OTU0ZGZjNDM4NTA3YTEyZWNjMGUzN2Q1OTUyN2E5YmFiZmU4NzQwOTkzZjZkYTRiNGJlYWFlYWY0ZCJ9"
         },
         {
-          "resource": "repo://pom.xml#L19-L21",
-          "version": "repo-lines-v1:sha256:65768358ea58fa6f79872630d3318374a27f327a15a62e688ef64ba8c4c84b8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA0MDEyYWMzYWIwNjExNTIwNGI5NmM3MmUzNTFjMWU1NmQxNGIzYWQ4OTJhYTM1ZjkwZmJmOGUyNDQ0M2JjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBmN2FmODNjN2Y1MjU3ZDEwZDM4NWE0ZWRhZmExNmZiMjcwOTYyNjMxODA1MmQwMzAxMmUyOWMxMDY1NmU4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTU2OTNkMTMxMDA4ZWQwNzgyNGFjODcwMDM4NzFlZTNiNWIwYzZlMTU1YzA0MmViYzJiMjQ0MzYwZWMxNWRhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTMyNGRlZWU5MzQ0ZmQ2NDI4Njg3MmE3ZGE4ZmQ3MTNkNzhhYWQxYmZkNDIzY2VjMGJkMjNjZDRkYmJmMzRlMyJ9"
+          "resource": "repo://core/pom.xml#L42-L54",
+          "version": "repo-lines-v1:sha256:dac0ab92fe5c47789c4e9a9d4253459a103ccc512b3e3ad828847f1bc2cde586:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjZThkZjNjMDVmODUzZGE2ZjBmZWQ1NzVlZmM2OWM4ZjdhOTQxN2NiZWEzMjFjODY1N2RmNWE4YzdlZWRkNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNWU3NmRjNzEwODgzYmVlMDYwYjFhZDZiNTllYWQ5NDhmNDJiZmRiN2VhNWI4ZGI1ZDMwZDM1ZWEwZDBkYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxMDE0M2QzOGE1YTcwYWVhZTY4YTg5Y2Q3YWNlMjJkNTVkZGM4OGU4YjdmMWJmYWI4ZmRmY2IzZmEyNDhjMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NWQ3MTI0MDIxOWJjNmI4YjNhYzJiMjVmNTcwYzM2ZmRmNTk4OGI0Yzc4YmRjMjgxMGY5NjRmMjQzOTY1MjkifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L19-L47",
+          "version": "repo-lines-v1:sha256:a3983d9912697580b9cab1cedd7fa858717f372c0113a638fc7fa1c269d9d910:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNDAxMmFjM2FiMDYxMTUyMDRiOTZjNzJlMzUxYzFlNTZkMTRiM2FkODkyYWEzNWY5MGZiZjhlMjQ0NDNiY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1Yjk4OTU5ZmJhYmI0OGYxMzNiMzZjMzU1OTY5ZWQyMTllM2NhYjIwY2Q4YjM0NTFiZTYwMmY1YjFiMzA2MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1NjkzZDEzMTAwOGVkMDc4MjRhYzg3MDAzODcxZWUzYjViMGM2ZTE1NWMwNDJlYmMyYjI0NDM2MGVjMTVkYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzU3NmVlN2IyMTAzYjY0OTQyYzQ5MDBhM2M3NzI2NDUyZTliMjA2MTYyNDQwNjlhMGNkYjQ2MzAzOWU2MGYifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L50-L73",
+          "version": "repo-lines-v1:sha256:7925230a331e743272d362ff7ab40aa70ef2e32619213d9de666dcc22aa3dbf4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZTQ2NTAwMDc2OTgyMjc3MDU5Mjc5ZjdiZmMxZmEwNjVhYzFiZGVmODIzZWExM2Q0MDZkMTM3ZWI5YWRmMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNTk2NWQxYjdkZDg4NzYxYjQwOGEwMzc1NzBiNGJhNjI2OTQ3MmE2ZDdjMTZkYmVhMDA3NGEwYzM5NmU5NTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYzFkNjAzOTE2ZmIxMmZkMDg3NWQyZjY0ZjE1MzVlMjNkYjE5MWUzNGJiN2IyNDUzZWQ5MTc4NWI3OTRhNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjNzY4ZjA5ZTY3YjMzOTYwNjZhYjZjYzNmODI3ODE4NTc4ZGE2ZTQxYTEzODk0Nzg3MjFmOTVmZmY3NzhmODgifQ"
         }
       ]
     },
     {
       "id": "claim_cd6707695fb54e918d9c5840ab2d95ba",
-      "statement": "The Dockerfile extends softinstigate/restheart:9.7, copying the plugin JAR and its runtime dependencies into /opt/restheart/plugins/.",
+      "statement": "The Dockerfile extends softinstigate/restheart:9.12.3 (upgraded from 9.7), copying the plugin JAR and its runtime dependencies into /opt/restheart/plugins/; no Facet source changes were required for the upgrade.",
       "evidence": [
         {
+          "resource": "repo://CHANGELOG.md#L25-L28",
+          "version": "repo-lines-v1:sha256:325377cd204a3ca122942dcd479a1e8d4b71f80f9a535c9618071c924998657d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M0MGEyNTkxODQ1OGU0NGU1OWQ5ZGM1OTc1NGZlOGExMDJhZGVmODljNjJmNTIwZWFhOWE0ZWYyZWE0MWMxOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDkxMTk2MmY0NDA2NDE5M2Q3NmQ3NzAyY2JiZGQyZDYzNmQzYTEyYzM5OWUyMTZkZTY4ODNkMmIwZDNmZmQyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWNkZDUxMmQ4MTc2NjJhYjBjMjhmMzdlY2VjZDExMGViNGI5MTFiMzViYzc0YTVjNDAyNTUyYWZkOWQ1MjY5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWZkMDA0MGZiODU3ZDFhOWY2MzVjM2UzOGRmZGJjNWRlZjM4Y2MzYWMxNDk1YWNkZDRmNjE0MGRkMTU1MjJmNyJ9"
+        },
+        {
           "resource": "repo://Dockerfile#L1-L10",
-          "version": "repo-lines-v1:sha256:dd55bc63cbd798e7e5d8387d704112b4cc0cd10edfeedbb47d8cab084ea97905:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:9a3caca309df6a95ae62bb78a3e1c0f4aa39781ac79101c61b34479f782fe9e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiNmYzZTEzZGY3MWUxY2UxNjIwYmMxM2NiZTgxZDdjNmNkOGZjMDY2MDk0YTRiNjUyNGY4MTFkZWE0ZTBlMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5OTc3MjUyZTYwOTA2Yzk5M2I4NWQ3OGViOGVmYjE3ZmYwMzkyMmU1MTYyMTAzZDA2ZGIwNThjMmVkMGEyNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -56,21 +68,21 @@
     },
     {
       "id": "claim_c19ad34d2fd548c8b79bd501e11f0d57",
-      "statement": "The release workflow triggers on semver tag push (e.g., 1.0.0) or manual dispatch, builds core artifacts, creates a GitHub release with bundled archives (tag push only), and builds and pushes the Docker image to Docker Hub with version and latest tags.",
+      "statement": "The release workflow triggers on semver tag push (e.g., 1.0.0) or manual dispatch, checks out with actions/checkout@v6 and sets up JDK via actions/setup-java@v5, builds core artifacts, creates a GitHub release via softprops/action-gh-release@v3 with bundled archives (tag push only), pulls softinstigate/restheart:9.12.3, and builds/pushes the Docker image to Docker Hub using docker/setup-buildx-action@v4, docker/login-action@v4, and docker/build-push-action@v7 with version and latest tags.",
       "evidence": [
         {
           "resource": "repo://.github/workflows/release.yml#L1-L63",
-          "version": "repo-lines-v1:sha256:f18b8f475a1bb78301bf1d8970d42dafe7860d5ab198bf7aeea915bc7dba4e01:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZWVmOTAzMGQwYzcwMjkwMTBjNDYzNTY4OWY1ODMyOGQxMDllNmE4NWVkMWE5MjQ1YjIwZjM5NTViN2RiMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYWE0OWIzZjNiNTA5ZjJmZTNiZmQxOTk5MDBmOWI0NmNkOTRjNmY1MWZhOGJkMDhmYTUwM2M3MzAzNjgyZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:3b26db952a7100686d2fc273692630793d19695dccc4c125fdd4f498a85c14a6:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZWVmOTAzMGQwYzcwMjkwMTBjNDYzNTY4OWY1ODMyOGQxMDllNmE4NWVkMWE5MjQ1YjIwZjM5NTViN2RiMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYWE0OWIzZjNiNTA5ZjJmZTNiZmQxOTk5MDBmOWI0NmNkOTRjNmY1MWZhOGJkMDhmYTUwM2M3MzAzNjgyZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_27611cbff58a42fea54396fa46f1b3a9",
-      "statement": "setversion.sh validates semver format, checks the current branch (requires master, release/*, or <major>.x), verifies a clean working tree, updates both parent and core POM versions, and commits with a tag for release versions.",
+      "statement": "setversion.sh validates semver format, checks the current branch (requires master, release/*, or <major>.x), verifies a clean working tree, updates both parent and core POM versions via mvn versions:set, stages only the POM files touched by versions:set (git ls-files -z -- 'pom.xml' '*/pom.xml' | xargs -0 git add --) instead of git add -A, and commits with a tag for release versions.",
       "evidence": [
         {
-          "resource": "repo://setversion.sh#L1-L219",
-          "version": "repo-lines-v1:sha256:4d1bce88b018cd0190776ecd2c52f69ffcb01509cd45e5a54c6950e6d54bcc0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxZDk1ZmMwNGE4MGM5NTJmNDljZTQxODg2MjdjNTNiMGZiZThjNDQwNDFiOTUyZDU5MmFjZDFkZTk5ODYxNDY2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlN2ZiN2Q2NDEwNDBjN2VkOWU4Y2IxMzAyOTEwYzE5YmVlZWMyMDk4MzdiNDI5Y2M1NmQ3OTA2NjU2ZmU0OTJhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://setversion.sh#L197-L223",
+          "version": "repo-lines-v1:sha256:6796c53a82fc6e25ae05d9dd1a2f1a2341b8226f243ffde8c149873e2ce77eac:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5YTFlOTFiNjhlMGY5MGM0YzA0ZTcxNTQ3Yjk5ZjM2ODIxYWYxNGE0Yjg5OGU4MTdjNmYxYTFkMDFiZDViZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjlkMjM3Y2Q0MjBiOWQzOGI5ODFhMGE0ZjY3NzAxOTBhNGE4M2RjYTFmZTU2YzRmNWJhMWUyY2JjMGVmNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkMmQxYjIwZDNjYjJiODMxMjViOWJjN2MyM2NkM2QzZWVjODk0ZWRiMGI2MWY2NjkyNDMxMGY4MDY0YjU0NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0N2M2YmRhZDE1ZGJmZGI1YjQwYjU5NDQyMDg0ZTNmNTczNTRjNjBkNWJlMDg0MWFkMzI1NWQ3Y2EzNTdhODIifQ"
         }
       ]
     },
@@ -90,11 +102,11 @@
     },
     {
       "id": "claim_79672371c79c44b79ceea8958f55280c",
-      "statement": "RESTHeart configuration for Facet includes blocks for pebble-template-processor, html-response-interceptor, html-auth-redirect-interceptor, login-service, mclient, mongo-mounts, authentication (basicAuthMechanism, fileRealmAuthenticator), JWT (jwtTokenManager, jwtConfigProvider, jwtAuthenticationMechanism), auth cookies (authCookieSetter, authCookieHandler, authCookieRemover), authorization (fileAclAuthorizer), and static-resources.",
+      "statement": "RESTHeart configuration for Facet includes blocks for pebble-template-processor, html-response-interceptor, html-auth-redirect-interceptor (with login-uri), login-service (with redirect-param, default-redirect, roles-endpoint), mclient, mongo-mounts, authentication (basicAuthMechanism, fileRealmAuthenticator), JWT (jwtTokenManager, jwtConfigProvider, jwtAuthenticationMechanism), auth cookies (authCookieSetter, authCookieHandler, authCookieRemover), authorization (fileAclAuthorizer), static-resources, and explicitly disables graphql, mcpService, bruteForceAttackGuard, rndTokenManager, tokenBasicAuthMechanism, mongoRealmAuthenticator, and mongoAclAuthorizer.",
       "evidence": [
         {
-          "resource": "repo://etc/restheart.yml#L1-L145",
-          "version": "repo-lines-v1:sha256:52314025bcf42b1e14fce39c37924c393612dbc65b648e0d8ee4edb8083aa1d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMDQ5NWMyYWQ4NjAzMDlmYmQ2ZmMxZmQ5NjZlYTkxMDk5NTQwMmNjYjU1Nzg0ZjZlY2JkOTlmMDI2N2U4ODhmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxM2ZkM2FiNTExNWQ0ZWNjZjdmN2ExZjEzNmIxYTQ4NTg4NmRlZTcxYTNhNDFjMWI2OTAwYmIzMGRlY2M0MTkyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://etc/restheart.yml#L1-L148",
+          "version": "repo-lines-v1:sha256:7016361413f1d5f3e9e5c8b1438527323621ad09eb2f9f89a34f73ce9129d1e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMDQ5NWMyYWQ4NjAzMDlmYmQ2ZmMxZmQ5NjZlYTkxMDk5NTQwMmNjYjU1Nzg0ZjZlY2JkOTlmMDI2N2U4ODhmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxM2ZkM2FiNTExNWQ0ZWNjZjdmN2ExZjEzNmIxYTQ4NTg4NmRlZTcxYTNhNDFjMWI2OTAwYmIzMGRlY2M0MTkyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -111,10 +123,62 @@
           "version": "repo-lines-v1:sha256:7b18b7a1ccb92d122b4450ef7b0ce9f2a3f0e3ac79d3b42b29f29b1e9a25aa56:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YTQ3Yzg4MTEzNzk1N2ZlZjQ4NTRmOWY2NTA1MWMyOGFiMzE5MjRiZDY0ZThiZGVjYTFkOTc4NjY1NDY3MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxMDFhMDM4NzM5MzY2ZGYwNmM0ZDUyNTRmMjVhMzJhM2QxYjliZjliMTA5NDMxNGI5MjQxNTlhMjYzNmNkOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhNWNkZmUxZWFmMzE1ZjU1NWE0MWFkY2NhZjg1ZTI5MGExNTcwNTNiNjY5MzBjODk2Y2I2YmZiZGY0ZjY2ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1NzZhODRkMDI0YmZlNGNlZjA5MGRhYWYzZGIwN2YwMDJmMjdjNTMyMzQwYTJlNDI1NTg0ZmJjY2YzZGNjNzAifQ"
         }
       ]
+    },
+    {
+      "id": "claim_cbd148c5c67346a096b81dfbce41ea2c",
+      "statement": "pebble-template-processor's cache-active option now genuinely defaults to true when the key is omitted from the configuration block (previously it silently defaulted to false unless explicitly present).",
+      "evidence": [
+        {
+          "resource": "repo://CHANGELOG.md#L31-L32",
+          "version": "repo-lines-v1:sha256:a217da28d45263bf8d84dd3a847369b4e1b1e9ee1c39e71183dc7f047d141916:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODIxY2E3NzljNWU5MzBkMjMyYWVhMTIyZmVjM2IxYzVmMWM3ZDE3NzdlZWI5NWQ3YTk3YzMyNTYzODk5NzQwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFhODljYzU1NTQ2NWUxMTJhOGYzNDE5YzhmZWE1OWNmYTI1NjM2Mjg3MzQ2NTVjNjAxYmFlMzRlOTc2MDhjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhkYTg1NWU1MjYzM2FjYTgyZmE0ZDkxNTU1ZjNlY2M3YzQwMDg3NDI4NmQ2MDhhMGNkMzgzYzc3Yjc0NzZjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ5YTFmMGI1MmJmZTQ0MWU2Yzc4YzQxOWY4NzFhZjVjYTBmYmM1YzRmNThhZjM2MTY5OTA3Y2QxYWNjOTE3YyJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/templates/pebble/PebbleTemplateProcessorProvider.java#L68-L71",
+          "version": "repo-lines-v1:sha256:c2fb1e595fd8929135231ea2567dd4608c5ac8e92922cac0c9d64af8bbbb0e52:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzYwOWZjZGM3NzAxYTFlNDY1ZjM3YzAzNTRmNGIyNGRkNjkyYmJiMjUwMjg1OTM0ZWYxMTVkNGZhOWQyZjk5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY2YmJhZjgwOTIxZTRjZDY5YjllYjg4ZDk5NDQyY2U3ZTNhNTY3NGMxZDU0ZDMwZTdjMmU4OTg1M2JkMzY5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmY1NWRiMWM2MjBlY2MzNmNlY2M0YjIzOWFiYzhjYTMxYzExMGExM2MyYmE4MTNjMjJhZGEyMTg0MzZhMDlmYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8d5391d9ac54e6fbb5f35f2de448ad8",
+      "statement": "html-response-interceptor's response-caching option defaults to true even when /html-response-interceptor has no configuration block at all, not just when the key is omitted from a present block.",
+      "evidence": [
+        {
+          "resource": "repo://CHANGELOG.md#L33-L34",
+          "version": "repo-lines-v1:sha256:7f8e90ada5179648f45705f0460a120c0420038c220a093543e240da8b6d5a1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDA2ZjUyNzVmZjE0MGU4NWQ1MTcxNzlmYzU2NTQ3MTg0NDQyOTAzNWFjOTU0NDBkOWJkNWQ2NGUxMWJmNTkzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDlhZjU1YzA2NWIxMzZkMDcyYWJiZWFhOWYwMmM3MzBkYzE5YWExZDcwNmQ2ZWJjNjYwMjQ3NmMyMDY5N2E0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjQ0MGEzOWNhNjEzMGVlNzhkNDk3ZmIzZDNiZTJlNDcxNWYzNmUyY2FiZWJjYTA0ZmNiNTQyOGU1ZGMyZWI2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWJjZTExZDFiMDg0N2QyZmJkNzY3N2E4ZWMzOTY3ZjRmNWJkN2Y0NmZhY2E4OWM0OWVlZjZmZmFlNTYyYTQ4MiJ9"
+        },
+        {
+          "resource": "repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java#L190-L193",
+          "version": "repo-lines-v1:sha256:3ed3e248fe7290fd1c1e4ef9c61c55f32ecddcfd2ba7164cb52dd079fe796f38:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M2MTczNGNiMzgyYTY1MjczN2M5YWNiMTJiNDM3ZDg4ZTUzNWYxODFhYjBhOTQyYzdjMjM4MDFhYzIxOThmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTc0YWIxNzI4NDFkZTE1NzAwMTk0YzRlODc3M2JmOGU5ZWI2ZGY1MDYzZDI3OTNiNDZiOGJmNjNiNzQ2ZDU3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWEwMzJiOWE5MTI1NTU4ZWViMTkzNjI3MmE4YzY4MTQ3YmE1MWRmYjkxMTdiYjI4MjUxNzY0MWRhM2RhNDBlMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d686903131f4304afd6d6568b22aa34",
+      "statement": "The OpenWiki Update workflow (openwiki-update.yml) runs only on manual workflow_dispatch (no scheduled cron trigger), executes 'openwiki code --update --print' against the openrouter provider, and opens a pull request on branch openwiki/update via peter-evans/create-pull-request@v8.1.1 touching openwiki/, AGENTS.md, and CLAUDE.md.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L1-L45",
+          "version": "repo-lines-v1:sha256:b379b5383b9e3f0c79098205655a28ffa7fcd90c0dd1e0f243a506e4caaf39b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MDI3ODdhZjZkY2MwODM0ZGUxMjFjYmIxY2I5NWY5NDU5YjcyMWVhYjAzNDlmMTA1MDFiOTk2YzFjNzdmZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0Nzc5NmQzMTczMmZiY2U4OTk4YTJmN2U3YjFiYjk3NTVjMjNlNTg1MDMyMGI5MDkzN2Q4MmMzZmQwZTYyYTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b13a0876e20249b0ae69cd4e813def6b",
+      "statement": "update-dependencies.sh explicitly passes -DallowMajorUpdates=false to the Maven Versions Plugin, because the plugin itself defaults allowMajorUpdates to true and would otherwise apply major version bumps even when the script's allow-minor argument is false; its prerelease-ignore regex also matches qualifiers embedded in longer version strings such as 4.0.0-beta-5.",
+      "evidence": [
+        {
+          "resource": "repo://CHANGELOG.md#L51-L53",
+          "version": "repo-lines-v1:sha256:f49c5591f5c94f8969cf6b6dd3ff302bcab08a93cd9858e2f80592ea46c56e58:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTliOWYzOTQzYzg0ODcwMTlkNjVlZjI4ODQ5NDk4NzU0YjZiNjlkZjNlOGRhNzExODcxMmVkYTIxM2U0ZTEwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkwYmE1NDEyMzc3ZDdlMjE1ODNjOGI1ZTZmNzVjNTk2YjlhZTY4MWM3Mjg2YzNiNGE5YjQ2MTk2ZmI5ZGZlZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDU4NDhjNzEzYmZjMTZlNzEyODEyMDcxNTZiYzliNDI1NTU2MGZlNDk0ZjBlMTg4NjM1NTAyODIwOTc3NmU5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGVkN2RkZDM2ZjA4YzhiNTE2NzUxMTViNDBmYmM0OGY5OTA0ZmIwMDA0NTJkNmViNTBhOTMxZjEyMjc2NTQ1YyJ9"
+        },
+        {
+          "resource": "repo://update-dependencies.sh#L1-L36",
+          "version": "repo-lines-v1:sha256:d3ed33525a11978b1123af151c61f2ac5b3bebd0566f945b46e7147049b72575:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxM2UyZDdhN2I4ZTk1ZDE4NmM2YjEwZjc1MTUzNDM5NjMzMGU5ODNkYTkwMjI3YTU1MmJhMDMyOGJiMzNiMDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.5.1",
-    "at": "2026-09-12T23:09:54.715Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-29T12:45:43.106Z"
   }
 }

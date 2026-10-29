@@ -3,16 +3,19 @@ type: Playbook
 title: Operations & Deployment
 description: How to build, configure, deploy, and release Facet — Maven build commands, Docker setup, RESTHeart configuration reference, CI/CD workflows, versioning with setversion.sh, and JitPack publishing.
 tags: [operations, deployment, docker, maven, ci-cd, restheart, config]
-verified:
-  - by: openwiki/0.5.1
-    at: 2026-09-12T23:09:54.715Z
 sources:
+  - id: openwiki-source-6d4b4e707b8d60b6ccfa3425
+    resource: repo://.github/workflows/openwiki-update.yml
   - id: openwiki-source-4d1d392666be6dfdd7a91a2e
     resource: repo://.github/workflows/release.yml
+  - id: openwiki-source-ca6cb4b1a14fd7969dfae3ec
+    resource: repo://CHANGELOG.md
   - id: openwiki-source-4953616e2e42dce9b871023a
     resource: repo://core/pom.xml
-  - id: openwiki-source-b8b6c47f4353d31d5b9b5b9c
-    resource: repo://core/src/assembly/with-deps.xml
+  - id: openwiki-source-24f507ac229139f88a25eaea
+    resource: repo://core/src/main/java/org/facet/html/HtmlResponseInterceptor.java
+  - id: openwiki-source-1bf72fb1db43052baaa6f6d4
+    resource: repo://core/src/main/java/org/facet/templates/pebble/PebbleTemplateProcessorProvider.java
   - id: openwiki-source-b79fbbd921df689b4bbdc82f
     resource: repo://docker-compose.yml
   - id: openwiki-source-bb1ebe868e35e9e500714501
@@ -29,7 +32,12 @@ sources:
     resource: repo://pom.xml
   - id: openwiki-source-9a509e4f28155fbfb293d571
     resource: repo://setversion.sh
-generated: { by: "openwiki/0.5.1", at: "2026-09-12T23:09:54.715Z" }
+  - id: openwiki-source-8538a375cf4827a2b63a0319
+    resource: repo://update-dependencies.sh
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-29T12:45:43.106Z
+generated: { by: "openwiki/0.7.2", at: "2026-10-29T12:45:43.106Z" }
 ---
 
 # Operations & Deployment
@@ -69,8 +77,8 @@ mvn -pl core -am package
 
 The build produces:
 - `core/target/facet-core.jar` — the plugin JAR
-- `core/target/lib/` — runtime dependencies (Pebble, etc.)
-- `core/target/facet-core-with-deps.zip` / `.tar.gz` — bundled archive for releases
+- `core/target/lib/` — runtime dependencies (Pebble, etc.), copied by `maven-dependency-plugin`'s `copy-dependencies` execution (runtime scope only)
+- `core/target/facet-core-with-deps.zip` / `.tar.gz` — bundled archive for releases, built by `maven-assembly-plugin` from `core/src/assembly/with-deps.xml` (packages `LICENSE`, `facet-core.jar`, and `lib/*.jar`)
 
 For manual plugin deployment, use the bundled release archive (or the JAR together with `target/lib`).
 
@@ -123,16 +131,18 @@ services:
       start_period: 30s
 ```
 
-The Dockerfile extends `softinstigate/restheart:9.7`:
+The Dockerfile extends `softinstigate/restheart:9.12.3`:
 
 ```dockerfile
-FROM softinstigate/restheart:9.7
+FROM softinstigate/restheart:9.12.3
 
 COPY core/target/facet-core.jar /opt/restheart/plugins/
 COPY core/target/lib/*.jar /opt/restheart/plugins/
 
 CMD ["-o", "/opt/restheart/etc/restheart.yml"]
 ```
+
+The base image was bumped from RESTHeart 9.7 to 9.12.3 (matching the `restheart-commons.version` in the parent POM); no Facet source changes were required for the upgrade, and the quickstart stack (HTML rendering, cookie login, HTMX fragments, JSON API passthrough) has been verified against it.
 
 ### Run with Published Image
 
@@ -166,9 +176,11 @@ Key configuration blocks in `restheart.yml`:
 /pebble-template-processor:
   enabled: true
   use-file-loader: true
-  cache-active: false           # true for production
+  cache-active: false           # true for production (default is true when the key is omitted)
   templates-path: /opt/restheart/templates
 ```
+
+`cache-active` now genuinely defaults to `true` when the key is absent from the configuration block (previously it silently defaulted to `false` unless explicitly set). The quickstart config sets it to `false` to enable template hot-reload during development.
 
 ### HTML Response Interceptor
 
@@ -177,9 +189,11 @@ See [Architecture](architecture.md) for how this interceptor fits into the reque
 ```yaml
 /html-response-interceptor:
   enabled: true
-  response-caching: false       # true for production (ETag caching)
+  response-caching: false       # true for production (ETag caching); defaults to true even with no config block at all
   max-age: 5                    # Cache-Control max-age (seconds)
 ```
+
+`response-caching` defaults to `true` even when `/html-response-interceptor` has no configuration block at all (the plugin still runs with its built-in defaults).
 
 ### Auth Redirect Interceptor
 
@@ -316,22 +330,52 @@ See [Architecture](architecture.md) for how this interceptor fits into the reque
 
 User credentials are in `etc/users.yml` (development only — plaintext passwords).
 
+### Plugins Explicitly Disabled by the Quickstart Config
+
+RESTHeart 9.12.3 ships several plugins enabled by default that the quickstart `etc/restheart.yml` turns off because Facet does not need them (or they would conflict with Facet's own auth stack):
+
+```yaml
+/graphql:
+  enabled: false
+
+/mcpService:               # MCP (Model Context Protocol) service — enabled by default since RESTHeart 9.9
+  enabled: false
+
+/bruteForceAttackGuard:
+  enabled: false
+
+/rndTokenManager:
+  enabled: false
+
+/tokenBasicAuthMechanism:
+  enabled: false
+
+/mongoRealmAuthenticator:  # superseded by fileRealmAuthenticator
+  enabled: false
+
+/mongoAclAuthorizer:       # superseded by fileAclAuthorizer
+  enabled: false
+```
+
+If you build on top of the quickstart config and need GraphQL, MCP, brute-force protection, or Mongo-backed auth, re-enable the corresponding block explicitly.
+
 ## CI/CD Workflows
 
 ### Build (`build.yml`)
 
 Triggers on push/PR to `master` when `*.java` or `**/pom.xml` change:
-- JDK 25 (Temurin), Maven cache
+- `actions/checkout@v6`, `actions/setup-java@v5` with JDK 25 (Temurin), Maven cache
 - `mvn -B package`
 - Skips if commit message contains `[skip ci]`
 
 ### Release (`release.yml`)
 
 Triggers on semver tag push (e.g., `1.0.0`) or manual dispatch:
-1. Builds core artifacts (`mvn -B package`)
-2. Creates GitHub release with `facet-core-with-deps.zip` and `.tar.gz` (tag push only)
-3. Builds and pushes Docker image to Docker Hub (`softinstigate/facet`)
-4. Image tags match release version plus `latest`
+1. Checks out with `actions/checkout@v6` and sets up JDK 25 via `actions/setup-java@v5`
+2. Builds core artifacts (`mvn -B package`)
+3. Creates a GitHub release with `facet-core-with-deps.zip` and `.tar.gz` via `softprops/action-gh-release@v3` (tag push only)
+4. Pulls `softinstigate/restheart:9.12.3` before the image build, then builds and pushes the Docker image to Docker Hub (`softinstigate/facet`) using `docker/setup-buildx-action@v4`, `docker/login-action@v4`, and `docker/build-push-action@v7`
+5. Image tags match release version plus `latest`
 
 ### Release Notes Template
 
@@ -353,9 +397,9 @@ Keep the Docker image line first in release notes so new users see the default p
 
 ### OpenWiki Update (`openwiki-update.yml`)
 
-Weekly scheduled run (Saturdays 04:17 UTC) + manual dispatch:
-- Runs `openwiki code --update --print`
-- Creates PR with documentation updates to `openwiki/` and agent files
+Manual `workflow_dispatch` only — there is no scheduled cron trigger:
+- Runs `openwiki code --update --print` against the `openrouter` provider (`OPENWIKI_PROVIDER: openrouter`)
+- Opens a pull request on branch `openwiki/update`, via `peter-evans/create-pull-request@v8.1.1`, touching `openwiki/`, `AGENTS.md`, and `CLAUDE.md`
 
 ## Versioning
 
@@ -379,8 +423,9 @@ The script:
 1. Validates semver format
 2. Checks current version and branch (requires `master`, `release/*`, or `<major>.x`)
 3. Verifies working tree is clean
-4. Updates both parent and core POM versions
-5. Commits and tags (for release versions)
+4. Runs `mvn versions:set -DnewVersion=... -DprocessAllModules=true -DgenerateBackupPoms=false`, updating both parent and core POM versions
+5. Stages only the POM files touched by `versions:set` — `git ls-files -z -- 'pom.xml' '*/pom.xml' | xargs -0 git add --` — instead of `git add -A`, so unrelated uncommitted work is never swept into the version-bump commit
+6. Commits and tags (for release versions)
 
 After running: `git push && git push --tags`
 
@@ -396,13 +441,22 @@ After running: `git push && git push --tags`
 ./update-dependencies.sh true
 ```
 
-The script filters out prerelease qualifiers (M, RC, alpha, beta, EA) by default. Override with the `MAVEN_VERSION_IGNORE` environment variable:
+Major updates are never applied, regardless of the argument: the script explicitly passes `-DallowMajorUpdates=false`, because the Versions Plugin itself defaults `allowMajorUpdates` to `true` and would otherwise pull major version bumps even when only minor updates were requested. The script filters out prerelease qualifiers (M, RC, alpha, beta, EA) by default via `-Dmaven.version.ignore`; the default regex (`.+-M[0-9].*,.*-RC.*,.*-alpha.*,.*-beta.*,.*-ea.*`) also matches qualifiers embedded in longer version strings, such as `4.0.0-beta-5`. Override it with the `MAVEN_VERSION_IGNORE` environment variable:
 
 ```bash
 MAVEN_VERSION_IGNORE=".+-M[0-9]*" ./update-dependencies.sh
 ```
 
-All dependency versions in both POMs are managed via `<properties>` for centralized control. The parent POM owns shared build-plugin versions; `core/pom.xml` owns test-scoped dependency versions.
+The script runs `versions:use-latest-releases` and `versions:update-properties` as separate invocations (more reliable than combining Versions Plugin goals in one run) and passes `-DincludePlugins=true` so plugin versions are updated too.
+
+#### Where dependency versions are declared
+
+Dependency and plugin versions are split between the two POMs by ownership, and `update-dependencies.sh` now updates both correctly:
+
+- **`core/pom.xml`** declares test-scoped dependency versions as `<properties>` — `junit-jupiter.version`, `mockito-core.version`, `bytebuddy.version`, `rest-assured.version`, `testcontainers.version`, `testcontainers-junit-jupiter.version` — used by `junit-jupiter`, `mockito-core`, `byte-buddy`/`byte-buddy-agent`, `rest-assured`, `testcontainers`, and `testcontainers`'s `junit-jupiter` integration module.
+- **Parent `pom.xml`** centrally manages, via `dependencyManagement`/`pluginManagement`, the `restheart-commons` and `pebble` dependency versions (consumed without an explicit `<version>` in `core/pom.xml`) plus the `maven-surefire-plugin`, `maven-failsafe-plugin`, `maven-dependency-plugin`, and `maven-assembly-plugin` versions (also consumed without explicit `<version>` in `core/pom.xml`'s plugin declarations).
+
+Previously, versions declared only in the parent POM's `dependencyManagement`/`pluginManagement` but consumed from `core` were silently skipped by `update-dependencies.sh` because the script ran from `core`'s effective POM scope; the parent POM now declares them so the Versions Plugin resolves and updates them correctly in one pass.
 
 ## Maven / JitPack Distribution
 
