@@ -44,7 +44,7 @@ import org.restheart.plugins.WildcardInterceptor;
     description = "Renders HTML error pages for early-phase errors (any service, e.g., MongoDB db/collection not found)",
     interceptPoint = InterceptPoint.REQUEST_AFTER_AUTH,
     priority = Integer.MAX_VALUE, // Run last to catch errors after all other interceptors
-    enabledByDefault = true)
+    enabledByDefault = false) // opt-in like every other Facet plugin: SSR must not change API behavior
 public class HtmlErrorResponseInterceptor implements WildcardInterceptor {
 
     @Inject("pebble-template-processor")

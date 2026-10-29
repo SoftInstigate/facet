@@ -58,6 +58,9 @@ class JsPluginsIT {
                     .cmd("-o", "/opt/restheart/etc/restheart.yml")
                     .build());
 
+    // Same MongoDB as the docker-compose files. Note: 8.0.x up to 8.0.34 and 8.3.x up to 8.3.13
+    // refuse to start on Linux kernels reporting 6.19 <= version <= 7.0.13 (SERVER-121912,
+    // SERVER-136848): the CI workflow pins a runner with an older kernel for this reason.
     @SuppressWarnings({ "resource", "null" })
     @Container
     private static final GenericContainer<?> MONGO = new GenericContainer<>(DockerImageName.parse("mongo:8.0"))

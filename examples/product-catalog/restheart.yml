@@ -127,6 +127,10 @@
   response-caching: false
   max-age: 5
 
+# HTML error pages (templates/error.html, templates/errors/{code}.html) for browser requests
+/html-error-response-interceptor:
+  enabled: true
+
 # Example uses authentication - enable login service
 /login-service:
   enabled: true

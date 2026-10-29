@@ -45,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A template that exists but fails to render now yields a 500 (error page, or plain text for HTMX)
   instead of silently sending the JSON payload with status 200. Template existence is checked
   without compiling, so syntax errors surface at render time.
+- **`html-error-response-interceptor` is no longer enabled by default.** It was the only Facet
+  plugin with `enabledByDefault = true`, so merely deploying the JAR rewrote every browser-facing
+  error response (4xx/5xx with `Accept: text/html` or `HX-Request`) as an HTML page, even when
+  nothing else of Facet was enabled. Add `/html-error-response-interceptor: enabled: true` to the
+  configuration to keep the HTML error pages (the quickstart and example configurations do).
 - **`tenantId` template variable** is now the plain tenant id, or `null` when none was resolved,
   instead of a JSON-quoted string (`"tenant"`) or the literal string `"null"`. Templates that
   embedded it in JavaScript should use `{{ tenantId | toJson }}`; `{% if tenantId %}` now works.
@@ -88,6 +93,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Logback configuration the test JVM logged at DEBUG (several MB of docker-java wire logs), and
   Maven took longer than Surefire's exit timeout to drain that output. A `logback-test.xml` now
   keeps test logging at INFO/WARN; the integration test run went from 1:33 min to under 40 s.
+- CI runs on `ubuntu-22.04`: MongoDB 8.0.21-8.0.34 and 8.3.0-8.3.13 refuse to start on Linux
+  kernels reporting a version between 6.19 and 7.0.13, which includes the newer GitHub-hosted
+  runner images (SERVER-121912, SERVER-136848).
 
 ### Security
 

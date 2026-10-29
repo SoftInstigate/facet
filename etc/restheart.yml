@@ -114,6 +114,9 @@
   response-caching: false
   max-age: 5
 
+/html-error-response-interceptor:
+  enabled: true
+
 /login-service:
   enabled: true
   uri: /login
