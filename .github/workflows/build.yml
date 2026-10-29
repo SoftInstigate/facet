@@ -8,16 +8,23 @@ on:
     paths:
       - '**.java'
       - '**/pom.xml'
+      - 'core/src/test/resources/**'
+      - '.github/workflows/build.yml'
   pull_request:
     branches: [ "master" ]
     paths:
       - '**.java'
       - '**/pom.xml'
+      - 'core/src/test/resources/**'
+      - '.github/workflows/build.yml'
 
 jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    runs-on: ubuntu-latest
+    # ubuntu-22.04 (kernel 6.8): the mongo:8.0 container of the integration tests refuses to start
+    # on the kernel of the newer images (reported as 7.0.0, see SERVER-121912 / SERVER-136848).
+    # Move back to ubuntu-latest once MongoDB 8.0.35+ is on Docker Hub.
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v6
