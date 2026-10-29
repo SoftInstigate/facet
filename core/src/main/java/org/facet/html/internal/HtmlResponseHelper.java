@@ -122,36 +122,61 @@ public class HtmlResponseHelper {
         response.setCustomSender(() -> {
             response.setContentTypeAsHtml();
             final var exchange = response.getExchange();
-            try {
-                // Build error template context
-                final var req = Request.of(exchange);
-                final String username = req.getAuthenticatedAccount() != null
-                    ? req.getAuthenticatedAccount().getPrincipal().getName()
-                    : null;
+            final var req = Request.of(exchange);
+            final String username = req.getAuthenticatedAccount() != null
+                ? req.getAuthenticatedAccount().getPrincipal().getName()
+                : null;
 
-                final Map<String, Object> context = new TemplateContextBuilder(
-                        templateProcessor.getGlobalTemplateContext())
-                                .with("statusCode", response.getStatusCode())
-                                .with("statusMessage", HttpStatus.getStatusText(response.getStatusCode()))
-                                .with("path", request.getPath())
-                                .with("username", username)
-                                .build();
-
-                // Resolve error template: status-specific first, then generic
-                final var resolver = new PathBasedTemplateResolver();
-                final String templateName = resolver
-                        .resolveError(templateProcessor, response.getStatusCode())
-                        .orElse("error");
-                final String html = templateProcessor.process(templateName, context);
-                exchange.getResponseSender().send(html);
-
-            } catch (final TemplateProcessingException e) {
-                LOGGER.error("Error rendering error template for path: {}", request.getPath(), e);
-                // Fallback HTML if template fails
-                final String fallbackHtml = createFallbackErrorHtml(response.getStatusCode());
-                exchange.getResponseSender().send(fallbackHtml);
-            }
+            final String html = renderErrorHtml(templateProcessor, response.getStatusCode(),
+                    request.getPath(), username);
+            exchange.getResponseSender().send(html);
         });
+    }
+
+    /**
+     * Renders the HTML for an error page.
+     *
+     * <p>Looks for {@code templates/errors/{statusCode}.html}, then {@code templates/error.html}.
+     * When no error template exists, or rendering it fails for any reason, a minimal built-in
+     * HTML page is returned so that the browser always gets a meaningful response.
+     *
+     * @param templateProcessor the template processor
+     * @param statusCode the HTTP status code
+     * @param path the request path
+     * @param username the authenticated user, or null
+     * @return the error page HTML, never null
+     */
+    public static String renderErrorHtml(
+            final TemplateProcessor templateProcessor,
+            final int statusCode,
+            final String path,
+            final String username) {
+
+        if (templateProcessor == null) {
+            return createFallbackErrorHtml(statusCode);
+        }
+
+        final var templateName = new PathBasedTemplateResolver().resolveError(templateProcessor, statusCode);
+
+        if (templateName.isEmpty()) {
+            LOGGER.debug("No error template found for status {}, using built-in fallback page", statusCode);
+            return createFallbackErrorHtml(statusCode);
+        }
+
+        try {
+            final Map<String, Object> context = new TemplateContextBuilder(
+                    templateProcessor.getGlobalTemplateContext())
+                            .with("statusCode", statusCode)
+                            .with("statusMessage", HttpStatus.getStatusText(statusCode))
+                            .with("path", path)
+                            .with("username", username)
+                            .build();
+
+            return templateProcessor.process(templateName.get(), context);
+        } catch (final TemplateProcessingException | RuntimeException e) {
+            LOGGER.error("Error rendering error template '{}' for path: {}", templateName.get(), path, e);
+            return createFallbackErrorHtml(statusCode);
+        }
     }
 
     private static void disableCachingForDevelopment(final ServiceResponse<?> response) {

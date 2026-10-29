@@ -397,10 +397,10 @@ public class PathBasedTemplateResolver implements TemplateResolver {
         LOGGER.trace("Checking if template exists: '{}'", templatePath);
         try {
             if (templateProcessor.templateExists(templatePath)) {
-                LOGGER.info("✓ Found template: '{}'", templatePath);
+                LOGGER.debug("Found template: '{}'", templatePath);
                 return Optional.of(templatePath);
             } else {
-                LOGGER.debug("✗ Template does not exist: '{}'", templatePath);
+                LOGGER.trace("Template does not exist: '{}'", templatePath);
             }
         } catch (final Exception e) {
             LOGGER.debug("Exception checking template '{}': {}", templatePath, e.getMessage());

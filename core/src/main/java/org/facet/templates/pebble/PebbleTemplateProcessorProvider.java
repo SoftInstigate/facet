@@ -32,10 +32,8 @@ import org.slf4j.LoggerFactory;
  * </pre>
  *
  * <p>
- * <strong>Required by:</strong> RESTHeart Browser, HTML error pages
- * </p>
- * <p>
- * <strong>Used by:</strong> BrowserService (including error page rendering), MongoHtmlResponseInterceptor
+ * <strong>Used by:</strong> {@code HtmlResponseInterceptor}, {@code HtmlErrorResponseInterceptor}
+ * and {@code LoginService}.
  * </p>
  */
 @RegisterPlugin(
@@ -67,9 +65,9 @@ public class PebbleTemplateProcessorProvider implements Provider<TemplateProcess
                 && config.containsKey("use-file-loader")
                 && Boolean.parseBoolean(config.get("use-file-loader").toString());
 
-        final boolean cacheActive = config != null
-                && config.containsKey("cache-active")
-                && Boolean.parseBoolean(config.get("cache-active").toString());
+        // Default is true (documented above); only an explicit "false" disables the template cache
+        final boolean cacheActive = config == null
+                || Boolean.parseBoolean(config.getOrDefault("cache-active", "true").toString());
 
         final String templatesPath = config != null && config.containsKey("templates-path")
             ? config.get("templates-path").toString()

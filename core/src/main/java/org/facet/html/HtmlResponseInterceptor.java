@@ -18,9 +18,11 @@ import org.facet.templates.PathBasedTemplateResolver;
 import org.facet.templates.TemplateProcessingException;
 import org.facet.templates.TemplateProcessor;
 import org.facet.templates.TemplateResolver;
+import org.restheart.configuration.Configuration;
 import org.restheart.exchange.MongoRequest;
 import org.restheart.exchange.ServiceRequest;
 import org.restheart.exchange.ServiceResponse;
+import org.restheart.mongodb.utils.MongoMountResolver;
 import org.restheart.mongodb.utils.MongoMountResolver.ResolvedContext;
 import org.restheart.plugins.Inject;
 import org.restheart.plugins.InterceptPoint;
@@ -31,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.client.MongoClient;
+
+import io.undertow.util.AttachmentKey;
 
 /**
  * Wildcard interceptor that transforms responses to HTML for browser clients.
@@ -72,7 +76,7 @@ import com.mongodb.client.MongoClient;
  * <pre>
  * /html-response-interceptor:
  *   enabled: true
- *   response-caching: false  # Optional: disables ETag caching for development (default: false)
+ *   response-caching: false  # Optional: set to false to disable ETag caching in development (default: true)
  *   max-age: 5               # Optional: Cache-Control max-age in seconds (default: 5)
  * </pre>
  *
@@ -98,6 +102,12 @@ import com.mongodb.client.MongoClient;
 public class HtmlResponseInterceptor implements WildcardInterceptor {
 
     private static final String HX_TARGET = "hxTarget";
+
+    /**
+     * Template name resolved in {@link #resolve} and reused by {@link #handle}, so that the
+     * hierarchical lookup runs once per request.
+     */
+    private static final AttachmentKey<String> RESOLVED_TEMPLATE = AttachmentKey.create(String.class);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlResponseInterceptor.class);
 
@@ -132,6 +142,21 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
         response.setCustomSender(() -> response.getExchange().endExchange());
     }
 
+    // Reports a template rendering failure as a 500: plain text for HTMX, error page otherwise.
+    private void reportTemplateError(
+            final ServiceRequest<?> request,
+            final ServiceResponse<?> response,
+            final TemplateProcessingException e) {
+        response.setStatusCode(500);
+        if (HtmxRequestDetector.isHtmxRequest(request)) {
+            response.setContentType("text/plain");
+            response.setCustomSender(() -> response.getExchange().getResponseSender()
+                    .send("Template rendering failed: " + e.getMessage()));
+        } else {
+            handleErrorResponse(request, response);
+        }
+    }
+
     // Reports missing fragment template for HTMX requests and sets 500 response.
     private static void reportMissingFragmentTemplate(
             final ServiceRequest<?> request,
@@ -161,10 +186,10 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
             : 5;
     }
 
-    // Determines if response caching is enabled from configuration.
+    // Determines if response caching is enabled from configuration (default: true).
     private static boolean isResponseCachingEnabled(final Map<String, Object> config) {
-        return config != null
-                && Boolean.parseBoolean(config.getOrDefault("response-caching", "true").toString());
+        return config == null
+                || Boolean.parseBoolean(config.getOrDefault("response-caching", "true").toString());
     }
 
     @Inject("config")
@@ -175,6 +200,9 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
 
     @Inject("mclient")
     private MongoClient mongoClient;
+
+    @Inject("rh-config")
+    private Configuration rhConfig;
 
     private final List<HtmlResponseHandler> handlers = new ArrayList<>();
 
@@ -189,6 +217,11 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
      */
     @OnInit
     public void onInit() {
+        if (this.templateProcessor == null) {
+            throw new IllegalStateException(
+                    "html-response-interceptor requires the pebble-template-processor plugin to be enabled");
+        }
+
         this.isResponseCachingEnabled = isResponseCachingEnabled(this.pluginConfig);
 
         this.maxAge = getMaxAgeFromConfig(this.pluginConfig);
@@ -196,12 +229,45 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
         // Create template resolver
         this.templateResolver = new PathBasedTemplateResolver();
 
+        // Expose the MongoDB mount prefix (e.g. "/api" or "/") to all templates
+        this.templateProcessor.addToGlobalTemplateContext("mongoPrefix", resolveMongoPrefix());
+
         // Register handlers in priority order (first match wins)
         this.handlers.add(new MongoHtmlResponseHandler(mongoClient, templateProcessor));
         this.handlers.add(new JsonHtmlResponseHandler(templateProcessor)); // Fallback
 
         LOGGER.info("HTML Response Interceptor initialized with {} handlers", handlers.size());
         LOGGER.debug("Configuration: {}", pluginConfig);
+    }
+
+    // Resolves the MongoDB mount prefix from the RESTHeart configuration, defaulting to "/".
+    private String resolveMongoPrefix() {
+        try {
+            final String prefix = rhConfig != null
+                ? MongoMountResolver.resolveMongoPrefixFromConfig(rhConfig)
+                : null;
+            final String resolved = normalizePrefix(prefix);
+            LOGGER.debug("MongoDB mount prefix for templates: '{}'", resolved);
+            return resolved;
+        } catch (final RuntimeException e) {
+            LOGGER.warn("Could not resolve MongoDB mount prefix, defaulting to '/': {}", e.getMessage());
+            return "/";
+        }
+    }
+
+    // Normalizes a mount prefix: leading slash, no trailing slash, "/" when empty.
+    static String normalizePrefix(final String prefix) {
+        if (prefix == null || prefix.isBlank()) {
+            return "/";
+        }
+        String p = prefix.trim();
+        if (!p.startsWith("/")) {
+            p = "/" + p;
+        }
+        while (p.length() > 1 && p.endsWith("/")) {
+            p = p.substring(0, p.length() - 1);
+        }
+        return p;
     }
 
     /**
@@ -257,6 +323,8 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
             final var templateName = resolveTemplateWithType(request);
             if (templateName.isPresent()) {
                 LOGGER.debug("HtmlResponseInterceptor.resolve - template resolved: {}", templateName.get());
+                // Remember the result so handle() does not repeat the lookup
+                request.getExchange().putAttachment(RESOLVED_TEMPLATE, templateName.get());
                 return true;
             }
         }
@@ -354,7 +422,10 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
                 }
             }
 
-            final var templateName = resolveTemplateWithType(request);
+            // Reuse the template resolved in resolve(); fall back to a fresh lookup if missing
+            final var templateName = Optional
+                    .ofNullable(request.getExchange().getAttachment(RESOLVED_TEMPLATE))
+                    .or(() -> resolveTemplateWithType(request));
 
             if (templateName.isEmpty()) {
                 LOGGER.error("Template resolution failed for path: {}, cannot render HTML", request.getPath());
@@ -364,8 +435,10 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
             checkAndSendResponse(request, response, templateContext, templateName.get());
 
         } catch (final TemplateProcessingException e) {
+            // A template that exists but cannot be rendered is a server error: surface it instead
+            // of silently sending the JSON payload to a browser (or into an HTMX target)
             LOGGER.error("Error processing template for path: {}", request.getPath(), e);
-            // Don't modify response - let original response go through
+            reportTemplateError(request, response, e);
         } catch (final Exception e) {
             LOGGER.error("Unexpected error transforming response to HTML for path: {}", request.getPath(), e);
             // Don't modify response - let original response go through

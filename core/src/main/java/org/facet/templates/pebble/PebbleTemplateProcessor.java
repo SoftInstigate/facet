@@ -3,6 +3,7 @@ package org.facet.templates.pebble;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -84,20 +85,24 @@ class PebbleTemplateProcessor implements TemplateProcessor {
     }
 
     /**
-     * Checks if a template exists and can be loaded by the Pebble engine.
+     * Checks if a template resource exists.
+     *
+     * <p>This only asks the loader whether the resource is there; it does not parse or compile
+     * the template, so it is cheap enough to be called several times per request by the
+     * hierarchical resolver. Syntax errors surface at render time as
+     * {@link TemplateProcessingException}.
      *
      * @param templateName the template name to check
-     * @return true if the template exists and can be loaded, false otherwise
+     * @return true if the template resource exists, false otherwise
      */
     @Override
     public boolean templateExists(final String templateName) {
         try {
-            engine.getTemplate(templateName);
-            LOGGER.trace("Template '{}' exists and is valid", templateName);
-            return true;
-        } catch (final Exception e) {
-            LOGGER.warn("Template '{}' check failed: {} - {}", templateName, e.getClass().getSimpleName(),
-                    e.getMessage());
+            final boolean exists = engine.getLoader().resourceExists(templateName);
+            LOGGER.trace("Template '{}' exists: {}", templateName, exists);
+            return exists;
+        } catch (final RuntimeException e) {
+            LOGGER.debug("Template '{}' existence check failed: {}", templateName, e.getMessage());
             return false;
         }
     }
@@ -132,9 +137,9 @@ class PebbleTemplateProcessor implements TemplateProcessor {
     public String process(final String template, final Map<String, Object> context, final Locale locale)
             throws TemplateProcessingException {
         LOGGER.debug("Processing template: {}", template);
-        final PebbleTemplate compiledTemplate = engine.getTemplate(template);
         final var writer = new StringWriter();
         try {
+            final PebbleTemplate compiledTemplate = engine.getTemplate(template);
             if (context == null && locale == null) {
                 compiledTemplate.evaluate(writer);
             } else if (context == null) {
@@ -144,7 +149,9 @@ class PebbleTemplateProcessor implements TemplateProcessor {
             } else {
                 compiledTemplate.evaluate(writer, context, locale);
             }
-        } catch (final IOException e) {
+        } catch (final IOException | RuntimeException e) {
+            // Pebble errors (loader, parser, runtime) and failures inside custom filters are all
+            // unchecked: wrap them so callers only have to handle TemplateProcessingException
             throw new TemplateProcessingException("Error processing template: " + template, e);
         }
         return writer.toString();
@@ -157,7 +164,8 @@ class PebbleTemplateProcessor implements TemplateProcessor {
      */
     @Override
     public Map<String, Object> getGlobalTemplateContext() {
-        return Map.copyOf(this.globalTemplateContext);
+        // Not Map.copyOf: it rejects null values, which a plugin may legitimately add
+        return Collections.unmodifiableMap(new HashMap<>(this.globalTemplateContext));
     }
 
     /**
