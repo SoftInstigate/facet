@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logging for unit and integration tests. Without this file Logback (pulled in by restheart-commons)
+  falls back to DEBUG on the root logger: the Testcontainers run then emits megabytes of docker-java
+  wire logs, and Maven takes longer than Surefire's 30 s exit timeout to drain the forked JVM output,
+  which makes `mvn verify` fail or hang at the end of the integration tests.
+-->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.facet" level="INFO"/>
+    <logger name="org.testcontainers" level="INFO"/>
+    <logger name="tc" level="INFO"/>
+    <logger name="com.github.dockerjava" level="WARN"/>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

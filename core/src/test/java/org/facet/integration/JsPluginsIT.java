@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -26,14 +28,14 @@ import org.testcontainers.utility.MountableFile;
 /**
  * Integration tests for JavaScript plugins (services and interceptors).
  *
- * <p>Requires Docker and the Facet JARs built:
- * <pre>
- * mvn -pl core package
- * </pre>
+ * <p>Requires Docker. The RESTHeart + Facet image is built by the test itself from the packaged
+ * {@code target/facet-core.jar} and {@code target/lib}, mirroring the root {@code Dockerfile}; the
+ * base image is {@code softinstigate/restheart:<restheart-commons.version>} (system property
+ * {@code restheart.image}, set by the Failsafe plugin). Without Docker the test is skipped.
  *
- * <p>Run with: {@code mvn -pl core verify -Dit.test=JsPluginsIT}
+ * <p>Run with: {@code mvn -pl core verify} (or {@code -Dit.test=JsPluginsIT})
  */
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("JavaScript Plugins Integration Tests")
 class JsPluginsIT {
@@ -41,6 +43,20 @@ class JsPluginsIT {
     private static final Network NETWORK = Network.newNetwork();
 
     private static final int RESTHEART_PORT = 8080;
+
+    private static final String RESTHEART_IMAGE = System.getProperty("restheart.image",
+            "softinstigate/restheart:9.12.3");
+
+    // Same layering as the root Dockerfile, built from the module's own build output
+    private static final ImageFromDockerfile FACET_IMAGE = new ImageFromDockerfile()
+            .withFileFromPath("plugins/facet-core.jar", Paths.get("target/facet-core.jar"))
+            .withFileFromPath("plugins/lib", Paths.get("target/lib"))
+            .withDockerfileFromBuilder(b -> b
+                    .from(RESTHEART_IMAGE)
+                    .copy("plugins/facet-core.jar", "/opt/restheart/plugins/")
+                    .copy("plugins/lib/", "/opt/restheart/plugins/")
+                    .cmd("-o", "/opt/restheart/etc/restheart.yml")
+                    .build());
 
     @SuppressWarnings({ "resource", "null" })
     @Container
@@ -53,8 +69,7 @@ class JsPluginsIT {
 
     @SuppressWarnings({ "resource", "null" })
     @Container
-    private static final GenericContainer<?> RESTHEART = new GenericContainer<>(
-            DockerImageName.parse("facet-test:latest"))
+    private static final GenericContainer<?> RESTHEART = new GenericContainer<>(FACET_IMAGE)
                     .withNetwork(NETWORK)
                     .dependsOn(MONGO)
                     .withExposedPorts(RESTHEART_PORT)

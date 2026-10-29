@@ -80,6 +80,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `mongoPath` prefix stripping now respects segment boundaries (`/api` no longer strips
   `/apidocs`) and the prefix is normalized (no trailing slash).
 - `hostParams` JSON was built by string concatenation without escaping.
+- `mvn verify` failed with `Can't get Docker image: facet-test:latest`: `JsPluginsIT` expected an
+  image nobody built. The test now builds the RESTHeart + Facet image itself from the module build
+  output (base image `softinstigate/restheart:${restheart-commons.version}`), is skipped when
+  Docker is not available, and CI runs `mvn verify` so the integration tests actually run.
+- `mvn verify` could also fail or stall for 30 s at the end of the integration tests: with no
+  Logback configuration the test JVM logged at DEBUG (several MB of docker-java wire logs), and
+  Maven took longer than Surefire's exit timeout to drain that output. A `logback-test.xml` now
+  keeps test logging at INFO/WARN; the integration test run went from 1:33 min to under 40 s.
 
 ### Security
 

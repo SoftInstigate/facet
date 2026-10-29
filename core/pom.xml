@@ -119,6 +119,10 @@
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <!-- base image for the integration test container, same version as restheart-commons -->
+                        <restheart.image>softinstigate/restheart:${restheart-commons.version}</restheart.image>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
