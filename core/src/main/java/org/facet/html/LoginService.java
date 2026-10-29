@@ -45,7 +45,12 @@ import io.undertow.util.Headers;
  *   redirect-param: redirect       # Query param for post-login redirect (default: "redirect")
  *   default-redirect: /api         # Default redirect when no redirect param provided (default: "/")
  *   roles-endpoint: /roles         # Where clients send credentials (default: "/roles")
+ *   cookie-name: rh_auth           # Auth cookie cleared on failed auth (default: "rh_auth")
  * </pre>
+ *
+ * <p>The {@code redirect} query parameter is only honored when it is a local absolute path
+ * (it must start with a single {@code /}); any other value falls back to {@code default-redirect},
+ * so the login page cannot be used as an open redirector.
  * 
  * <h3>Required Plugins</h3>
  * <ul>
@@ -78,6 +83,7 @@ public class LoginService implements JsonService {
     private String redirectParam;
     private String rolesEndpoint;
     private String defaultRedirect;
+    private String cookieName;
 
     @OnInit
     public void onInit() {
@@ -89,6 +95,7 @@ public class LoginService implements JsonService {
         redirectParam = config.getOrDefault("redirect-param", "redirect").toString();
         rolesEndpoint = config.getOrDefault("roles-endpoint", "/roles").toString();
         defaultRedirect = config.getOrDefault("default-redirect", "/").toString();
+        cookieName = config.getOrDefault("cookie-name", HtmlAuthRedirectInterceptor.DEFAULT_COOKIE_NAME).toString();
 
         // Add login context variables to global template context
         if (templateProcessor != null) {
@@ -127,9 +134,10 @@ public class LoginService implements JsonService {
      */
     private void handleGetLogin(final JsonRequest request, final JsonResponse response) {
         final var qp = request.getExchange().getQueryParameters();
-        final var dest = qp.get(redirectParam) != null && !qp.get(redirectParam).isEmpty()
+        final var requested = qp.get(redirectParam) != null && !qp.get(redirectParam).isEmpty()
             ? qp.get(redirectParam).getFirst()
-            : defaultRedirect;
+            : null;
+        final var dest = safeRedirect(requested, defaultRedirect);
 
         final String error = qp.get(ERROR) != null && !qp.get(ERROR).isEmpty()
             ? qp.get(ERROR).getFirst()
@@ -150,6 +158,33 @@ public class LoginService implements JsonService {
     }
 
     /**
+     * Returns the requested redirect target if it is a safe local path, the default otherwise.
+     *
+     * <p>Accepted: an absolute path such as {@code /mydb/products?page=2}. Rejected: absolute URLs
+     * ({@code https://evil.example}), protocol-relative URLs ({@code //evil.example}), and values
+     * containing a backslash, quotes, angle brackets, backticks, whitespace or control characters,
+     * so that the value is also safe to embed in a quoted JavaScript string. Templates should still
+     * escape it: {@code {{ redirect | escape(strategy="js") }}}.
+     *
+     * @param requested the value of the redirect query parameter, may be null
+     * @param fallback the default redirect
+     * @return a safe redirect target
+     */
+    static String safeRedirect(final String requested, final String fallback) {
+        if (requested == null || requested.isBlank()) {
+            return fallback;
+        }
+        final boolean local = requested.startsWith("/") && !requested.startsWith("//");
+        final boolean clean = requested.chars().noneMatch(c -> c <= 0x20 || c == 0x7f
+                || "\\'\"<>`".indexOf(c) >= 0);
+        if (local && clean) {
+            return requested;
+        }
+        LOGGER.warn("Ignoring unsafe redirect target '{}', using '{}'", requested, fallback);
+        return fallback;
+    }
+
+    /**
      * Registers HtmlAuthRedirectInterceptor dynamically with login URI.
      * Ensures unauthenticated browser requests are redirected to login page.
      */
@@ -157,13 +192,16 @@ public class LoginService implements JsonService {
         // Check if interceptor is already registered (via configuration or BrowserService)
         if (registry.getInterceptors().stream()
                 .anyMatch(i -> i.getInstance() instanceof HtmlAuthRedirectInterceptor)) {
-            LOGGER.warn("HtmlAuthRedirectInterceptor already registered, skipping");
+            LOGGER.warn("HtmlAuthRedirectInterceptor already registered (statically configured), skipping:"
+                    + " make sure its redirect-param and cookie-name match the login-service configuration");
             return;
         }
 
         try {
             final var interceptorConfig = new HashMap<String, Object>();
             interceptorConfig.put("login-uri", loginUri);
+            interceptorConfig.put("redirect-param", redirectParam);
+            interceptorConfig.put("cookie-name", cookieName);
 
             final var interceptor = new HtmlAuthRedirectInterceptor(interceptorConfig);
             @SuppressWarnings("null")

@@ -38,7 +38,7 @@
             </form>
 
             <script>
-                const redirectTo = '{{ redirect }}' === '/' ? '/' : '{{ redirect }}';
+                const redirectTo = '{{ redirect | escape(strategy="js") }}' === '/' ? '/' : '{{ redirect | escape(strategy="js") }}';
 
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     e.preventDefault();

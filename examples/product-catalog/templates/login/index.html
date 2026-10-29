@@ -43,7 +43,7 @@
             <script>
                 // Redirect destination provided by LoginService
                 // Override root path to default application entry point
-                const redirectTo = '{{ redirect }}' === '/' ? '/shop/products' : '{{ redirect }}';
+                const redirectTo = '{{ redirect | escape(strategy="js") }}' === '/' ? '/shop/products' : '{{ redirect | escape(strategy="js") }}';
 
                 document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     e.preventDefault();

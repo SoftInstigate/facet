@@ -73,12 +73,13 @@ public class JsonHtmlResponseHandler implements HtmlResponseHandler {
         final var serviceData = parseResponseDataFromString(content);
         final String rawJson = content;
 
-        // Build context
+        // Build context: service data goes in first so that a response field named e.g.
+        // "username" or "isAuthenticated" cannot override the variables set by Facet
         return TemplateContextBuilder.create(templateProcessor.getGlobalTemplateContext())
+                .withServiceData(serviceData)
                 .withAuthenticatedUser(request)
                 .with("path", request.getPath())
                 .with("data", rawJson)
-                .withServiceData(serviceData)
                 .build();
     }
 

@@ -36,6 +36,11 @@ public class TemplateContextBuilder {
         final boolean isAuthenticated = request.getAuthenticatedAccount() != null;
         context.put("isAuthenticated", isAuthenticated);
 
+        // Always own these keys: a value merged earlier (e.g. from a service's JSON response)
+        // must never survive as a spoofed identity
+        context.remove("username");
+        context.remove("roles");
+
         if (isAuthenticated) {
             context.put("username", request.getAuthenticatedAccount().getPrincipal().getName());
             if (request.getAuthenticatedAccount().getRoles() != null) {
