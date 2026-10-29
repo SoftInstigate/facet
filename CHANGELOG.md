@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `HtmlAuthRedirectInterceptor` options `redirect-param` (default `redirect`) and `cookie-name`
+  (default `rh_auth`); `LoginService` option `cookie-name`, forwarded together with `redirect-param`
+  to the interceptor it registers.
+- `mongoPrefix` global template variable is now actually set at startup by `HtmlResponseInterceptor`
+  from the `mongo-mounts` configuration, so `mongoPath` is prefix-stripped when MongoDB is mounted
+  under e.g. `/api`.
+- `HtmlResponseHelper.renderErrorHtml()` public helper that returns the error page HTML, or the
+  built-in fallback page.
+
 ### Changed
 
 - **RESTHeart 9.12.3** — `restheart-commons` dependency and the Docker base image
@@ -17,6 +28,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   HTMX fragments, JSON API passthrough) on 9.12.3.
 - Quickstart and product-catalog configurations now disable the MCP service (`/mcpService`), which
   RESTHeart enables by default since 9.9.
+- `pebble-template-processor`'s `cache-active` now really defaults to `true` as documented (it was
+  `false` unless the key was present).
+- `html-response-interceptor`'s `response-caching` default is `true` also when the plugin has no
+  configuration block; Javadoc fixed accordingly.
+- Template resolution runs once per request: the name resolved in `resolve()` is reused by
+  `handle()`. Template existence is checked through the Pebble loader without compiling the
+  template.
+- Template lookup logging moved from INFO/WARN to DEBUG/TRACE: no more per-request log noise for
+  every template tried in the hierarchical walk.
+- MongoDB count cache is now a bounded Caffeine cache (5 s TTL, 1000 entries) keyed by the filter
+  JSON instead of its `hashCode()`.
+- HTMX requests that fail authentication receive `HX-Redirect` to the login page and keep status
+  401, instead of a 302 that HTMX would swap into the target element. The redirect target is the
+  page URL from `HX-Current-URL`, not the fragment or action endpoint.
+- A template that exists but fails to render now yields a 500 (error page, or plain text for HTMX)
+  instead of silently sending the JSON payload with status 200. Template existence is checked
+  without compiling, so syntax errors surface at render time.
 
 ### Fixed
 
@@ -27,6 +55,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Surefire, Failsafe) were never updated by the script. The parent POM now declares them in
   `dependencyManagement`/`pluginManagement` and `core` inherits the managed versions.
 - **`update-dependencies.sh`** improved with better version control logic.
+- **`setversion.sh`** stages only the POM files it changes instead of `git add -A`, so unrelated
+  uncommitted work is no longer swept into the version bump commit.
+- Error pages returned HTTP 500 with an empty body when no `templates/error.html` (or
+  `errors/{code}.html`) existed: Pebble's unchecked `LoaderException` escaped the renderer and the
+  built-in fallback page was never used. `PebbleTemplateProcessor.process()` now wraps every Pebble
+  exception in `TemplateProcessingException`, and the error renderer falls back to the built-in page
+  when no template is found.
+- The auth redirect `Location` lost the original query string and did not URL-encode the path; it
+  also cleared the cookie with a hardcoded name.
+- `JsonHtmlResponseHandler` let fields of the service JSON response (e.g. `username`,
+  `isAuthenticated`, `path`) overwrite the variables set by Facet. Facet's own variables
+  (`isAuthenticated`, `username`, `roles`, `requestMethod`, `path`, `data`) now always win; a
+  service that needs a field with one of those names must rename it.
+- `HtmlAuthRedirectInterceptor` also fired for authenticated users that were merely not authorized
+  (403), clearing their auth cookie; it now acts only on unauthenticated requests. The redirect
+  parameter is built from the raw request URI, so encoded characters in document ids survive.
+- `mongoPath` prefix stripping now respects segment boundaries (`/api` no longer strips
+  `/apidocs`) and the prefix is normalized (no trailing slash).
+- `hostParams` JSON was built by string concatenation without escaping.
+
+### Security
+
+- `login-service` no longer acts as an open redirector: the `redirect` query parameter is honored
+  only for local absolute paths (`/...`, not `//...` or absolute URLs); anything else falls back to
+  `default-redirect`. Values containing backslashes, quotes, angle brackets, backticks or
+  whitespace are rejected too, so the value cannot break out of the JavaScript string in the
+  login template; the bundled login templates now also apply `escape(strategy="js")`.
 
 ---
 
