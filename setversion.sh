@@ -197,14 +197,20 @@ fi
 echo "Setting Maven version to $VERSION..."
 $MVN_CMD versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
+# Stage only the POM files touched by versions:set, never the whole working tree,
+# so unrelated in-progress changes are not swept into the version bump commit.
+stage_poms() {
+  git ls-files -z -- 'pom.xml' '*/pom.xml' | xargs -0 git add --
+}
+
 # Commit changes
 if [[ "$VERSION" == *SNAPSHOT ]]; then
   echo "This is a SNAPSHOT version. Committing bump..."
-  git add -A
+  stage_poms
   git commit -m "Bump version to $VERSION [skip ci]"
 else
   echo "This is a Release version. Committing and tagging..."
-  git add -A
+  stage_poms
   git commit -m "Release version $VERSION"
   # if tag exists and force, delete it first
   if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
