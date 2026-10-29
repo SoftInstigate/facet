@@ -53,6 +53,9 @@
 /graphql:
   enabled: false
 
+/mcpService:
+  enabled: false
+
 /bruteForceAttackGuard:
   enabled: false
 

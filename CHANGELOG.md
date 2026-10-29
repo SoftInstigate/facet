@@ -7,10 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-c
+## [Unreleased]
+
+### Changed
+
+- **RESTHeart 9.12.3** — `restheart-commons` dependency and the Docker base image
+  (`softinstigate/restheart:9.12.3`) updated from 9.7.x. No source changes were needed; the plugin
+  compiles unchanged and the quickstart stack was verified end-to-end (HTML rendering, cookie login,
+  HTMX fragments, JSON API passthrough) on 9.12.3.
+- Quickstart and product-catalog configurations now disable the MCP service (`/mcpService`), which
+  RESTHeart enables by default since 9.9.
 
 ### Fixed
 
+- **`update-dependencies.sh`** no longer applies major updates when run with `true`: the Versions
+  Plugin defaults `allowMajorUpdates` to `true`, so it is now disabled explicitly. The prerelease
+  ignore patterns also match versions such as `4.0.0-beta-5`.
+- Version properties defined in the parent POM but used only in `core` (`restheart-commons`,
+  Surefire, Failsafe) were never updated by the script. The parent POM now declares them in
+  `dependencyManagement`/`pluginManagement` and `core` inherits the managed versions.
 - **`update-dependencies.sh`** improved with better version control logic.
 
 ---
