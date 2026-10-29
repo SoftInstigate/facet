@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -25,6 +25,9 @@ import org.restheart.mongodb.utils.MongoMountResolver.ResolvedContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.gson.Gson;
 import com.mongodb.client.MongoClient;
 
 /**
@@ -41,26 +44,25 @@ import com.mongodb.client.MongoClient;
  * </ul>
  *
  * @see HtmlResponseHandler
- * @see MongoHtmlResponseInterceptor
+ * @see org.facet.html.HtmlResponseInterceptor
  */
 public class MongoHtmlResponseHandler implements HtmlResponseHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoHtmlResponseHandler.class);
 
-    /** Default TTL for count cache entries in milliseconds (5 seconds). */
-    private static final long COUNT_CACHE_TTL_MS = 5_000L;
+    /** TTL for count cache entries (5 seconds). */
+    private static final long COUNT_CACHE_TTL_SECONDS = 5L;
 
-    /**
-     * Simple immutable cache entry holding a count value and expiry timestamp.
-     */
-    private record CacheEntry(long count, long expiresAt) {
-        boolean isExpired() {
-            return System.currentTimeMillis() > expiresAt;
-        }
-    }
+    /** Upper bound on cached count entries (one per distinct collection/filter). */
+    private static final long COUNT_CACHE_MAX_SIZE = 1_000L;
 
-    /** Thread-safe TTL cache: key → (count, expiry). */
-    private final ConcurrentHashMap<String, CacheEntry> countCache = new ConcurrentHashMap<>();
+    private static final Gson GSON = new Gson();
+
+    /** Thread-safe, bounded TTL cache: key → count. */
+    private final Cache<String, Long> countCache = Caffeine.newBuilder()
+            .expireAfterWrite(COUNT_CACHE_TTL_SECONDS, TimeUnit.SECONDS)
+            .maximumSize(COUNT_CACHE_MAX_SIZE)
+            .build();
 
     private final MongoClient mongoClient;
     private final TemplateProcessor templateProcessor;
@@ -85,8 +87,6 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      * Logs Facet core version information including build timestamp.
      */
     private static void logFacetCoreVersion() {
-        LOGGER.info("Facet core MongoHtmlResponseHandler loaded with BSON unwrapping support");
-
         try {
             final var classFile = MongoHtmlResponseHandler.class.getResource(
                 MongoHtmlResponseHandler.class.getSimpleName() + ".class");
@@ -197,11 +197,10 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      * </ul>
      *
      * <p>
-     * Global context variables (set by BrowserService):
+     * Global context variables (set by {@code HtmlResponseInterceptor} at startup):
      * <ul>
-     * <li><b>mongoPrefix</b> (String): MongoDB mount prefix (e.g., "/api" or "/")
-     * <br>
-     * Available globally, set by BrowserService from MongoMountResolver.</li>
+     * <li><b>mongoPrefix</b> (String): MongoDB mount prefix (e.g., "/api" or "/"),
+     * resolved from the RESTHeart configuration.</li>
      * </ul>
      */
     private TemplateContextBuilder createTemplateContextBuilder(
@@ -247,7 +246,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     }
 
     /**
-     * Gets the MongoDB mount prefix from global template context (set by BrowserService).
+     * Gets the MongoDB mount prefix from the global template context.
      * 
      * @return MongoDB mount prefix (e.g., "/api") or "/" if not set
      */
@@ -272,11 +271,12 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
         if (mongoPrefix == null || mongoPrefix.equals("/") || path == null) {
             return path;
         }
-        if (path.startsWith(mongoPrefix)) {
-            final String stripped = path.substring(mongoPrefix.length());
-            return stripped.isEmpty()
-                ? "/"
-                : stripped;
+        if (path.equals(mongoPrefix) || path.equals(mongoPrefix + "/")) {
+            return "/";
+        }
+        // Segment boundary: prefix "/api" must not strip "/apidocs/x"
+        if (path.startsWith(mongoPrefix + "/")) {
+            return path.substring(mongoPrefix.length());
         }
         return path;
     }
@@ -322,21 +322,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
             params.put("host[" + i + "]", parts[i]);
         }
 
-        return buildJsonFromParams(params);
-    }
-
-    private String buildJsonFromParams(final Map<String, String> params) {
-        final StringBuilder json = new StringBuilder("{");
-        boolean first = true;
-        for (final var entry : params.entrySet()) {
-            if (!first) {
-                json.append(",");
-            }
-            json.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
-            first = false;
-        }
-        json.append("}");
-        return json.toString();
+        return GSON.toJson(params);
     }
 
     private void resolveMountContext(
@@ -452,13 +438,14 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      * @return cached or freshly-computed count
      */
     private long cachedCount(final String cacheKey, final java.util.function.LongSupplier supplier) {
-        final CacheEntry entry = countCache.get(cacheKey);
-        if (entry != null && !entry.isExpired()) {
-            LOGGER.debug("Count cache HIT for key '{}'", cacheKey);
-            return entry.count();
+        final Long cached = countCache.getIfPresent(cacheKey);
+        if (cached != null) {
+            return cached;
         }
+        // Run the (possibly slow) MongoDB count outside the cache's internal lock; concurrent
+        // misses for the same key may count twice, which is harmless
         final long count = supplier.getAsLong();
-        countCache.put(cacheKey, new CacheEntry(count, System.currentTimeMillis() + COUNT_CACHE_TTL_MS));
+        countCache.put(cacheKey, count);
         LOGGER.debug("Count cache MISS for key '{}', computed {}", cacheKey, count);
         return count;
     }
@@ -478,7 +465,8 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
      * Counts documents matching the filter (cached).
      */
     private long countDocumentsWithFilter(final MongoRequest request, final BsonDocument filter) {
-        final String key = request.getDBName() + "/" + request.getCollectionName() + "/" + filter.hashCode();
+        // Key by the filter's JSON, not its hashCode: two different filters must never share a count
+        final String key = request.getDBName() + "/" + request.getCollectionName() + "/" + filter.toJson();
         return cachedCount(key, () ->
                 mongoClient.getDatabase(request.getDBName())
                         .getCollection(request.getCollectionName())
