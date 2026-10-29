@@ -107,6 +107,31 @@ class HtmlResponseHelperTest {
     }
 
     // ──────────────────────────────────────────────────────────────────────
+    // etagFor
+    // ──────────────────────────────────────────────────────────────────────
+
+    @Nested
+    @DisplayName("etagFor")
+    class EtagFor {
+
+        @Test
+        @DisplayName("Is quoted, 32 hex digits, and deterministic")
+        void shape() {
+            String etag = HtmlResponseHelper.etagFor("<html>x</html>");
+            assertTrue(etag.matches("\"[0-9a-f]{32}\""), etag);
+            assertEquals(etag, HtmlResponseHelper.etagFor("<html>x</html>"));
+        }
+
+        @Test
+        @DisplayName("Differs for content that String.hashCode() would collide on")
+        void noHashCodeCollision() {
+            // "Aa" and "BB" have the same String.hashCode()
+            assertEquals("Aa".hashCode(), "BB".hashCode());
+            assertNotEquals(HtmlResponseHelper.etagFor("Aa"), HtmlResponseHelper.etagFor("BB"));
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
     // renderErrorHtml
     // ──────────────────────────────────────────────────────────────────────
 

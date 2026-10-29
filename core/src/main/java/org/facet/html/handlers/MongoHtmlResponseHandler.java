@@ -232,6 +232,9 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
     /**
      * Adds tenant-aware context derived from hostname-based parametric mounts.
      * Populates tenantId, isMultiTenant, and hostParams.
+     *
+     * <p>{@code tenantId} is the plain tenant id, or {@code null} when none was resolved, so that
+     * {@code {% if tenantId %}} works and {@code {{ tenantId | toJson }}} yields a JSON literal.
      */
     private void addTenantContext(final TemplateContextBuilder builder, final MongoRequest mongoRequest) {
         final Optional<String> tenantId = MongoMountResolver.extractTenantId(mongoRequest);
@@ -240,7 +243,7 @@ public class MongoHtmlResponseHandler implements HtmlResponseHandler {
                 && mountContext.hasParametricMounts()
                 && tenantId.isPresent();
 
-        builder.with("tenantId", tenantId.map(id -> "\"" + id + "\"").orElse("null"));
+        builder.with("tenantId", tenantId.orElse(null));
         builder.with("isMultiTenant", isMultiTenant);
         builder.with("hostParams", buildHostnameParamsAsJson(mongoRequest));
     }

@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.facet.templates.TemplateProcessingException;
 import org.facet.templates.TemplateProcessor;
@@ -72,8 +73,14 @@ class PebbleTemplateProcessor implements TemplateProcessor {
                 useFileLoader, cacheActive,
                 useFileLoader ? this.templatesPath : "classpath:" + DEFAULT_TEMPLATES_FOLDER);
 
-        // Create executor service for parallel template rendering
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        // Executor for the {% parallel %} tag only: templates that do not use it never touch it.
+        // Daemon threads, so an un-shutdown pool cannot keep the JVM alive.
+        final AtomicInteger counter = new AtomicInteger();
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), r -> {
+            final Thread t = new Thread(r, "pebble-parallel-" + counter.incrementAndGet());
+            t.setDaemon(true);
+            return t;
+        });
 
         this.engine = builder(defaultLocale).executorService(executorService).build();
 

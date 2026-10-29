@@ -100,6 +100,8 @@ public class IdTypeDetector {
             case BOOLEAN -> String.valueOf(bsonValue.asBoolean().getValue());
             case DATE_TIME -> String.valueOf(bsonValue.asDateTime().getValue());
             case NULL -> "null";
+            // RESTHeart ignores the path value for MINKEY/MAXKEY (MongoURLUtils.getDocumentIdFromURI
+            // returns BsonMinKey/BsonMaxKey whatever the string is), so any placeholder works
             case MIN_KEY, MAX_KEY -> "1";
             default -> bsonValue.toString(); // Fallback: use toString()
         };

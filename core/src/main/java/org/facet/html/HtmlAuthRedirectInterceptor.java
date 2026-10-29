@@ -103,7 +103,7 @@ public class HtmlAuthRedirectInterceptor implements WildcardInterceptor {
 
     /**
      * Constructor for programmatic registration with explicit configuration.
-     * Used when another plugin (e.g., BrowserService) dynamically registers this interceptor.
+     * Used when another plugin (e.g., {@code login-service}) dynamically registers this interceptor.
      *
      * @param config the configuration map containing login-uri and optional exclude-paths
      */

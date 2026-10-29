@@ -45,6 +45,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A template that exists but fails to render now yields a 500 (error page, or plain text for HTMX)
   instead of silently sending the JSON payload with status 200. Template existence is checked
   without compiling, so syntax errors surface at render time.
+- **`tenantId` template variable** is now the plain tenant id, or `null` when none was resolved,
+  instead of a JSON-quoted string (`"tenant"`) or the literal string `"null"`. Templates that
+  embedded it in JavaScript should use `{{ tenantId | toJson }}`; `{% if tenantId %}` now works.
+- `ETag` of rendered pages is a 128-bit SHA-256 prefix instead of the 32-bit `String.hashCode()`,
+  which could return 304 Not Modified for content that had actually changed.
+- Pebble's rendering thread pool (used only by the `{% parallel %}` tag) uses named daemon threads.
 
 ### Fixed
 

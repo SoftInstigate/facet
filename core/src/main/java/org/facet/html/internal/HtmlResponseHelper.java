@@ -1,5 +1,9 @@
 package org.facet.html.internal;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Map;
 
 import org.facet.templates.PathBasedTemplateResolver;
@@ -76,20 +80,41 @@ public class HtmlResponseHelper {
     }
 
     /**
+     * Computes a strong ETag for the given content.
+     *
+     * <p>The value is a quoted, 128-bit truncation of the SHA-256 digest of the content: unlike
+     * {@code String.hashCode()} it does not collide for similar pages, which would otherwise make
+     * a conditional request return 304 for content that actually changed.
+     *
+     * @param content the rendered content
+     * @return the ETag header value, including the surrounding quotes
+     */
+    public static String etagFor(final String content) {
+        try {
+            final byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(content.getBytes(StandardCharsets.UTF_8));
+            return '"' + HexFormat.of().formatHex(digest, 0, 16) + '"';
+        } catch (final NoSuchAlgorithmException e) {
+            // SHA-256 is mandatory for every Java platform
+            throw new IllegalStateException("SHA-256 not available", e);
+        }
+    }
+
+    /**
      * Sets caching headers on the response based on the development mode.
      * Also checks If-None-Match header and returns 304 if ETag matches.
      *
      * @param request the service request
      * @param response the service response
-     * @param hashCode the hash code of the content for ETag
+     * @param etag the ETag of the content, see {@link #etagFor(String)}
      * @param enableResponseCaching true to enable caching, false to disable (development mode)
      * @param maxAge the Cache-Control max-age value in seconds
      * @return true if 304 was sent, false if full response should be sent
      */
     public static boolean setCachingHeaders(final ServiceRequest<?> request, final ServiceResponse<?> response,
-            final int hashCode, final boolean enableResponseCaching, final int maxAge) {
+            final String etag, final boolean enableResponseCaching, final int maxAge) {
         if (enableResponseCaching) {
-            return applyCachingHeaders(request, response, hashCode, maxAge);
+            return applyCachingHeaders(request, response, etag, maxAge);
         } else {
             disableCachingForDevelopment(response);
             return false;
@@ -189,11 +214,8 @@ public class HtmlResponseHelper {
     private static boolean applyCachingHeaders(
             final ServiceRequest<?> request,
             final ServiceResponse<?> response,
-            final int contentHashCode,
+            final String etag,
             final int maxAge) {
-        // Generate ETag from content hash
-        final String etag = '"' + Integer.toHexString(contentHashCode) + '"';
-
         // Check If-None-Match header for ETag validation
         final String ifNoneMatch = request.getHeader("If-None-Match");
         LOGGER.debug("ETag validation - Request: {}, Generated: {}, Match: {}",

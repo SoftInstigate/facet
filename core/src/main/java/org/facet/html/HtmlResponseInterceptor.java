@@ -3,6 +3,7 @@ package org.facet.html;
 import static org.facet.html.internal.HtmlResponseHelper.acceptsHtml;
 import static org.facet.html.internal.HtmlResponseHelper.isEventStreamRequest;
 import static org.facet.html.internal.HtmlResponseHelper.renderErrorPage;
+import static org.facet.html.internal.HtmlResponseHelper.etagFor;
 import static org.facet.html.internal.HtmlResponseHelper.setCachingHeaders;
 
 import java.util.ArrayList;
@@ -537,7 +538,7 @@ public class HtmlResponseInterceptor implements WildcardInterceptor {
         final boolean is304 = setCachingHeaders(
                 request,
                 response,
-                html.hashCode(),
+                etagFor(html),
                 this.isResponseCachingEnabled,
                 this.maxAge);
 

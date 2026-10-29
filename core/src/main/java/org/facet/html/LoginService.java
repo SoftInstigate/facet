@@ -189,7 +189,7 @@ public class LoginService implements JsonService {
      * Ensures unauthenticated browser requests are redirected to login page.
      */
     private void registerAuthRedirectInterceptor() {
-        // Check if interceptor is already registered (via configuration or BrowserService)
+        // Check if interceptor is already registered (statically, via configuration)
         if (registry.getInterceptors().stream()
                 .anyMatch(i -> i.getInstance() instanceof HtmlAuthRedirectInterceptor)) {
             LOGGER.warn("HtmlAuthRedirectInterceptor already registered (statically configured), skipping:"
