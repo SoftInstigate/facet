@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  *
  * Search order:
  * 1. templates/products/list.html      (recommended - explicit collection view)
- * 2. templates/products/index.html     (optional fallback)
- * 3. templates/list.html               (global collection template)
+ * 2. templates/list.html               (global collection template)
+ * 3. templates/products/index.html     (optional fallback)
  * 4. templates/index.html              (global fallback)
  * 5. return empty Optional             (no template found)
  * </pre>
@@ -48,11 +48,15 @@ import org.slf4j.LoggerFactory;
  * Search order:
  * 1. templates/products/123/view.html  (document-specific override)
  * 2. templates/products/view.html      (recommended - explicit document view)
- * 3. templates/products/index.html     (optional fallback)
- * 4. templates/view.html               (global document template)
- * 5. templates/index.html              (global fallback)
- * 6. return empty Optional             (no template found)
+ * 3. templates/view.html               (global document template)
+ * 4. templates/products/123/index.html (document-specific fallback)
+ * 5. templates/products/index.html     (optional fallback)
+ * 6. templates/index.html              (global fallback)
+ * 7. return empty Optional             (no template found)
  * </pre>
+ *
+ * <p>The whole action chain (list.html / view.html) is walked up to the root before any index.html
+ * is tried: a global templates/list.html wins over templates/products/index.html.
  *
  * <p>
  * <strong>Fragment Resolution Algorithm (HTMX):</strong>
@@ -134,20 +138,16 @@ public class PathBasedTemplateResolver implements TemplateResolver {
      *
      * <p><strong>Resolution Strategy:</strong></p>
      * <ul>
-     * <li><strong>COLLECTION requests:</strong>
+     * <li><strong>COLLECTION, ROOT and DB requests:</strong>
      *   <ol>
-     *     <li>products/list.html (recommended - explicit collection view)</li>
-     *     <li>products/index.html (optional fallback)</li>
-     *     <li>Hierarchical parent fallback</li>
+     *     <li>products/list.html, then list.html in every parent directory up to the root</li>
+     *     <li>products/index.html, then index.html in every parent directory up to the root</li>
      *   </ol>
      * </li>
      * <li><strong>DOCUMENT requests:</strong>
      *   <ol>
-     *     <li>products/:id/view.html (document-specific override)</li>
-     *     <li>products/:id/index.html (document-specific fallback)</li>
-     *     <li>products/view.html (recommended - explicit document view)</li>
-     *     <li>products/index.html (optional fallback)</li>
-     *     <li>Hierarchical parent fallback</li>
+     *     <li>products/:id/view.html, products/view.html, then view.html up to the root</li>
+     *     <li>products/:id/index.html, products/index.html, then index.html up to the root</li>
      *   </ol>
      * </li>
      * <li><strong>Other types:</strong> Uses index.html only</li>

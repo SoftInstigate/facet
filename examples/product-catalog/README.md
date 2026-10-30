@@ -104,21 +104,16 @@ This architectural approach provides:
    docker compose up
    ```
 
-3. **Optional local build path** (for Facet plugin changes):
+3. **Optional: test local Facet changes.** The example image is built from
+   `examples/product-catalog/Dockerfile`, which starts `FROM softinstigate/facet:latest`, so a plain
+   `mvn package` has no effect on it. Rebuild the Facet image from the repository root first:
 
    ```bash
    cd /path/to/facet
    mvn package -DskipTests
+   docker build -t softinstigate/facet:latest .
    cd examples/product-catalog
    docker compose up --build
-   ```
-
-   The default `docker-compose.yml` uses a local build:
-
-   ```yaml
-   build:
-     context: ../../
-     dockerfile: Dockerfile
    ```
 
 4. **Wait for services to start** (watch logs for "RESTHeart started" message):
@@ -262,8 +257,8 @@ All templates have access to these variables:
 | Variable | Example Value | Description |
 |----------|---------------|-------------|
 | `path` | `/shop/products` | Full request path |
-| `database` | `shop` | MongoDB database name |
-| `collection` | `products` | MongoDB collection name |
+| `db` | `shop` | MongoDB database name |
+| `coll` | `products` | MongoDB collection name |
 | `items` | `[{data: {...}, _id: {...}}, ...]` | Array of documents |
 | `page` | `2` | Current page number |
 | `pagesize` | `10` | Items per page |

@@ -21,8 +21,8 @@ import org.restheart.exchange.ExchangeKeys.TYPE;
  * <p>Example resolution for path "/products" (collection):
  * <pre>
  * 1. templates/products/list.html      (recommended - explicit collection view)
- * 2. templates/products/index.html     (optional unified fallback)
- * 3. templates/list.html               (global collection template)
+ * 2. templates/list.html               (global collection template)
+ * 3. templates/products/index.html     (optional unified fallback)
  * 4. templates/index.html              (global fallback)
  * </pre>
  *
@@ -30,10 +30,14 @@ import org.restheart.exchange.ExchangeKeys.TYPE;
  * <pre>
  * 1. templates/products/:id/view.html  (document-specific override)
  * 2. templates/products/view.html      (recommended - explicit document view)
- * 3. templates/products/index.html     (optional unified fallback)
- * 4. templates/view.html               (global document template)
- * 5. templates/index.html              (global fallback)
+ * 3. templates/view.html               (global document template)
+ * 4. templates/products/:id/index.html (document-specific fallback)
+ * 5. templates/products/index.html     (optional unified fallback)
+ * 6. templates/index.html              (global fallback)
  * </pre>
+ *
+ * <p>The whole action chain (list.html / view.html) is walked up to the root before any index.html
+ * is tried.
  *
  * @since 1.0
  */
