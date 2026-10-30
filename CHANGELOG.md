@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.1.0] - 2026-10-30
+
+Upgrade notes — this release changes four behaviors:
+
+- `html-error-response-interceptor` is now opt-in: add `enabled: true` to keep HTML error pages.
+- `tenantId` template variable is the plain id (or `null`), no longer a JSON-quoted string.
+- `JsonHtmlResponseHandler`: Facet's own variables (`isAuthenticated`, `username`, `roles`,
+  `requestMethod`, `path`, `data`) now win over same-named fields of the service response.
+- `pebble-template-processor`'s `cache-active` really defaults to `true` when not set.
 
 ### Added
 
@@ -65,7 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Version properties defined in the parent POM but used only in `core` (`restheart-commons`,
   Surefire, Failsafe) were never updated by the script. The parent POM now declares them in
   `dependencyManagement`/`pluginManagement` and `core` inherits the managed versions.
-- **`update-dependencies.sh`** improved with better version control logic.
 - **`setversion.sh`** stages only the POM files it changes instead of `git add -A`, so unrelated
   uncommitted work is no longer swept into the version bump commit.
 - Error pages returned HTTP 500 with an empty body when no `templates/error.html` (or
@@ -104,6 +111,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `default-redirect`. Values containing backslashes, quotes, angle brackets, backticks or
   whitespace are rejected too, so the value cannot break out of the JavaScript string in the
   login template; the bundled login templates now also apply `escape(strategy="js")`.
+
+---
+
+## [1.0.2] - 2026-08-11
+
+### Added
+
+- **JavaScript plugin integration tests** — `JsPluginsIT` validates server-side JavaScript plugin
+  loading and a request-logger interceptor using HTMX-driven verification.
+
+### Changed
+
+- **RESTHeart commons** updated from 9.5.2 to 9.7.2 (compatible with RESTHeart 9.7).
+- **Pebble** updated from 4.1.1 to 4.1.2.
+- **Maven plugin versions** now managed as properties in the parent POM:
+  `maven-compiler-plugin` 3.15.0, `maven-surefire-plugin` 3.5.6, `maven-failsafe-plugin` 3.5.6,
+  `maven-dependency-plugin` 3.11.0, `maven-assembly-plugin` 3.8.0, `versions-maven-plugin` 2.21.0.
+- **Dockerfile** base image updated to RESTHeart 9.7.
+
+### Fixed
+
+- **`update-dependencies.sh`** improved with better version control logic.
 
 ---
 
